@@ -15,5 +15,6 @@
   </properties>
   <modules>
     <module>href-client</module>
+    <module>href-crawler</module>
   </modules>
 </project>
