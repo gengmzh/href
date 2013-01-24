@@ -1,0 +1,16 @@
+<uwsgi>
+    <socket>:8087</socket>
+    <chdir>/var/app/href/api</chdir>
+    <pythonpath>/var/app/href/api</pythonpath>
+    <module>wsgi</module>
+    <processes>1</processes>
+    <master>true</master>
+    <pidfile>/var/log/href/api/uwsgi.pid</pidfile>
+    <logdate>true</logdate>
+    <daemonize>/var/log/href/api/uwsgi.log</daemonize>
+    <harakiri>20</harakiri>
+    <harakiri-verbose/>
+    <memory-report/>
+    <post-buffering>8192</post-buffering>
+    <post-buffering-bufsize>65536</post-buffering-bufsize>
+</uwsgi>
