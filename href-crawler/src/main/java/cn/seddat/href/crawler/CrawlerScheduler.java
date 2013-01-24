@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.seddat.href.crawler.service;
+package cn.seddat.href.crawler;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import cn.seddat.href.crawler.Config;
-import cn.seddat.href.crawler.Post;
+import cn.seddat.href.crawler.service.PostService;
+import cn.seddat.href.crawler.service.SpiderService;
 import cn.seddat.href.crawler.spider.Spider;
 import cn.seddat.href.crawler.spider.ShuimuSpider;
 
@@ -62,6 +62,15 @@ public class CrawlerScheduler {
 		long delay = Config.getInstance().getPoliteTime();
 		Spider crawler = new ShuimuSpider();
 		scheduledExecutor.scheduleWithFixedDelay(new SpiderService(queue, crawler), 0, delay, TimeUnit.SECONDS);
+		log.info("crawler starts...");
+	}
+
+	public void shutdown(boolean isNow) throws Exception {
+		if (isNow) {
+			scheduledExecutor.shutdownNow();
+		} else {
+			scheduledExecutor.shutdown();
+		}
 	}
 
 	public void registerShutdownHook() {

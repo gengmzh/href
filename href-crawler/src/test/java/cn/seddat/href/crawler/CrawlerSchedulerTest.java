@@ -1,14 +1,14 @@
 /**
  * 
  */
-package cn.seddat.href.crawler.service;
+package cn.seddat.href.crawler;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 /**
  * @author mzhgeng
@@ -37,6 +37,13 @@ public class CrawlerSchedulerTest extends TestCase {
 		System.out.println(doc);
 		// del
 		coll.remove(doc);
+	}
+
+	public void testStart() throws Exception {
+		scheduler.start();
+		// find
+		Thread.sleep(10000);
+		scheduler.shutdown(false);
 	}
 
 }

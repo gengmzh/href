@@ -4,11 +4,13 @@
 package cn.seddat.href.crawler.service;
 
 import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bson.types.ObjectId;
 
 import cn.seddat.href.crawler.Post;
 
@@ -26,6 +28,7 @@ public class PostService implements Runnable {
 	private BlockingQueue<Post> queue;
 	private DBCollection dbColl;
 	private final MessageDigest digester;
+	private final DateFormat dateFormat;
 
 	public PostService(BlockingQueue<Post> queue, DBCollection dbColl) throws Exception {
 		if (queue == null) {
@@ -37,6 +40,7 @@ public class PostService implements Runnable {
 		}
 		this.dbColl = dbColl;
 		digester = MessageDigest.getInstance("MD5");
+		dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 	}
 
 	private String getId(String text) {
@@ -74,12 +78,13 @@ public class PostService implements Runnable {
 				continue;
 			}
 			String id = this.getId(post.getLink());
-			DBObject query = new BasicDBObject("_id", new ObjectId(id));
+			DBObject query = new BasicDBObject("_id", id);
 			DBObject obj = dbColl.findOne(query, new BasicDBObject("sl", 1));
 			if (obj == null) {
 				obj = this.convert(post);
 				obj.putAll(query);
 				dbColl.insert(obj);
+				log.info("insert post " + post.getTitle() + "," + post.getLink());
 			}
 		}
 	}
@@ -100,8 +105,9 @@ public class PostService implements Runnable {
 			doc.put("au", post.getAuthor());
 		}
 		if (post.getPubtime() != null) {
-			doc.put("pt", post.getPubtime());
+			doc.put("pt", dateFormat.format(post.getPubtime()));
 		}
+		doc.put("ct", dateFormat.format(new Date()));
 		return doc;
 	}
 
