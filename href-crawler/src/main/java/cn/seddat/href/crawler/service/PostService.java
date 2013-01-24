@@ -62,6 +62,7 @@ public class PostService implements Runnable {
 			Post post;
 			try {
 				post = queue.take();
+				log.info("take post " + post.getTitle() + "," + post.getLink());
 			} catch (InterruptedException e) {
 				log.error("take queue failed", e);
 				continue;

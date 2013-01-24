@@ -35,21 +35,26 @@ public class SpiderService implements Runnable {
 
 	@Override
 	public void run() {
-		List<Post> posts;
+		String tag = spider.getClass().getSimpleName();
+		log.info(tag + " starts...");
+		List<Post> posts = null;
 		try {
 			posts = spider.crawl();
+			log.info(tag + " crawled " + posts.size() + " posts");
 		} catch (Exception e) {
 			log.error(spider.getClass().getSimpleName() + " crashed", e);
-			return;
 		}
-		for (Post post : posts) {
-			try {
-				queue.put(post);
-				log.info("put post " + post.getTitle() + "," + post.getLink());
-			} catch (InterruptedException e) {
-				log.error("put queue failed", e);
+		if (posts != null && !posts.isEmpty()) {
+			for (Post post : posts) {
+				try {
+					queue.put(post);
+					log.info("put post " + post.getTitle() + "," + post.getLink());
+				} catch (InterruptedException e) {
+					log.error("put queue failed", e);
+				}
 			}
 		}
+		log.info(tag + " done");
 	}
 
 }
