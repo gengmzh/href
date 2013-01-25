@@ -18,7 +18,7 @@ import cn.seddat.href.crawler.spider.Spider;
  */
 public class SpiderService implements Runnable {
 
-	private final Log log = LogFactory.getLog(SpiderService.class);
+	private final Log log = LogFactory.getLog(SpiderService.class.getSimpleName());
 	private BlockingQueue<Post> queue;
 	private Spider spider;
 

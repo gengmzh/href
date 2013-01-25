@@ -27,7 +27,7 @@ import com.mongodb.MongoURI;
  */
 public class CrawlerScheduler {
 
-	private static final Log log = LogFactory.getLog(CrawlerScheduler.class);
+	private static final Log log = LogFactory.getLog(CrawlerScheduler.class.getSimpleName());
 	private BlockingQueue<Post> queue;
 	private Mongo mongo;
 	private DB db;

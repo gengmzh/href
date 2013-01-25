@@ -32,7 +32,7 @@ import cn.seddat.href.crawler.Post;
  */
 public class ShuimuSpider implements Spider {
 
-	private final Log log = LogFactory.getLog(ShuimuSpider.class);
+	private final Log log = LogFactory.getLog(ShuimuSpider.class.getSimpleName());
 	private static final String SOURCE = "newsmth.net";
 	private static final String USERAGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11";
 

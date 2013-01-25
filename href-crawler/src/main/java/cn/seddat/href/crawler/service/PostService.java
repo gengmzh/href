@@ -24,7 +24,7 @@ import com.mongodb.DBObject;
  */
 public class PostService implements Runnable {
 
-	private final Log log = LogFactory.getLog(PostService.class);
+	private final Log log = LogFactory.getLog(PostService.class.getSimpleName());
 	private BlockingQueue<Post> queue;
 	private DBCollection dbColl;
 	private final MessageDigest digester;
