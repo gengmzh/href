@@ -16,5 +16,6 @@
   <modules>
     <module>href-client</module>
     <module>href-crawler</module>
+    <module>href-api</module>
   </modules>
 </project>
