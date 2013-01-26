@@ -5,11 +5,9 @@ package cn.seddat.href.crawler.spider;
 
 import java.util.List;
 
-import cn.seddat.href.crawler.Post;
-import cn.seddat.href.crawler.spider.ShuimuSpider;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import cn.seddat.href.crawler.Post;
 
 /**
  * @author mzhgeng
@@ -23,7 +21,7 @@ public class ShuimuSpiderTest extends TestCase {
 		spider = new ShuimuSpider();
 	}
 
-	public void testRun() throws Exception {
+	public void testCrawl() throws Exception {
 		List<Post> pl = spider.crawl();
 		Assert.assertFalse(pl.isEmpty());
 		System.out.println("total: " + pl.size());

@@ -25,6 +25,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import cn.seddat.href.crawler.Config;
 import cn.seddat.href.crawler.Post;
+import cn.seddat.href.crawler.Source;
 
 /**
  * @author mzhgeng
@@ -33,7 +34,6 @@ import cn.seddat.href.crawler.Post;
 public class ShuimuSpider implements Spider {
 
 	private final Log log = LogFactory.getLog(ShuimuSpider.class.getSimpleName());
-	private static final String SOURCE = "newsmth.net";
 	private static final String USERAGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11";
 
 	private String[] rssUrls;
@@ -48,7 +48,7 @@ public class ShuimuSpider implements Spider {
 
 	@Override
 	public List<Post> crawl() throws Exception {
-		log.info("crawl " + SOURCE + " starts...");
+		log.info("crawl " + Source.SHUIMU + " starts...");
 		List<Post> posts = new LinkedList<Post>();
 		PostHandler handler = new PostHandler();
 		for (String url : rssUrls) {
@@ -61,7 +61,7 @@ public class ShuimuSpider implements Spider {
 			conn.disconnect();
 			posts.addAll(handler.getPosts());
 		}
-		log.info("crawl " + SOURCE + " done");
+		log.info("crawl " + Source.SHUIMU + " done");
 		return posts;
 	}
 
@@ -86,7 +86,7 @@ public class ShuimuSpider implements Spider {
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 			if ("item".equalsIgnoreCase(localName)) {
 				curPost = new Post();
-				curPost.setSource(ShuimuSpider.SOURCE);
+				curPost.setSource(Source.SHUIMU.getName());
 			}
 			curTag = localName;
 		}

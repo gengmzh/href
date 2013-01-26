@@ -48,7 +48,7 @@ public class SpiderService implements Runnable {
 			for (Post post : posts) {
 				try {
 					queue.put(post);
-					log.info("put post " + post.getTitle() + "," + post.getLink());
+					log.info("[Queue] put post " + post.getTitle() + "," + post.getLink());
 				} catch (InterruptedException e) {
 					log.error("put queue failed", e);
 				}
