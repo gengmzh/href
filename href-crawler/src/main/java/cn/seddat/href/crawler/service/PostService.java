@@ -3,16 +3,16 @@
  */
 package cn.seddat.href.crawler.service;
 
-import java.security.MessageDigest;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import cn.seddat.href.crawler.Post;
+import cn.seddat.href.crawler.utils.DateHelper;
+import cn.seddat.href.crawler.utils.MurmurHash;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -27,8 +27,7 @@ public class PostService implements Runnable {
 	private final Log log = LogFactory.getLog(PostService.class.getSimpleName());
 	private BlockingQueue<Post> queue;
 	private DBCollection dbColl;
-	private final MessageDigest digester;
-	private final DateFormat dateFormat;
+	private CleanerService cleanerService;
 
 	public PostService(BlockingQueue<Post> queue, DBCollection dbColl) throws Exception {
 		if (queue == null) {
@@ -39,21 +38,7 @@ public class PostService implements Runnable {
 			throw new IllegalArgumentException("dbColl is required");
 		}
 		this.dbColl = dbColl;
-		digester = MessageDigest.getInstance("MD5");
-		dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-	}
-
-	private String getId(String text) {
-		StringBuffer buf = new StringBuffer();
-		byte[] bytes = digester.digest(text.getBytes());
-		for (int i = 0; i < bytes.length; i++) {
-			String hex = Integer.toHexString(0xFF & bytes[i]);
-			if (hex.length() == 1)
-				buf.append("0").append(hex);
-			else
-				buf.append(hex);
-		}
-		return buf.toString();
+		cleanerService = new CleanerService();
 	}
 
 	@Override
@@ -62,23 +47,23 @@ public class PostService implements Runnable {
 			Post post;
 			try {
 				post = queue.take();
-				log.info("take post " + post.getTitle() + "," + post.getLink());
+				log.info("[Queue] take post " + post.getTitle() + "," + post.getLink());
 			} catch (InterruptedException e) {
 				log.error("take queue failed", e);
 				continue;
 			}
-			this.save(post);
+			try {
+				this.save(post);
+			} catch (Exception e) {
+				log.error("save post failed", e);
+			}
 		}
 	}
 
-	public void save(Post... posts) {
-		for (Post post : posts) {
-			if (post.getTitle() == null || post.getContent() == null || post.getSource() == null
-					|| post.getLink() == null) {
-				log.warn("illegal post " + post);
-				continue;
-			}
-			String id = this.getId(post.getLink());
+	public void save(Post... posts) throws Exception {
+		List<Post> pl = cleanerService.clean(posts);
+		for (Post post : pl) {
+			String id = MurmurHash.getInstance().hash(post.getTitle() + post.getLink());
 			DBObject query = new BasicDBObject("_id", id);
 			DBObject obj = dbColl.findOne(query, new BasicDBObject("sl", 1));
 			if (obj == null) {
@@ -106,9 +91,9 @@ public class PostService implements Runnable {
 			doc.put("au", post.getAuthor());
 		}
 		if (post.getPubtime() != null) {
-			doc.put("pt", dateFormat.format(post.getPubtime()));
+			doc.put("pt", DateHelper.format(post.getPubtime()));
 		}
-		doc.put("ct", dateFormat.format(new Date()));
+		doc.put("ct", DateHelper.format(new Date()));
 		return doc;
 	}
 
