@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="2dip"
+    android:paddingTop="2dip" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="6dip"
+        android:paddingTop="6dip" >
+
+        <ImageView
+            android:id="@+id/author_icon"
+            android:layout_width="60dip"
+            android:layout_height="60dip" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/author_name"
+            android:layout_width="60dip"
+            android:layout_height="wrap_content" >
+        </TextView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="85dip"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip"
+        android:paddingTop="3dip" >
+
+        <RelativeLayout
+            android:id="@+id/post_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" >
+
+            <TextView
+                android:id="@+id/post_company"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/post_company"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/post_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/post_header"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/post_title" >
+
+            <TextView
+                android:id="@+id/post_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_mark_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="6dip"
+                android:layout_toLeftOf="@id/post_mark"
+                android:text="收藏："
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@id/post_mark_desc"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_click_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="6dip"
+                android:layout_toLeftOf="@id/post_click"
+                android:text="点击："
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_pv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/post_click_desc"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_pv_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="6dip"
+                android:layout_toLeftOf="@id/post_pv"
+                android:text="展示："
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
