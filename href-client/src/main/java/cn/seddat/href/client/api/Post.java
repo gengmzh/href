@@ -3,92 +3,113 @@
  */
 package cn.seddat.href.client.api;
 
-import java.io.Serializable;
-import java.util.Date;
-
 /**
  * @author mzhgeng
  * 
  */
-public class Post implements Serializable {
-
-	private static final long serialVersionUID = 7634948950103889783L;
-	private String title;
-	private String type;
-	private String link;
-	private String content;
-	private String author;
-	private Date pubtime;
+public class Post extends Entity {
 
 	public Post() {
 		super();
 	}
 
 	public String getTitle() {
-		return title;
+		return get("ttl");
 	}
 
 	public Post setTitle(String title) {
-		this.title = title;
-		return this;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public Post setType(String type) {
-		this.type = type;
-		return this;
-	}
-
-	public String getLink() {
-		return link;
-	}
-
-	public Post setLink(String link) {
-		this.link = link;
+		put("ttl", title);
 		return this;
 	}
 
 	public String getContent() {
-		return content;
+		return get("ctt");
 	}
 
 	public Post setContent(String content) {
-		this.content = content;
+		put("ctt", content);
+		return this;
+	}
+
+	public String getSource() {
+		return get("sn");
+	}
+
+	public Post setSource(String source) {
+		put("sn", source);
+		return this;
+	}
+
+	public String getLink() {
+		return get("sl");
+	}
+
+	public Post setLink(String link) {
+		put("sl", link);
+		return this;
+	}
+
+	public String getType() {
+		return get("tp");
+	}
+
+	public Post setType(String type) {
+		put("tp", type);
+		return this;
+	}
+
+	public String getCompany() {
+		return get("com");
+	}
+
+	public Post setCompany(String company) {
+		put("com", company);
 		return this;
 	}
 
 	public String getAuthor() {
-		return author;
+		return get("au");
 	}
 
 	public Post setAuthor(String author) {
-		this.author = author;
+		put("au", author);
 		return this;
 	}
 
-	public Date getPubtime() {
-		return pubtime;
+	public String getPubtime() {
+		return get("pt");
 	}
 
-	public Post setPubtime(Date pubtime) {
-		this.pubtime = pubtime;
+	public Post setPubtime(String pubtime) {
+		put("pt", pubtime);
 		return this;
 	}
 
-	@Override
-	public String toString() {
-		StringBuffer buf = new StringBuffer().append(Post.class.getSimpleName()).append("{");
-		buf.append("title:").append(getTitle()).append(", ");
-		buf.append("type:").append(getType()).append(", ");
-		buf.append("link:").append(getLink()).append(", ");
-		buf.append("content:").append(getContent()).append(", ");
-		buf.append("author:").append(getAuthor()).append(", ");
-		buf.append("pubtime:").append(getPubtime());
-		buf.append("}");
-		return buf.toString();
+	public long getPv() {
+		return getLong("pv", 0);
+	}
+
+	public Post setPv(long pv) {
+		put("pv", String.valueOf(pv));
+		return this;
+	}
+
+	public long getClick() {
+		return getLong("clk", 0);
+	}
+
+	public Post setClick(long click) {
+		put("clk", String.valueOf(click));
+		return this;
+	}
+
+	public long getMark() {
+		return getLong("mrk", 0);
+	}
+
+	public Post setMark(long mark) {
+		put("mrk", String.valueOf(mark));
+		return this;
 	}
 
 }
