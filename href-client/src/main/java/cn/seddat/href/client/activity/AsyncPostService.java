@@ -62,7 +62,7 @@ public class AsyncPostService extends AsyncTask<String, Integer, List<Post>> {
 	@Override
 	protected void onPostExecute(List<Post> posts) {
 		super.onPostExecute(posts);
-		SimpleAdapter adapter = new SimpleAdapter(listView.getContext(), posts, R.layout.post_list, new String[] {
+		SimpleAdapter adapter = new SimpleAdapter(listView.getContext(), posts, R.layout.post_item, new String[] {
 				"au", "com", "pt", "ttl", "pv", "clk", "mrk" }, new int[] { R.id.author_name, R.id.post_company,
 				R.id.post_time, R.id.post_title, R.id.post_pv, R.id.post_click, R.id.post_mark });
 		listView.setAdapter(adapter);
