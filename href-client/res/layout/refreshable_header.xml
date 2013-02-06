@@ -7,46 +7,52 @@
     android:paddingTop="10dp" >
 
     <ImageView
-        android:id="@+id/pulldown_header_arrow"
+        android:id="@+id/refreshable_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/refreshable_arrow"
-        android:visibility="invisible" />
+        android:src="@drawable/refreshable_arrow" />
 
-    <LinearLayout
+    <ProgressBar
+        android:id="@+id/refreshable_progress"
+        style="@android:style/Widget.ProgressBar.Small.Inverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/pulldown_header_arrow"
-        android:layout_alignTop="@+id/pulldown_header_arrow"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp" />
+
+    <LinearLayout
+        android:id="@+id/refreshable_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/refreshable_arrow"
+        android:layout_alignTop="@id/refreshable_arrow"
         android:layout_centerHorizontal="true"
         android:gravity="center_vertical"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/pulldown_header_text"
+            android:id="@+id/refreshable_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="加载中..." />
+            android:text="下拉刷新" />
 
         <TextView
-            android:id="@+id/pulldown_header_date"
+            android:id="@+id/refreshable_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="更新于:"
-            android:visibility="gone" />
+            android:text="上次刷新：" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/pulldown_header_loading"
-        style="@android:style/Widget.ProgressBar.Small.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_below="@id/refreshable_text"
+        android:background="@android:drawable/divider_horizontal_bright" />
 
 </RelativeLayout>

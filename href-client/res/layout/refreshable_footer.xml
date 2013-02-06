@@ -7,15 +7,15 @@
     android:paddingTop="10dp" >
 
     <TextView
-        android:id="@+id/pulldown_footer_text"
+        android:id="@+id/refreshable_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="更多"
+        android:text="加载更多"
         android:textSize="15dp" />
 
     <ProgressBar
-        android:id="@+id/pulldown_footer_loading"
+        android:id="@+id/refreshable_progress"
         style="@android:style/Widget.ProgressBar.Small.Inverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

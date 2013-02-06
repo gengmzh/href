@@ -69,25 +69,33 @@ public class PostService {
 			post.setTitle(jo.optString("ttl")).setContent(jo.optString("ctt"));
 			post.setSource(jo.optString("sn")).setLink(jo.optString("sl"));
 			post.setType(jo.optString("tp")).setCompany(jo.optString("com"));
-			post.setAuthor(jo.optString("au")).setPubtime(this.parseShowTime(jo.optString("ct")));
+			post.setAuthor(jo.optString("au"));
+			long ct = this.parseTime(jo.optString("ct"));
+			post.setCreateTime(ct).setShowTime(this.parseShowTime(ct));
 			post.setPv(jo.optLong("pv")).setClick(jo.optLong("clk")).setMark(jo.optLong("mrk"));
 			posts.add(post);
 		}
 		return posts;
 	}
 
-	private String parseShowTime(String time) {
+	private long parseTime(String time) {
 		if (time == null || time.isEmpty()) {
-			return "未知";
+			return 0;
 		}
-		Date date;
 		try {
-			date = dateFormat.parse(time);
+			Date date = dateFormat.parse(time);
+			return date.getTime() / 1000;
 		} catch (ParseException e) {
 			// ignore
+		}
+		return 0;
+	}
+
+	private String parseShowTime(long time) {
+		if (time <= 0) {
 			return "未知";
 		}
-		long millis = date.getTime();
+		long millis = time * 1000;
 		long second = (new Date().getTime() - millis) / 1000;
 		if (second < 60 * 60) {// < 1 hour
 			return second < 60 ? "1分钟内" : (second / 60) + "分钟前";
@@ -96,6 +104,7 @@ public class PostService {
 		} else if (second < 6 * 24 * 60 * 60) {// < 1 week
 			return (second / (24 * 60 * 60)) + "天前";
 		} else {
+			Date date = new Date(millis);
 			return (date.getMonth() + 1) + "月" + date.getDay() + "号";
 		}
 	}

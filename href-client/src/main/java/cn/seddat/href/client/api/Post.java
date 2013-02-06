@@ -76,12 +76,21 @@ public class Post extends Entity {
 		return this;
 	}
 
-	public String getPubtime() {
+	public long getCreateTime() {
+		return getLong("ct", 0);
+	}
+
+	public Post setCreateTime(long createTime) {
+		put("ct", String.valueOf(createTime));
+		return this;
+	}
+
+	public String getShowTime() {
 		return get("pt");
 	}
 
-	public Post setPubtime(String pubtime) {
-		put("pt", pubtime);
+	public Post setShowTime(String showTime) {
+		put("pt", showTime);
 		return this;
 	}
 

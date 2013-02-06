@@ -5,8 +5,8 @@ package cn.seddat.href.client.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.ListView;
 import cn.seddat.href.client.R;
+import cn.seddat.href.client.view.RefreshableListView;
 
 /**
  * @author mzhgeng
@@ -15,21 +15,21 @@ import cn.seddat.href.client.R;
 public class HrefActivity extends Activity {
 
 	// private final String tag = HrefActivity.class.getSimpleName();
-	private AsyncPostService asyncPostService;
+	private RefreshableListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		// show
-		ListView listView = (ListView) findViewById(R.id.post_list);
-		this.asyncPostService = new AsyncPostService(listView);
-		this.asyncPostService.execute();
+		listView = (RefreshableListView) findViewById(R.id.post_list);
+		listView.setOnRefreshListener(new RefreshPostListener());
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
+		this.listView.refreshing();
 	}
 
 	@Override
