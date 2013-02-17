@@ -84,18 +84,17 @@ public class PostService {
 		}
 		try {
 			Date date = dateFormat.parse(time);
-			return date.getTime() / 1000;
+			return date.getTime();
 		} catch (ParseException e) {
 			// ignore
 		}
 		return 0;
 	}
 
-	private String parseShowTime(long time) {
-		if (time <= 0) {
+	private String parseShowTime(long millis) {
+		if (millis <= 0) {
 			return "未知";
 		}
-		long millis = time * 1000;
 		long second = (new Date().getTime() - millis) / 1000;
 		if (second < 60 * 60) {// < 1 hour
 			return second < 60 ? "1分钟内" : (second / 60) + "分钟前";

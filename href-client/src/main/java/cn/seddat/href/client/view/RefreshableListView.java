@@ -218,7 +218,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			public void run() {
 				if (onRefreshListener != null) {
 					try {
-						currentAdapter = onRefreshListener.onRefresh(getContext(), getFirstItem());
+						currentAdapter = onRefreshListener.onRefreshing(RefreshableListView.this);
 					} catch (Exception e) {
 						Log.e(tag, "refreshing failed", e);
 					}
@@ -316,7 +316,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			public void run() {
 				if (onRefreshListener != null) {
 					try {
-						currentAdapter = onRefreshListener.onLoadMore(getContext(), getLastItem());
+						currentAdapter = onRefreshListener.onLoading(RefreshableListView.this);
 					} catch (Exception e) {
 						Log.e(tag, "refreshing failed", e);
 					}
@@ -348,22 +348,6 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			listView.addFooterView(footer);
 			listView.setAdapter(listView.getAdapter());
 		}
-	}
-
-	private Object getFirstItem() {
-		ListAdapter adapter = listView.getAdapter();
-		if (adapter == null || adapter.getCount() == 0) {
-			return null;
-		}
-		return adapter.getItem(0);
-	}
-
-	private Object getLastItem() {
-		ListAdapter adapter = listView.getAdapter();
-		if (adapter == null || adapter.getCount() == 0) {
-			return null;
-		}
-		return adapter.getItem(adapter.getCount() - 1);
 	}
 
 	private boolean isFullScreen() {
@@ -402,5 +386,13 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		}
 
 	};
+
+	public ListAdapter getListAdapter() {
+		return listView.getAdapter();
+	}
+
+	public boolean isFooterShown() {
+		return listView.getFooterViewsCount() > 0;
+	}
 
 }

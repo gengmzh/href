@@ -26,15 +26,16 @@ public final class R {
         public static final int post_mark_desc=0x7f050008;
         public static final int post_pv=0x7f05000b;
         public static final int post_pv_desc=0x7f05000c;
+        public static final int post_source=0x7f05000d;
         public static final int post_time=0x7f050005;
         public static final int post_title=0x7f050006;
-        public static final int refreshable_arrow=0x7f050011;
-        public static final int refreshable_footer=0x7f05000d;
-        public static final int refreshable_header=0x7f050010;
-        public static final int refreshable_progress=0x7f05000f;
-        public static final int refreshable_subtitle=0x7f050013;
-        public static final int refreshable_text=0x7f050012;
-        public static final int refreshable_title=0x7f05000e;
+        public static final int refreshable_arrow=0x7f050012;
+        public static final int refreshable_footer=0x7f05000e;
+        public static final int refreshable_header=0x7f050011;
+        public static final int refreshable_progress=0x7f050010;
+        public static final int refreshable_subtitle=0x7f050014;
+        public static final int refreshable_text=0x7f050013;
+        public static final int refreshable_title=0x7f05000f;
     }
     public static final class layout {
         public static final int main=0x7f030000;

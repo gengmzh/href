@@ -22,7 +22,9 @@
         <TextView
             android:id="@+id/author_name"
             android:layout_width="60dip"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true" >
         </TextView>
     </LinearLayout>
 
@@ -48,7 +50,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:gravity="left"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
 
             <TextView
                 android:id="@+id/post_time"
@@ -58,7 +61,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@id/post_company"
                 android:gravity="right"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
         </RelativeLayout>
 
         <TextView
@@ -66,7 +70,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/post_header"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16dip" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -80,7 +85,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
 
             <TextView
                 android:id="@+id/post_mark_desc"
@@ -90,7 +96,8 @@
                 android:layout_marginLeft="6dip"
                 android:layout_toLeftOf="@id/post_mark"
                 android:text="收藏："
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
 
             <TextView
                 android:id="@+id/post_click"
@@ -98,7 +105,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@id/post_mark_desc"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
 
             <TextView
                 android:id="@+id/post_click_desc"
@@ -108,14 +116,16 @@
                 android:layout_marginLeft="6dip"
                 android:layout_toLeftOf="@id/post_click"
                 android:text="点击："
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
 
             <TextView
                 android:id="@+id/post_pv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/post_click_desc"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
 
             <TextView
                 android:id="@+id/post_pv_desc"
@@ -125,7 +135,17 @@
                 android:layout_marginLeft="6dip"
                 android:layout_toLeftOf="@id/post_pv"
                 android:text="展示："
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
+
+            <TextView
+                android:id="@+id/post_source"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/post_pv_desc"
+                android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textSize="12dip" />
         </RelativeLayout>
     </RelativeLayout>
 

@@ -3,7 +3,6 @@
  */
 package cn.seddat.href.client.view;
 
-import android.content.Context;
 import android.widget.ListAdapter;
 
 /**
@@ -12,8 +11,8 @@ import android.widget.ListAdapter;
  */
 public interface OnRefreshListener {
 
-	public ListAdapter onRefresh(Context context, Object firstItem) throws Exception;
+	public ListAdapter onRefreshing(RefreshableListView listView) throws Exception;
 
-	public ListAdapter onLoadMore(Context context, Object lastItem) throws Exception;
+	public ListAdapter onLoading(RefreshableListView listView) throws Exception;
 
 }
