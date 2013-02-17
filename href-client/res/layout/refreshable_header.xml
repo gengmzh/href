@@ -39,14 +39,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="下拉刷新" />
+            android:text="下拉刷新"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/refreshable_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="上次刷新：" />
+            android:text="上次刷新："
+            android:textAppearance="?android:attr/textAppearanceSmallInverse" />
     </LinearLayout>
 
     <View

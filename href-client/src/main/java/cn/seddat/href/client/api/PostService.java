@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -103,8 +104,12 @@ public class PostService {
 		} else if (second < 6 * 24 * 60 * 60) {// < 1 week
 			return (second / (24 * 60 * 60)) + "天前";
 		} else {
-			Date date = new Date(millis);
-			return (date.getMonth() + 1) + "月" + date.getDay() + "号";
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(millis);
+			int day = cal.get(Calendar.HOUR_OF_DAY);
+			int min = cal.get(Calendar.MINUTE);
+			return (cal.get(Calendar.MONTH) + 1) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日 " + (day < 10 ? "0" : "")
+					+ day + ":" + (min < 10 ? "0" : "") + min;
 		}
 	}
 

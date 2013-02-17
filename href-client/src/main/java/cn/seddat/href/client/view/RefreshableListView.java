@@ -3,10 +3,14 @@
  */
 package cn.seddat.href.client.view;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -32,6 +36,8 @@ import cn.seddat.href.client.R;
  */
 public class RefreshableListView extends LinearLayout implements OnTouchListener {
 
+	private static final String KEY_REFRESHING_TIME = "refreshing-time";
+
 	private static final int WHAT_HEADER_HEIGHT = 1;
 	private static final int WHAT_REFRESHING_START = 2;
 	private static final int WHAT_REFRESHING_DONE = 3;
@@ -44,6 +50,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private final String tag = RefreshableListView.class.getSimpleName();
 	private View header;
 	private TextView headerTitle;
+	private TextView headerSubtitle;
 	private ImageView headerArrow;
 	private ProgressBar headerProgress;
 	private ListView listView;
@@ -76,9 +83,11 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		// header
 		header = LayoutInflater.from(getContext()).inflate(R.layout.refreshable_header, null);
 		headerTitle = (TextView) header.findViewById(R.id.refreshable_title);
+		headerSubtitle = (TextView) header.findViewById(R.id.refreshable_subtitle);
 		headerArrow = (ImageView) header.findViewById(R.id.refreshable_arrow);
 		headerProgress = (ProgressBar) header.findViewById(R.id.refreshable_progress);
 		addView(header, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		headerSubtitle.setText(this.getRefreshingTime());
 		// list
 		listView = new ListView(getContext());
 		addView(listView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -250,7 +259,37 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		if (currentAdapter != null) {
 			listView.setAdapter(currentAdapter);
 		}
+		this.saveRefreshingTime();
+		headerSubtitle.setText(this.getRefreshingTime());
 		Log.i(tag, "[Refreshing] done");
+	}
+
+	private String getRefreshingTime() {
+		SharedPreferences pref = this.getPreference();
+		long millis = pref.getLong(KEY_REFRESHING_TIME, 0);
+		if (millis <= 0) {
+			return "上次刷新：未知";
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(millis);
+		int day = cal.get(Calendar.HOUR_OF_DAY);
+		int min = cal.get(Calendar.MINUTE);
+		return "上次刷新：" + (cal.get(Calendar.MONTH) + 1) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日 "
+				+ (day < 10 ? "0" : "") + day + ":" + (min < 10 ? "0" : "") + min;
+	}
+
+	private void saveRefreshingTime() {
+		SharedPreferences pref = this.getPreference();
+		Editor editor = pref.edit();
+		editor.putLong(KEY_REFRESHING_TIME, new Date().getTime());
+		editor.commit();
+		Log.i(tag, "save refreshing time: " + pref.getLong(KEY_REFRESHING_TIME, 0));
+	}
+
+	private SharedPreferences getPreference() {
+		SharedPreferences pref = getContext().getSharedPreferences(RefreshableListView.class.getSimpleName(),
+				Context.MODE_PRIVATE);
+		return pref;
 	}
 
 	private void setHeaderHeight(int height) {
