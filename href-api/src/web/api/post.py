@@ -40,3 +40,10 @@ def fromTimestamp(millis):
         return None
     d = datetime.fromtimestamp(millis/1000)
     return d.strftime("%Y%m%d %H:%M:%S")
+
+def detail(request, post_id):
+    coll = getCollection('post')
+    post = coll.find_one(post_id)
+    return HttpResponse(json.dumps(post, ensure_ascii=False), content_type="application/json; charset=UTF-8")
+    
+
