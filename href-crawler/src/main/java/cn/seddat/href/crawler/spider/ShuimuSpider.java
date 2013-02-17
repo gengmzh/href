@@ -70,8 +70,8 @@ public class ShuimuSpider implements Spider {
 		private final DateFormat dateFormat;
 		private List<Post> posts;
 		private String type;
-		private String curTag;
 		private Post curPost;
+		private StringBuffer buffer;
 
 		public PostHandler() {
 			dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", new Locale("en"));
@@ -88,46 +88,43 @@ public class ShuimuSpider implements Spider {
 				curPost = new Post();
 				curPost.setSource(Source.SHUIMU.getName());
 			}
-			curTag = localName;
+			buffer = new StringBuffer();
 		}
 
 		@Override
 		public void characters(char[] ch, int start, int length) throws SAXException {
-			if (curTag == null || curTag.isEmpty()) {
-				return;
-			}
-			String value = new String(ch, start, length);
-			if (curPost == null) {
-				if ("title".equalsIgnoreCase(curTag)) {
-					type = value;
-				}
-			} else if ("title".equalsIgnoreCase(curTag)) {
-				curPost.setTitle(value);
-			} else if ("link".equalsIgnoreCase(curTag)) {
-				curPost.setLink(value);
-			} else if ("description".equalsIgnoreCase(curTag)) {
-				curPost.setContent(value);
-			} else if ("author".equalsIgnoreCase(curTag)) {
-				curPost.setAuthor(value);
-			} else if ("pubDate".equalsIgnoreCase(curTag)) {
-				try {
-					curPost.setPubtime(dateFormat.parse(value));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-			}
+			buffer.append(ch, start, length);
 		}
 
 		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
-			if ("item".equalsIgnoreCase(localName)) {
-				if (type != null) {
-					curPost.setType(type);
+			if (curPost == null) {
+				if ("title".equalsIgnoreCase(localName)) {
+					type = buffer.toString();
 				}
-				posts.add(curPost);
-				curPost = null;
+			} else {
+				if ("title".equalsIgnoreCase(localName)) {
+					curPost.setTitle(buffer.toString());
+				} else if ("link".equalsIgnoreCase(localName)) {
+					curPost.setLink(buffer.toString());
+				} else if ("description".equalsIgnoreCase(localName)) {
+					curPost.setContent(buffer.toString());
+				} else if ("author".equalsIgnoreCase(localName)) {
+					curPost.setAuthor(buffer.toString());
+				} else if ("pubDate".equalsIgnoreCase(localName)) {
+					try {
+						curPost.setPubtime(dateFormat.parse(buffer.toString()));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				} else if ("item".equalsIgnoreCase(localName)) {
+					if (type != null) {
+						curPost.setType(type);
+					}
+					posts.add(curPost);
+					curPost = null;
+				}
 			}
-			curTag = null;
 		}
 
 		@Override
