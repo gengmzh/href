@@ -24,7 +24,7 @@ def index(request):
         q['ct'] = {'$lt': et} 
     coll = getCollection('post')
     posts = []
-    cursor = coll.find(q).sort([('ct', -1)]).limit(20)
+    cursor = coll.find(q, fields={'ctt':0}).sort([('ct', -1)]).limit(20)
     for post in cursor:
         posts.append(post)
     return HttpResponse(json.dumps(posts, ensure_ascii=False), content_type="application/json; charset=UTF-8")
