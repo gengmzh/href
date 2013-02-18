@@ -71,6 +71,7 @@ public class ShuimuSpider implements Spider {
 		private List<Post> posts;
 		private String type;
 		private Post curPost;
+		private String curTag;
 		private StringBuffer buffer;
 
 		public PostHandler() {
@@ -88,12 +89,15 @@ public class ShuimuSpider implements Spider {
 				curPost = new Post();
 				curPost.setSource(Source.SHUIMU.getName());
 			}
+			curTag = localName;
 			buffer = new StringBuffer();
 		}
 
 		@Override
 		public void characters(char[] ch, int start, int length) throws SAXException {
-			buffer.append(ch, start, length);
+			if (curTag != null) {
+				buffer.append(ch, start, length);
+			}
 		}
 
 		@Override
@@ -125,6 +129,7 @@ public class ShuimuSpider implements Spider {
 					curPost = null;
 				}
 			}
+			curTag = null;
 		}
 
 		@Override

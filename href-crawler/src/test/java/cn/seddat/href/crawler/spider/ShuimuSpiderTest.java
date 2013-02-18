@@ -25,7 +25,7 @@ public class ShuimuSpiderTest extends TestCase {
 		List<Post> pl = spider.crawl();
 		Assert.assertFalse(pl.isEmpty());
 		System.out.println("total: " + pl.size());
-		for (Post p : pl.subList(0, 10)) {
+		for (Post p : pl.subList(0, 20)) {
 			System.out.println(p);
 		}
 	}
