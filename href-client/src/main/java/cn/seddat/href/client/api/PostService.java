@@ -4,8 +4,10 @@
 package cn.seddat.href.client.api;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -45,6 +47,18 @@ public class PostService {
 		}
 		String url = api + (args != null ? "?" + args : "");
 		// connect
+		String json = this.connect(url);
+		// parse
+		List<Post> posts = new ArrayList<Post>();
+		JSONArray ja = new JSONArray(json);
+		for (int i = 0; i < ja.length(); i++) {
+			Post post = this.parsePost((JSONObject) ja.get(i));
+			posts.add(post);
+		}
+		return posts;
+	}
+
+	private String connect(String url) throws IOException, MalformedURLException {
 		HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 		conn.setRequestProperty("User-Agent", userAgent);
 		conn.setRequestProperty("Content-Type", "text/html; charset=utf-8");
@@ -61,35 +75,25 @@ public class PostService {
 		conn.disconnect();
 		String json = ous.toString();
 		ous.close();
-		// parse
-		List<Post> posts = new ArrayList<Post>();
-		JSONArray ja = new JSONArray(json);
-		for (int i = 0; i < ja.length(); i++) {
-			JSONObject jo = (JSONObject) ja.get(i);
-			Post post = new Post();
-			post.setTitle(jo.optString("ttl")).setContent(jo.optString("ctt"));
-			post.setSource(jo.optString("sn")).setLink(jo.optString("sl"));
-			post.setType(jo.optString("tp")).setCompany(jo.optString("com"));
-			post.setAuthor(jo.optString("au"));
-			long ct = this.parseTime(jo.optString("ct"));
-			post.setCreateTime(ct).setShowTime(this.parseShowTime(ct));
-			post.setPv(jo.optLong("pv")).setClick(jo.optLong("clk")).setMark(jo.optLong("mrk"));
-			posts.add(post);
-		}
-		return posts;
+		return json;
 	}
 
-	private long parseTime(String time) {
-		if (time == null || time.isEmpty()) {
-			return 0;
-		}
+	private Post parsePost(JSONObject jo) {
+		Post post = new Post();
+		post.setId(jo.optString("id", jo.optString("_id")));
+		post.setTitle(jo.optString("ttl")).setContent(jo.optString("ctt"));
+		post.setSource(jo.optString("sn")).setLink(jo.optString("sl"));
+		post.setType(jo.optString("tp")).setCompany(jo.optString("com"));
+		post.setAuthor(jo.optString("au"));
 		try {
-			Date date = dateFormat.parse(time);
-			return date.getTime();
+			Date date = dateFormat.parse(jo.optString("ct"));
+			post.setCreateTime(date.getTime());
 		} catch (ParseException e) {
 			// ignore
 		}
-		return 0;
+		post.setShowTime(this.parseShowTime(post.getCreateTime()));
+		post.setPv(jo.optLong("pv")).setClick(jo.optLong("clk")).setMark(jo.optLong("mrk"));
+		return post;
 	}
 
 	private String parseShowTime(long millis) {
@@ -111,6 +115,15 @@ public class PostService {
 			return (cal.get(Calendar.MONTH) + 1) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日 " + (day < 10 ? "0" : "")
 					+ day + ":" + (min < 10 ? "0" : "") + min;
 		}
+	}
+
+	public Post findById(String id) throws Exception {
+		if (id == null || id.isEmpty()) {
+			return null;
+		}
+		String url = api + "/" + id;
+		String json = this.connect(url);
+		return this.parsePost(new JSONObject(json));
 	}
 
 }

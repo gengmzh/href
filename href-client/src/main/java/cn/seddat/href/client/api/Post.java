@@ -13,6 +13,15 @@ public class Post extends Entity {
 		super();
 	}
 
+	public String getId() {
+		return get("id");
+	}
+
+	public Post setId(String id) {
+		put("id", id);
+		return this;
+	}
+
 	public String getTitle() {
 		return get("ttl");
 	}

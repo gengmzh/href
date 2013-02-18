@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dip" >
+
+        <TextView
+            android:id="@+id/post_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <RelativeLayout
+            android:id="@+id/post_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/post_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dip"
+                android:layout_toLeftOf="@id/post_time"
+                android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="@color/orange" />
+
+        <TextView
+            android:id="@+id/post_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:layout_marginTop="15dip"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/post_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_mark_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="6dip"
+                android:layout_toLeftOf="@id/post_mark"
+                android:text="收藏："
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@id/post_mark_desc"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_click_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="6dip"
+                android:layout_toLeftOf="@id/post_click"
+                android:text="点击："
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_pv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/post_click_desc"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+
+            <TextView
+                android:id="@+id/post_pv_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="6dip"
+                android:layout_toLeftOf="@id/post_pv"
+                android:text="展示："
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

@@ -22,6 +22,8 @@ import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -58,7 +60,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private TextView footerTitle;
 	private ProgressBar footerProgress;
 
-	private OnRefreshListener onRefreshListener;
+	private RefreshableListener onRefreshListener;
 
 	private int headerHeightThreshold = 100;
 	private int headerHeight; // 增量
@@ -97,6 +99,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		footerProgress = (ProgressBar) footer.findViewById(R.id.refreshable_progress);
 		// event
 		listView.setOnTouchListener(this);
+		listView.setOnItemClickListener(new ClickItemListener());
 		header.getViewTreeObserver().addOnPreDrawListener(new MeasureHeaderHeight());
 		Log.i(tag, "init " + RefreshableListView.class.getSimpleName() + " done");
 	}
@@ -113,7 +116,22 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		}
 	}
 
-	public void setOnRefreshListener(OnRefreshListener listener) {
+	private class ClickItemListener implements OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			if (onRefreshListener != null) {
+				try {
+					onRefreshListener.onClick(RefreshableListView.this, position);
+				} catch (Exception e) {
+					Log.e(tag, "click item failed", e);
+				}
+			} else {
+				Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
+			}
+		}
+	}
+
+	public void setOnRefreshListener(RefreshableListener listener) {
 		onRefreshListener = listener;
 	}
 
@@ -227,12 +245,12 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			public void run() {
 				if (onRefreshListener != null) {
 					try {
-						currentAdapter = onRefreshListener.onRefreshing(RefreshableListView.this);
+						currentAdapter = onRefreshListener.onRefresh(RefreshableListView.this);
 					} catch (Exception e) {
 						Log.e(tag, "refreshing failed", e);
 					}
 				} else {
-					Log.e(tag, OnRefreshListener.class.getSimpleName() + " is null");
+					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
 				}
 				Log.i(tag, "[Refreshing] find " + (currentAdapter != null ? currentAdapter.getCount() : 0) + " items");
 				internalHandler.sendEmptyMessage(WHAT_REFRESHING_DONE);
@@ -355,12 +373,12 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			public void run() {
 				if (onRefreshListener != null) {
 					try {
-						currentAdapter = onRefreshListener.onLoading(RefreshableListView.this);
+						currentAdapter = onRefreshListener.onLoad(RefreshableListView.this);
 					} catch (Exception e) {
 						Log.e(tag, "refreshing failed", e);
 					}
 				} else {
-					Log.e(tag, OnRefreshListener.class.getSimpleName() + " is null");
+					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
 				}
 				Log.i(tag, "[Loading] find " + (currentAdapter != null ? currentAdapter.getCount() : 0) + " items");
 				internalHandler.sendEmptyMessage(WHAT_LOADING_DONE);
@@ -432,6 +450,16 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 
 	public boolean isFooterShown() {
 		return listView.getFooterViewsCount() > 0;
+	}
+
+	public interface RefreshableListener {
+
+		public ListAdapter onRefresh(RefreshableListView listView) throws Exception;
+
+		public ListAdapter onLoad(RefreshableListView listView) throws Exception;
+
+		public void onClick(RefreshableListView listView, int position) throws Exception;
+
 	}
 
 }
