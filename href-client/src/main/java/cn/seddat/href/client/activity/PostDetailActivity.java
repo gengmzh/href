@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
 import cn.seddat.href.client.R;
@@ -71,7 +72,7 @@ public class PostDetailActivity extends Activity {
 			text = (TextView) findViewById(R.id.post_time);
 			text.setText(post.getShowTime());
 			text = (TextView) findViewById(R.id.post_content);
-			text.setText(post.getContent());
+			text.setText(Html.fromHtml(post.getContent()));
 			text = (TextView) findViewById(R.id.post_pv);
 			text.setText(String.valueOf(post.getPv()));
 			text = (TextView) findViewById(R.id.post_click);

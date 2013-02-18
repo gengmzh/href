@@ -109,7 +109,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		public boolean onPreDraw() {
 			headerHeightThreshold = header.getMeasuredHeight();
 			Log.i(tag, "default header height: " + headerHeightThreshold);
-			headerHeightThreshold += headerHeightThreshold / 2;
+			headerHeightThreshold += headerHeightThreshold / 10;
 			Log.i(tag, "header height threshold: " + headerHeightThreshold);
 			header.getViewTreeObserver().removeOnPreDrawListener(this);
 			return true;
