@@ -24,12 +24,13 @@ public class HrefActivity extends Activity {
 		// show
 		listView = (RefreshableListView) findViewById(R.id.post_list);
 		listView.setOnRefreshListener(new RefreshPostListener());
+		this.listView.refreshing();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		this.listView.refreshing();
+		// this.listView.refreshing();
 	}
 
 	@Override
