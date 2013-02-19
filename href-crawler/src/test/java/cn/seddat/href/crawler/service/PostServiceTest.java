@@ -9,14 +9,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+import cn.seddat.href.crawler.Post;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import cn.seddat.href.crawler.CrawlerScheduler;
-import cn.seddat.href.crawler.Post;
 
 /**
  * @author mzhgeng
@@ -31,8 +30,8 @@ public class PostServiceTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		queue = new ArrayBlockingQueue<Post>(10);
-		CrawlerScheduler crawlerScheduler = new CrawlerScheduler();
-		dbColl = crawlerScheduler.getDatabase().getCollection("test");
+		MongoService mongoService = new MongoService();
+		dbColl = mongoService.getDatabase().getCollection("test");
 		postService = new PostService(queue, dbColl);
 	}
 
