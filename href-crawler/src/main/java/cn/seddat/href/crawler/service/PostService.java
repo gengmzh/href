@@ -69,6 +69,7 @@ public class PostService implements Runnable {
 			if (obj == null) {
 				obj = this.convert(post);
 				obj.putAll(query);
+				obj.put("seq", dbColl.count());
 				dbColl.insert(obj);
 				log.info("insert post " + post.getTitle() + "," + post.getLink());
 			}

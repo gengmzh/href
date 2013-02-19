@@ -12,14 +12,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import cn.seddat.href.crawler.service.MongoService;
 import cn.seddat.href.crawler.service.PostService;
 import cn.seddat.href.crawler.service.SpiderService;
-import cn.seddat.href.crawler.spider.Spider;
 import cn.seddat.href.crawler.spider.ShuimuSpider;
-
-import com.mongodb.DB;
-import com.mongodb.Mongo;
-import com.mongodb.MongoURI;
+import cn.seddat.href.crawler.spider.Spider;
 
 /**
  * @author mzhgeng
@@ -28,36 +25,21 @@ import com.mongodb.MongoURI;
 public class CrawlerScheduler {
 
 	private static final Log log = LogFactory.getLog(CrawlerScheduler.class.getSimpleName());
+	private MongoService mongoService;
 	private BlockingQueue<Post> queue;
-	private Mongo mongo;
-	private DB db;
 	private ScheduledExecutorService scheduledExecutor;
 
 	public CrawlerScheduler() throws Exception {
-		queue = new ArrayBlockingQueue<Post>(Config.getInstance().getQueueSize());
 		// mongo
-		String addr = Config.getInstance().getMongoUri();
-		log.info("mongo address " + addr);
-		MongoURI uri = new MongoURI(addr);
-		mongo = new Mongo(uri);
-		log.info("open mongo");
-		db = mongo.getDB(uri.getDatabase() != null ? uri.getDatabase() : "href");
-		log.info("init database " + db.getName());
+		mongoService = new MongoService();
 		// service
+		queue = new ArrayBlockingQueue<Post>(Config.getInstance().getQueueSize());
 		scheduledExecutor = Executors.newScheduledThreadPool(Config.getInstance().getThreadPoolSize());
-	}
-
-	public Mongo getMongo() {
-		return mongo;
-	}
-
-	public DB getDatabase() {
-		return db;
 	}
 
 	public void start() throws Exception {
 		// post
-		scheduledExecutor.submit(new PostService(queue, db.getCollection("post")));
+		scheduledExecutor.submit(new PostService(queue, mongoService.getPostCollection()));
 		// crawler
 		long delay = Config.getInstance().getPoliteTime();
 		Spider crawler = new ShuimuSpider();
@@ -77,14 +59,10 @@ public class CrawlerScheduler {
 		Runnable hook = new Runnable() {
 			@Override
 			public void run() {
-				if (scheduledExecutor != null) {
-					scheduledExecutor.shutdown();
-					log.info("close ThreadPool");
-				}
-				if (mongo != null) {
-					mongo.close();
-					log.info("close mongo");
-				}
+				scheduledExecutor.shutdown();
+				log.info("close scheduled executor");
+				mongoService.close();
+				log.info("close mongo service");
 			}
 		};
 		Runtime.getRuntime().addShutdownHook(new Thread(hook));
