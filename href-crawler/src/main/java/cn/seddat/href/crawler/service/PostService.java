@@ -62,14 +62,18 @@ public class PostService implements Runnable {
 
 	public void save(Post... posts) throws Exception {
 		List<Post> pl = cleanerService.clean(posts);
+		if (pl.isEmpty()) {
+			return;
+		}
+		long start = dbColl.count() + 1;
 		for (Post post : pl) {
 			String id = MurmurHash.getInstance().hash(post.getTitle() + post.getLink());
 			DBObject query = new BasicDBObject("_id", id);
 			DBObject obj = dbColl.findOne(query, new BasicDBObject("sl", 1));
 			if (obj == null) {
 				obj = this.convert(post);
-				obj.putAll(query);
-				obj.put("seq", dbColl.count());
+				obj.put("_id", id);
+				obj.put("seq", start++);
 				dbColl.insert(obj);
 				log.info("insert post " + post.getTitle() + "," + post.getLink());
 			}
