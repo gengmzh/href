@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import cn.seddat.href.crawler.service.MongoService;
-import cn.seddat.href.crawler.service.PostService;
+import cn.seddat.href.crawler.service.StoringService;
 import cn.seddat.href.crawler.service.SpiderService;
 import cn.seddat.href.crawler.spider.ShuimuSpider;
 import cn.seddat.href.crawler.spider.Spider;
@@ -39,7 +39,7 @@ public class CrawlerScheduler {
 
 	public void start() throws Exception {
 		// post
-		scheduledExecutor.submit(new PostService(queue, mongoService.getPostCollection()));
+		scheduledExecutor.submit(new StoringService(queue, mongoService.getPostCollection()));
 		// crawler
 		long delay = Config.getInstance().getPoliteTime();
 		Spider crawler = new ShuimuSpider();

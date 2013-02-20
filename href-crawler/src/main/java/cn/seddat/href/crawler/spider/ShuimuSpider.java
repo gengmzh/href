@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -88,6 +89,7 @@ public class ShuimuSpider implements Spider {
 			if ("item".equalsIgnoreCase(localName)) {
 				curPost = new Post();
 				curPost.setSource(Source.SHUIMU.getName());
+				curPost.setCreateTime(new Date());
 			}
 			curTag = localName;
 			buffer = new StringBuffer();

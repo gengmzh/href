@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import cn.seddat.href.crawler.Post;
+import cn.seddat.href.crawler.cleaner.DefaultCleaner;
 import cn.seddat.href.crawler.utils.DateHelper;
 import cn.seddat.href.crawler.utils.MurmurHash;
 
@@ -22,14 +23,14 @@ import com.mongodb.DBObject;
  * @author mzhgeng
  * 
  */
-public class PostService implements Runnable {
+public class StoringService implements Runnable {
 
-	private final Log log = LogFactory.getLog(PostService.class.getSimpleName());
+	private final Log log = LogFactory.getLog(StoringService.class.getSimpleName());
 	private BlockingQueue<Post> queue;
 	private DBCollection dbColl;
-	private CleanerService cleanerService;
+	private DefaultCleaner cleaner;
 
-	public PostService(BlockingQueue<Post> queue, DBCollection dbColl) throws Exception {
+	public StoringService(BlockingQueue<Post> queue, DBCollection dbColl) throws Exception {
 		if (queue == null) {
 			throw new IllegalArgumentException("queue is required");
 		}
@@ -38,7 +39,7 @@ public class PostService implements Runnable {
 			throw new IllegalArgumentException("dbColl is required");
 		}
 		this.dbColl = dbColl;
-		cleanerService = new CleanerService();
+		cleaner = new DefaultCleaner();
 	}
 
 	@Override
@@ -61,26 +62,24 @@ public class PostService implements Runnable {
 	}
 
 	public void save(Post... posts) throws Exception {
-		List<Post> pl = cleanerService.clean(posts);
+		List<Post> pl = cleaner.clean(posts);
 		if (pl.isEmpty()) {
 			return;
 		}
-		long start = dbColl.count() + 1;
 		for (Post post : pl) {
 			String id = MurmurHash.getInstance().hash(post.getTitle() + post.getLink());
-			DBObject query = new BasicDBObject("_id", id);
-			DBObject obj = dbColl.findOne(query, new BasicDBObject("sl", 1));
-			if (obj == null) {
-				obj = this.convert(post);
-				obj.put("_id", id);
-				obj.put("seq", start++);
-				dbColl.insert(obj);
-				log.info("insert post " + post.getTitle() + "," + post.getLink());
+			DBObject q = new BasicDBObject("_id", id);
+			DBObject p = dbColl.findOne(q);
+			if (p == null) {
+				p = this.convert(post);
+				p.put("_id", id);
+				dbColl.insert(p);
+				log.info("insert post " + id + " " + p);
 			}
 		}
 	}
 
-	private DBObject convert(Post post) {
+	private DBObject convert(Post post) throws Exception {
 		DBObject doc = new BasicDBObject();
 		doc.put("ttl", post.getTitle());
 		doc.put("ctt", post.getContent());
@@ -98,7 +97,11 @@ public class PostService implements Runnable {
 		if (post.getPubtime() != null) {
 			doc.put("pt", DateHelper.format(post.getPubtime()));
 		}
-		doc.put("ct", DateHelper.format(new Date()));
+		if (post.getCreateTime() != null) {
+			doc.put("ct", DateHelper.format(post.getCreateTime()));
+		} else {
+			doc.put("ct", DateHelper.format(new Date()));
+		}
 		return doc;
 	}
 

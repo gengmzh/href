@@ -21,18 +21,18 @@ import com.mongodb.DBObject;
  * @author mzhgeng
  * 
  */
-public class PostServiceTest extends TestCase {
+public class StoringServiceTest extends TestCase {
 
 	private BlockingQueue<Post> queue;
 	private DBCollection dbColl;
-	private PostService postService;
+	private StoringService postService;
 
 	@Override
 	protected void setUp() throws Exception {
 		queue = new ArrayBlockingQueue<Post>(10);
 		MongoService mongoService = new MongoService();
 		dbColl = mongoService.getDatabase().getCollection("test");
-		postService = new PostService(queue, dbColl);
+		postService = new StoringService(queue, dbColl);
 	}
 
 	@Override

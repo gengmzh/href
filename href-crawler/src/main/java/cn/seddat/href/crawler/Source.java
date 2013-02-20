@@ -17,6 +17,9 @@ public enum Source {
 		this.name = name;
 	}
 
+	/**
+	 * @return the source name
+	 */
 	public String getName() {
 		return name;
 	}

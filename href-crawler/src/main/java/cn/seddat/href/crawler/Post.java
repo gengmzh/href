@@ -21,6 +21,7 @@ public class Post implements Serializable {
 	private String link;
 	private String author;
 	private Date pubtime;
+	private Date createTime;
 
 	public Post() {
 		super();
@@ -98,6 +99,15 @@ public class Post implements Serializable {
 		return this;
 	}
 
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public Post setCreateTime(Date createTime) {
+		this.createTime = createTime;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer().append(Post.class.getSimpleName()).append("{");
@@ -108,7 +118,8 @@ public class Post implements Serializable {
 		buf.append("source:").append(getSource()).append(", ");
 		buf.append("link:").append(getLink()).append(", ");
 		buf.append("author:").append(getAuthor()).append(", ");
-		buf.append("pubtime:").append(getPubtime());
+		buf.append("pubtime:").append(getPubtime()).append(", ");
+		buf.append("createTime:").append(getCreateTime());
 		buf.append("}");
 		return buf.toString();
 	}

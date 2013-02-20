@@ -3,15 +3,12 @@
  */
 package cn.seddat.href.crawler.service;
 
-import org.junit.Ignore;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 /**
  * @author mzhgeng
@@ -42,21 +39,21 @@ public class MongoServiceTest extends TestCase {
 		coll.remove(doc);
 	}
 
-	@Ignore
-	public void test_seq() throws Exception {
-		DBCollection coll = mongoService.getPostCollection();
-		DBObject keys = new BasicDBObject("ttl", 1);
-		keys.put("ct", 1);
-		DBCursor cursor = coll.find(null, keys).sort(new BasicDBObject("ct", 1));
-		long i = 0;
-		while (cursor.hasNext()) {
-			i++;
-			DBObject p = cursor.next();
-			BasicDBObject q = new BasicDBObject("_id", p.get("_id"));
-			coll.update(q, new BasicDBObject("$set", new BasicDBObject("seq", i)));
-			// System.out.println(p);
-		}
-	}
+//	@Ignore
+//	public void test_seq() throws Exception {
+//		DBCollection coll = mongoService.getPostCollection();
+//		DBObject keys = new BasicDBObject("ttl", 1);
+//		keys.put("ct", 1);
+//		DBCursor cursor = coll.find(null, keys).sort(new BasicDBObject("ct", 1));
+//		long i = 0;
+//		while (cursor.hasNext()) {
+//			i++;
+//			DBObject p = cursor.next();
+//			BasicDBObject q = new BasicDBObject("_id", p.get("_id"));
+//			coll.update(q, new BasicDBObject("$set", new BasicDBObject("seq", i)));
+//			// System.out.println(p);
+//		}
+//	}
 
 	@Override
 	protected void tearDown() throws Exception {

@@ -36,18 +36,18 @@ public class ShuimuCleaner implements Cleaner {
 		List<Post> pl = new ArrayList<Post>();
 		for (Post p : posts) {
 			if (!Source.SHUIMU.getName().equals(p.getSource())) {
-				log.info("[Clean] source isn't shuimu, " + p);
+				log.info("source isn't shuimu, " + p);
 				continue;
 			}
 			if (!this.checkTitle(p.getTitle())) {
-				log.info("[Clean] title is invalid, " + p);
+				log.info("title is invalid, " + p);
 				continue;
 			}
 			if (!this.checkLink(p.getLink())) {
-				log.info("[Clean] link is invalid, " + p);
+				log.info("link is invalid, " + p);
 				continue;
 			}
-			p.setContent(this.cleanConten(p.getContent()));
+			p.setContent(this.washContent(p.getContent()));
 			pl.add(p);
 		}
 		return pl;
@@ -71,7 +71,7 @@ public class ShuimuCleaner implements Cleaner {
 		return true;
 	}
 
-	private String cleanConten(String content) throws Exception {
+	private String washContent(String content) throws Exception {
 		if (content == null || content.isEmpty()) {
 			return "";
 		}

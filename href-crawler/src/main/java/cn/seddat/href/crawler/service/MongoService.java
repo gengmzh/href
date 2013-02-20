@@ -28,7 +28,7 @@ public class MongoService {
 		log.info("mongo address " + addr);
 		MongoURI uri = new MongoURI(addr);
 		mongo = new Mongo(uri);
-		log.info("open mongo");
+		log.info("open mongo connection");
 		db = mongo.getDB(uri.getDatabase() != null ? uri.getDatabase() : "href");
 		log.info("init database " + db.getName());
 	}
@@ -48,7 +48,7 @@ public class MongoService {
 	public void close() {
 		if (mongo != null) {
 			mongo.close();
-			log.info("close mongo");
+			log.info("close mongo connection");
 		}
 	}
 
