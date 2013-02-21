@@ -70,7 +70,7 @@ public class StoringService implements Runnable {
 			String id = MurmurHash.getInstance().hash(post.getTitle() + post.getLink());
 			DBObject p = this.convert(post);
 			dbColl.update(new BasicDBObject("_id", id), new BasicDBObject("$set", p), true, false);
-			log.info("update post " + id + " " + p);
+			log.info("update post " + id + " " + post.getTitle() + " " + post.getLink());
 		}
 	}
 
