@@ -34,14 +34,16 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 	@Override
 	public ListAdapter onRefresh(RefreshableListView listView) throws Exception {
 		// first
-		long st = 0;
+		long time = 0;
+		String item = null;
 		ListAdapter adapter = listView.getListAdapter();
 		if (adapter != null && adapter.getCount() > 0) {
-			Post item = (Post) adapter.getItem(0);
-			st = item.getCreateTime();
+			Post post = (Post) adapter.getItem(0);
+			time = post.getCreateTime();
+			item = post.getId();
 		}
 		// query
-		List<Post> posts = postService.query(st, 0);
+		List<Post> posts = postService.query(time, item, 0);
 		if (adapter != null) {
 			for (int i = 0; i < adapter.getCount(); i++) {
 				posts.add((Post) adapter.getItem(i));
@@ -53,14 +55,16 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 	@Override
 	public ListAdapter onLoad(RefreshableListView listView) throws Exception {
 		// last
-		long et = 0;
+		long time = 0;
+		String item = null;
 		ListAdapter adapter = listView.getListAdapter();
 		if (adapter != null && adapter.getCount() > 0) {
-			Post item = (Post) adapter.getItem(adapter.getCount() - 2);
-			et = item.getCreateTime();
+			Post post = (Post) adapter.getItem(adapter.getCount() - 2);
+			time = post.getCreateTime();
+			item = post.getId();
 		}
 		// query
-		List<Post> posts = postService.query(0, et);
+		List<Post> posts = postService.query(time, item, 1);
 		if (adapter != null) {
 			for (int i = adapter.getCount() - 1; i >= 0; i--) {
 				posts.add(0, (Post) adapter.getItem(i));

@@ -23,7 +23,7 @@ public class PostServiceTest extends AndroidTestCase {
 	}
 
 	public void testQuery() throws Exception {
-		List<Post> posts = postService.query(0, 0);
+		List<Post> posts = postService.query(0, null, 0);
 		Assert.assertTrue(posts.isEmpty() == false);
 		for (Post post : posts) {
 			Log.i(PostServiceTest.class.getSimpleName(), post.toString());
