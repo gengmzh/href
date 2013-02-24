@@ -28,6 +28,16 @@
 			<version>1.9</version>
 		</dependency>
 		<dependency>
+			<groupId>com.swetake</groupId>
+			<artifactId>qrcode-encoder</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jp.sourceforge</groupId>
+			<artifactId>qrcode-decoder</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
