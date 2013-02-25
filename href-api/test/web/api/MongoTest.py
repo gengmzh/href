@@ -6,7 +6,7 @@ Created on 2013-1-24
 import unittest
 
 
-class Test(unittest.TestCase):
+class PostServiceTest(unittest.TestCase):
 
     def setUp(self):
         from web.api.mongo import getMongo
@@ -22,5 +22,5 @@ class Test(unittest.TestCase):
         print post['ctt'].encode('utf8')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testMongo']
+    #import sys;sys.argv = ['', 'PostServiceTest.testMongo']
     unittest.main()
