@@ -39,7 +39,8 @@ public class CrawlerScheduler {
 
 	public void start() throws Exception {
 		// post
-		scheduledExecutor.submit(new StoringService(queue, mongoService.getPostCollection()));
+		scheduledExecutor.submit(new StoringService(queue, mongoService.getPostCollection(), mongoService
+				.getUserCollection()));
 		// crawler
 		long delay = Config.getInstance().getPoliteTime();
 		Spider crawler = new ShuimuSpider();

@@ -45,6 +45,10 @@ public class MongoService {
 		return db.getCollection("post");
 	}
 
+	public DBCollection getUserCollection() {
+		return db.getCollection("user");
+	}
+
 	public void close() {
 		if (mongo != null) {
 			mongo.close();

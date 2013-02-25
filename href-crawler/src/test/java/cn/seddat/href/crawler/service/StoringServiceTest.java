@@ -3,6 +3,7 @@
  */
 package cn.seddat.href.crawler.service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -11,7 +12,9 @@ import java.util.concurrent.Executors;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import cn.seddat.href.crawler.Config;
 import cn.seddat.href.crawler.Post;
+import cn.seddat.href.crawler.Source;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -32,7 +35,7 @@ public class StoringServiceTest extends TestCase {
 		queue = new ArrayBlockingQueue<Post>(10);
 		MongoService mongoService = new MongoService();
 		dbColl = mongoService.getDatabase().getCollection("test");
-		postService = new StoringService(queue, dbColl);
+		postService = new StoringService(queue, dbColl, dbColl);
 	}
 
 	@Override
@@ -71,6 +74,19 @@ public class StoringServiceTest extends TestCase {
 		// remove
 		dbColl.remove(obj);
 		executor.shutdown();
+	}
+
+	public void test_saveUser() throws Exception {
+		Post p = new Post().setSource(Source.SHUIMU.getName()).setAuthor("gengmzh");
+		p.setTitle("【睿善科技】招聘 游戏策划").setContent("【睿善科技】招聘 游戏策划");
+		p.setLink("http://www.newsmth.net/nForum/article/Career_Upgrade/167768");
+		postService.save(p);
+
+		String uid = p.getAuthor();
+		Assert.assertNotNull(uid);
+		File icon = new File(Config.getInstance().getUserIconPath(), uid + ".png");
+		Assert.assertTrue(icon.exists());
+		System.out.println(icon);
 	}
 
 }

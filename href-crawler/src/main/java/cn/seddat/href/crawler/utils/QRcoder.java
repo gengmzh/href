@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import javax.imageio.ImageIO;
 
@@ -16,7 +17,82 @@ import jp.sourceforge.qrcode.exception.DecodingFailedException;
 
 import com.swetake.util.Qrcode;
 
-public class QRCoder {
+public class QRcoder {
+
+	private static final Charset UTF_8 = Charset.forName("utf-8");
+
+	public BufferedImage encode(String content) throws Exception {
+		return this.encode(content, 7);
+	}
+
+	public BufferedImage encode(String content, int size) throws Exception {
+		if (content == null || content.isEmpty() || content.length() > 800) {
+			throw new IllegalAccessError("content is illegal");
+		}
+		// 获得内容的字节数组，设置编码格式
+		byte[] data = content.getBytes(UTF_8);
+		Qrcode qrcode = new Qrcode();
+		// 设置二维码排错率，可选L(7%)、M(15%)、Q(25%)、H(30%)，排错率越高可存储的信息越少，但对二维码清晰度的要求越小
+		qrcode.setQrcodeErrorCorrect('M');
+		qrcode.setQrcodeEncodeMode('B');
+		// 设置设置二维码尺寸，取值范围1-40，值越大尺寸越大，可存储的信息越大
+		qrcode.setQrcodeVersion(size);
+		// 图片尺寸
+		int imgSize = 67 + 12 * (size - 1);
+		BufferedImage img = new BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_RGB);
+		Graphics2D graph = img.createGraphics();
+		// 设置背景颜色
+		graph.setBackground(Color.WHITE);
+		// 设定图像颜色> BLACK
+		graph.setColor(Color.BLACK);
+		graph.clearRect(0, 0, imgSize, imgSize);
+		// 设置偏移量，不设置可能导致解析出错
+		int pixoff = 2;
+		// 输出内容> 二维码
+		boolean[][] codeOut = qrcode.calQrcode(data);
+		for (int i = 0; i < codeOut.length; i++) {
+			for (int j = 0; j < codeOut.length; j++) {
+				if (codeOut[j][i]) {
+					graph.fillRect(j * 3 + pixoff, i * 3 + pixoff, 3, 3);
+				}
+			}
+		}
+		graph.dispose();
+		img.flush();
+		return img;
+	}
+
+	public String decode(InputStream input) throws Exception {
+		if (input == null) {
+			throw new IllegalArgumentException("input is required");
+		}
+		BufferedImage img = ImageIO.read(input);
+		QRCodeDecoder decoder = new QRCodeDecoder();
+		byte[] data = decoder.decode(new QRcodeImage(img));
+		return new String(data, UTF_8);
+	}
+
+	class QRcodeImage implements QRCodeImage {
+
+		BufferedImage image;
+
+		public QRcodeImage(BufferedImage source) {
+			this.image = source;
+		}
+
+		public int getWidth() {
+			return image.getWidth();
+		}
+
+		public int getHeight() {
+			return image.getHeight();
+		}
+
+		public int getPixel(int x, int y) {
+			return image.getRGB(x, y);
+
+		}
+	}
 
 	/**
 	 * 生成二维码(QRCode)图片
@@ -147,7 +223,7 @@ public class QRCoder {
 			gs.clearRect(0, 0, imgSize, imgSize);
 
 			// 设定图像颜色> BLACK
-			gs.setColor(Color.BLACK);
+			gs.setColor(Color.ORANGE);
 			// 设置偏移量，不设置可能导致解析出错
 			int pixoff = 2;
 			// 输出内容> 二维码
@@ -247,10 +323,10 @@ public class QRCoder {
 	}
 
 	public static void main(String[] args) {
-		String imgPath = "d:\\Michael_QRCode.png";
+		String imgPath = "e:\\Michael_QRCode.png";
 		String encoderContent = "Hello 大大、小小,welcome to QRCode!" + "\nMyblog [ http://sjsky.iteye.com ]"
 				+ "\nEMail [ sjsky007@gmail.com ]";
-		QRCoder handler = new QRCoder();
+		QRcoder handler = new QRcoder();
 		handler.encoderQRCode(encoderContent, imgPath, "png");
 		// try {
 		// OutputStream output = new FileOutputStream(imgPath);

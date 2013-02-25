@@ -53,4 +53,8 @@ public class Config {
 		return config.getInt("queue_size", 1000);
 	}
 
+	public String getUserIconPath() {
+		return config.getString("path_user_icon", "/tmp");
+	}
+
 }
