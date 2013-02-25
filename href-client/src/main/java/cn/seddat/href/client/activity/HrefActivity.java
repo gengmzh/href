@@ -23,9 +23,9 @@ public class HrefActivity extends Activity {
 		setContentView(R.layout.main);
 		// show
 		listView = (RefreshableListView) findViewById(R.id.post_list);
-		listView.init(new RefreshPostListener(), R.layout.post_item, new String[] { "au", "pt", "ttl", "sn", "pv",
-				"clk", "mrk" }, new int[] { R.id.author_name, R.id.post_time, R.id.post_title, R.id.post_source,
-				R.id.post_pv, R.id.post_click, R.id.post_mark });
+		listView.init(new RefreshPostListener(), R.layout.post_item, new String[] { "au", "com", "pt", "ttl", "sn",
+				"mrk" }, new int[] { R.id.author_name, R.id.post_company, R.id.post_time, R.id.post_title,
+				R.id.post_source, R.id.post_mark });
 	}
 
 	@Override

@@ -43,18 +43,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true" >
-<!-- 
+
             <TextView
                 android:id="@+id/post_company"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:gravity="left"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
- -->
-            <TextView
-                android:id="@+id/post_source"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -68,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@id/post_source"
+                android:layout_toRightOf="@id/post_company"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
         </RelativeLayout>
@@ -85,25 +76,24 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_below="@id/post_title" >
-
+			
+			<TextView
+                android:id="@+id/post_mark_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="收藏"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+            
             <TextView
                 android:id="@+id/post_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
-
-            <TextView
-                android:id="@+id/post_mark_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@id/post_mark_desc"
+                android:gravity="right"
                 android:layout_marginLeft="6dip"
-                android:layout_toLeftOf="@id/post_mark"
-                android:text="收藏："
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
-
+<!-- 
             <TextView
                 android:id="@+id/post_click"
                 android:layout_width="wrap_content"
@@ -138,6 +128,18 @@
                 android:layout_toLeftOf="@id/post_pv"
                 android:text="展示："
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+-->
+            <TextView
+                android:id="@+id/post_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/post_mark"
+                android:gravity="left"
+            	android:ellipsize="end"
+            	android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+            
         </RelativeLayout>
     </RelativeLayout>
 
