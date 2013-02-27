@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.ListAdapter;
+import cn.seddat.href.client.R;
 import cn.seddat.href.client.api.Post;
 import cn.seddat.href.client.api.PostService;
 import cn.seddat.href.client.view.RefreshableListView;
@@ -38,7 +39,16 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 			item = post.getId();
 		}
 		// query
-		List<Post> posts = postService.query(time, item, 0);
+		List<Post> posts = this.findPost(time, item, 0);
+		return posts;
+	}
+
+	private List<Post> findPost(long time, String item, int order) throws Exception {
+		List<Post> posts = postService.query(time, item, order);
+		String resId = String.valueOf(R.drawable.default_user_icon);
+		for (Post post : posts) {
+			post.setUserIcon(resId);
+		}
 		return posts;
 	}
 
@@ -54,7 +64,7 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 			item = post.getId();
 		}
 		// query
-		List<Post> posts = postService.query(time, item, 1);
+		List<Post> posts = this.findPost(time, item, 1);
 		return posts;
 	}
 

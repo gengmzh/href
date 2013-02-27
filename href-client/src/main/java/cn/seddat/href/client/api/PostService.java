@@ -58,7 +58,7 @@ public class PostService {
 		post.setTitle(jo.optString("ttl")).setContent(jo.optString("ctt"));
 		post.setSource(jo.optString("sn")).setLink(jo.optString("sl"));
 		post.setType(jo.optString("tp")).setCompany(jo.optString("com"));
-		post.setUserId(jo.optString("uid")).setAuthor(jo.optString("au")).setIconUri(jo.optString("icon"));
+		post.setUserId(jo.optString("uid")).setUserName(jo.optString("au")).setUserIconUri(jo.optString("icon"));
 		try {
 			Date date = dateFormat.parse(jo.optString("ct"));
 			post.setCreateTime(date.getTime());

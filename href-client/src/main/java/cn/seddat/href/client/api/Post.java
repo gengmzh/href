@@ -85,20 +85,29 @@ public class Post extends Entity {
 		return this;
 	}
 
-	public String getAuthor() {
-		return get("unm");
+	public String getUserName() {
+		return get("un");
 	}
 
-	public Post setAuthor(String author) {
-		put("unm", author);
+	public Post setUserName(String name) {
+		put("un", name);
 		return this;
 	}
 
-	public String getIconUri() {
+	public String getUserIcon() {
+		return get("ui");
+	}
+
+	public Post setUserIcon(String icon) {
+		put("ui", icon);
+		return this;
+	}
+
+	public String getUserIconUri() {
 		return get("uiu");
 	}
 
-	public Post setIconUri(String uri) {
+	public Post setUserIconUri(String uri) {
 		put("uiu", uri);
 		return this;
 	}

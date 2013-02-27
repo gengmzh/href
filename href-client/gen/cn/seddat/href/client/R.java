@@ -14,8 +14,9 @@ public final class R {
         public static final int orange=0x7f050000;
     }
     public static final class drawable {
-        public static final int icon=0x7f020000;
-        public static final int refreshable_arrow=0x7f020001;
+        public static final int default_user_icon=0x7f020000;
+        public static final int icon=0x7f020001;
+        public static final int refreshable_arrow=0x7f020002;
     }
     public static final class id {
         public static final int author_icon=0x7f06000c;
