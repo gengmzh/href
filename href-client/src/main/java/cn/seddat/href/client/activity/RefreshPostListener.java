@@ -3,16 +3,20 @@
  */
 package cn.seddat.href.client.activity;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.ListAdapter;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.api.Post;
 import cn.seddat.href.client.api.PostService;
+import cn.seddat.href.client.api.UserService;
 import cn.seddat.href.client.view.RefreshableListView;
 
 /**
@@ -21,9 +25,13 @@ import cn.seddat.href.client.view.RefreshableListView;
  */
 public class RefreshPostListener implements RefreshableListView.RefreshableListener {
 
+	private final String tag = RefreshPostListener.class.getSimpleName();
+	private UserService userService;
 	private PostService postService;
+	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
 
 	public RefreshPostListener() {
+		userService = new UserService();
 		postService = new PostService();
 	}
 
@@ -45,9 +53,8 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 
 	private List<Post> findPost(long time, String item, int order) throws Exception {
 		List<Post> posts = postService.query(time, item, order);
-		String resId = String.valueOf(R.drawable.default_user_icon);
 		for (Post post : posts) {
-			post.setUserIcon(resId);
+			post.setUserIcon(defaultUserIcon);
 		}
 		return posts;
 	}
@@ -84,8 +91,63 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 	}
 
 	@Override
-	public void onStopScrolling(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception {
-		Log.i(RefreshPostListener.class.getSimpleName(), "onStopScrolling");
+	public void onDisplay(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception {
+		// cache
+		File cache = null;
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			cache = Environment.getExternalStorageDirectory();
+			cache = new File(cache, listView.getContext().getPackageName() + File.separator + "cache");
+		} else {
+			cache = listView.getContext().getCacheDir();
+		}
+		// icon
+		ListAdapter adapter = listView.getListAdapter();
+		lastVisible = Math.min(lastVisible, adapter.getCount());
+		for (int i = firstVisible; i <= lastVisible; i++) {
+			Post post = (Post) adapter.getItem(i);
+			if (!defaultUserIcon.equals(post.getUserIcon()) || post.getUserIconUri() == null
+					|| post.getUserIconUri().isEmpty()) {
+				continue;
+			}
+			// find cache
+			int index = post.getUserIconUri().lastIndexOf("/");
+			String icon = index > 0 ? post.getUserIconUri().substring(index + 1) : post.getUserIconUri();
+			File file = new File(cache, icon);
+			if (file.exists()) {
+				if (file.isFile()) {
+					post.setUserIcon(file.getAbsolutePath());
+					continue;
+				} else {
+					this.delete(file);
+					Log.w(tag, "delete illegal cache file " + file.getAbsolutePath());
+				}
+			}
+			// find server
+			byte[] bytes = null;
+			try {
+				bytes = userService.getUserIcon(post.getUserIconUri());
+			} catch (Exception ex) {
+				Log.w(icon, "fetch user icon failed", ex);
+			}
+			if (bytes != null && bytes.length > 0) {
+				FileOutputStream out = new FileOutputStream(file);
+				out.write(bytes);
+				out.close();
+				post.setUserIcon(file.getAbsolutePath());
+			}
+		}
+	}
+
+	private void delete(File file) {
+		if (file == null || !file.exists()) {
+			return;
+		}
+		if (file.isDirectory()) {
+			for (File f : file.listFiles()) {
+				this.delete(f);
+			}
+		}
+		file.delete();
 	}
 
 }

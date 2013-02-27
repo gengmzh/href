@@ -50,6 +50,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private static final int WHAT_REFRESHING_DONE = 3;
 	private static final int WHAT_LOADING_START = 4;
 	private static final int WHAT_LOADING_DONE = 5;
+	private static final int WHAT_STOPSCROLLING_DONE = 6;
 
 	// private static final int DEFAULT_HEADER_VIEW_HEIGHT = 105; // 头部文件原本的高度
 	private static final int AUTO_INCREMENTAL = 10; // 自增量，用于回弹
@@ -158,10 +159,8 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
 				if (refreshableListener != null) {
-					int first = view.getFirstVisiblePosition();
-					int last = view.getChildCount() + first - 1;
 					try {
-						refreshableListener.onStopScrolling(RefreshableListView.this, first, last);
+						displaying(view.getFirstVisiblePosition(), view.getLastVisiblePosition());
 					} catch (Exception e) {
 						Log.e(tag, "invoke scroll idle event failed", e);
 					}
@@ -425,7 +424,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 						items = (List<Map<String, Object>>) refreshableListener.onLoad(RefreshableListView.this);
 						data.addAll(items);
 					} catch (Exception e) {
-						Log.e(tag, "refreshing failed", e);
+						Log.e(tag, "loading failed", e);
 					}
 				} else {
 					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
@@ -461,6 +460,58 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		return visible < total;
 	}
 
+	private void displaying() {
+		Thread th = new Thread() {
+			public void run() {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					Log.e(tag, "displaying thread interrupted", e);
+				}
+				int i = 0;
+				while (i++ < 5) {
+					int first = listView.getFirstVisiblePosition(), last = listView.getLastVisiblePosition();
+					if (first < last) {
+						displaying(first, last);
+						break;
+					}
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						Log.e(tag, "displaying thread interrupted", e);
+						break;
+					}
+				}
+			}
+		};
+		th.start();
+	}
+
+	private void displaying(final int firstVisible, final int lastVisible) {
+		Log.i(tag, "[displaying] " + firstVisible + " ~ " + lastVisible);
+		Thread th = new Thread() {
+			public void run() {
+				if (refreshableListener != null) {
+					try {
+						refreshableListener.onDisplay(RefreshableListView.this, firstVisible, lastVisible);
+					} catch (Exception e) {
+						Log.e(tag, "refreshing failed", e);
+					}
+				} else {
+					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
+				}
+				Log.i(tag, "[displaying] find user icon");
+				internalHandler.sendEmptyMessage(WHAT_STOPSCROLLING_DONE);
+			};
+		};
+		th.start();
+	}
+
+	private void postDisplaying() {
+		adapter.notifyDataSetChanged();
+		Log.i(tag, "[displaying] done");
+	}
+
 	private Handler internalHandler = new Handler() {
 
 		@Override
@@ -477,6 +528,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			case WHAT_REFRESHING_DONE: {
 				postRefreshing();
 				showFooter();
+				displaying();
 				break;
 			}
 			case WHAT_LOADING_START: {
@@ -485,6 +537,10 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			}
 			case WHAT_LOADING_DONE: {
 				postLoading();
+				break;
+			}
+			case WHAT_STOPSCROLLING_DONE: {
+				postDisplaying();
 				break;
 			}
 			}
@@ -514,7 +570,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 
 		public boolean onItemLongClick(RefreshableListView listView, int position) throws Exception;
 
-		public void onStopScrolling(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception;
+		public void onDisplay(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception;
 
 	}
 
