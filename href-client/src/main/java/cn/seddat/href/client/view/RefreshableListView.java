@@ -25,8 +25,8 @@ import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -105,13 +105,18 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		footerTitle = (TextView) footer.findViewById(R.id.refreshable_title);
 		footerProgress = (ProgressBar) footer.findViewById(R.id.refreshable_progress);
 		// event
+		DefaultListViewListener listener = new DefaultListViewListener();
+		header.getViewTreeObserver().addOnPreDrawListener(listener);
+		listView.setOnItemClickListener(listener);
+		listView.setOnItemLongClickListener(listener);
+		listView.setOnScrollListener(listener);
 		listView.setOnTouchListener(this);
-		listView.setOnItemClickListener(new ClickItemListener());
-		header.getViewTreeObserver().addOnPreDrawListener(new MeasureHeaderHeight());
 		Log.i(tag, "init " + RefreshableListView.class.getSimpleName() + " done");
 	}
 
-	private class MeasureHeaderHeight implements ViewTreeObserver.OnPreDrawListener {
+	private class DefaultListViewListener implements ViewTreeObserver.OnPreDrawListener,
+			AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, AbsListView.OnScrollListener {
+
 		@Override
 		public boolean onPreDraw() {
 			headerHeightThreshold = header.getMeasuredHeight();
@@ -121,14 +126,12 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			header.getViewTreeObserver().removeOnPreDrawListener(this);
 			return true;
 		}
-	}
 
-	private class ClickItemListener implements OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if (refreshableListener != null) {
 				try {
-					refreshableListener.onClick(RefreshableListView.this, position);
+					refreshableListener.onItemClick(RefreshableListView.this, position);
 				} catch (Exception e) {
 					Log.e(tag, "click item failed", e);
 				}
@@ -136,6 +139,40 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 				Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
 			}
 		}
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+			if (refreshableListener != null) {
+				try {
+					return refreshableListener.onItemLongClick(RefreshableListView.this, position);
+				} catch (Exception e) {
+					Log.e(tag, "click item failed", e);
+				}
+			} else {
+				Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
+			}
+			return false;
+		}
+
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+			if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+				if (refreshableListener != null) {
+					int first = view.getFirstVisiblePosition();
+					int last = view.getChildCount() + first - 1;
+					try {
+						refreshableListener.onStopScrolling(RefreshableListView.this, first, last);
+					} catch (Exception e) {
+						Log.e(tag, "invoke scroll idle event failed", e);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		}
+
 	}
 
 	public void init(RefreshableListener listener, int resource, String[] from, int[] to) {
@@ -473,7 +510,11 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 
 		public List<? extends Map<String, ?>> onLoad(RefreshableListView listView) throws Exception;
 
-		public void onClick(RefreshableListView listView, int position) throws Exception;
+		public void onItemClick(RefreshableListView listView, int position) throws Exception;
+
+		public boolean onItemLongClick(RefreshableListView listView, int position) throws Exception;
+
+		public void onStopScrolling(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception;
 
 	}
 

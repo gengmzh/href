@@ -8,6 +8,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.ListAdapter;
 import cn.seddat.href.client.api.Post;
 import cn.seddat.href.client.api.PostService;
@@ -58,13 +59,23 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 	}
 
 	@Override
-	public void onClick(RefreshableListView listView, int position) throws Exception {
+	public void onItemClick(RefreshableListView listView, int position) throws Exception {
 		Context context = listView.getContext();
 		ListAdapter adapter = listView.getListAdapter();
 		Post post = (Post) adapter.getItem(position);
 		Intent intent = new Intent(context, PostDetailActivity.class);
 		intent.putExtra(Intent.EXTRA_UID, post.getId());
 		context.startActivity(intent);
+	}
+
+	@Override
+	public boolean onItemLongClick(RefreshableListView listView, int position) throws Exception {
+		return false;
+	}
+
+	@Override
+	public void onStopScrolling(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception {
+		Log.i(RefreshPostListener.class.getSimpleName(), "onStopScrolling");
 	}
 
 }
