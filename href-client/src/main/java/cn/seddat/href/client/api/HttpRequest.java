@@ -22,7 +22,7 @@ public class HttpRequest {
 
 	}
 
-	public String request(String url, Parameter args) throws Exception {
+	public byte[] request(String url, Parameter args) throws Exception {
 		if (url == null) {
 			return null;
 		}
@@ -43,9 +43,9 @@ public class HttpRequest {
 		}
 		ins.close();
 		conn.disconnect();
-		String content = ous.toString();
+		b = ous.toByteArray();
 		ous.close();
-		return content;
+		return b;
 	}
 
 	public static class Parameter {

@@ -41,7 +41,7 @@ public class PostService {
 		}
 		// request
 		HttpRequest request = new HttpRequest();
-		String content = request.request(api, args);
+		String content = new String(request.request(api, args));
 		// parse
 		List<Post> posts = new ArrayList<Post>();
 		JSONArray json = new JSONArray(content);
@@ -97,7 +97,7 @@ public class PostService {
 		}
 		// request
 		HttpRequest request = new HttpRequest();
-		String content = request.request(api + "/" + id, null);
+		String content = new String(request.request(api + "/" + id, null));
 		// parse
 		return this.parsePost(new JSONObject(content));
 	}
