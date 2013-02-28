@@ -30,15 +30,22 @@
         <activity android:name=".activity.HrefActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.PostDetailActivity">
+        <activity android:name=".activity.PostDetailActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".api.ContentProvider"
+            android:authorities="cn.seddat.href.client.provider" >
+        </provider>
     </application>
 
 </manifest>
