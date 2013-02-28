@@ -95,11 +95,13 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 		// cache
 		File cache = null;
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			cache = Environment.getExternalStorageDirectory();
-			cache = new File(cache, listView.getContext().getPackageName() + File.separator + "cache");
+			cache = new File(Environment.getExternalStorageDirectory(), listView.getContext().getPackageName());
+			cache = new File(cache, "cache");
+			cache.mkdirs();
 		} else {
 			cache = listView.getContext().getCacheDir();
 		}
+		Log.i(tag, "using cache " + cache.getAbsolutePath());
 		// icon
 		ListAdapter adapter = listView.getListAdapter();
 		lastVisible = Math.min(lastVisible, adapter.getCount());
