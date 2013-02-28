@@ -16,6 +16,7 @@ import android.widget.ListAdapter;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.api.Post;
 import cn.seddat.href.client.api.PostService;
+import cn.seddat.href.client.api.User;
 import cn.seddat.href.client.api.UserService;
 import cn.seddat.href.client.view.RefreshableListView;
 
@@ -54,7 +55,7 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 	private List<Post> findPost(long time, String item, int order) throws Exception {
 		List<Post> posts = postService.query(time, item, order);
 		for (Post post : posts) {
-			post.setUserIcon(defaultUserIcon);
+			post.put(User.COL_ICON, defaultUserIcon);
 		}
 		return posts;
 	}
@@ -107,17 +108,17 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 		lastVisible = Math.min(lastVisible, adapter.getCount());
 		for (int i = firstVisible; i <= lastVisible; i++) {
 			Post post = (Post) adapter.getItem(i);
-			if (!defaultUserIcon.equals(post.getUserIcon()) || post.getUserIconUri() == null
-					|| post.getUserIconUri().isEmpty()) {
+			String iconUri = post.get(User.COL_ICON_URI);
+			if (!defaultUserIcon.equals(post.get(User.COL_ICON)) || iconUri == null || iconUri.isEmpty()) {
 				continue;
 			}
 			// find cache
-			int index = post.getUserIconUri().lastIndexOf("/");
-			String icon = index > 0 ? post.getUserIconUri().substring(index + 1) : post.getUserIconUri();
+			int index = iconUri.lastIndexOf("/");
+			String icon = index > 0 ? iconUri.substring(index + 1) : iconUri;
 			File file = new File(cache, icon);
 			if (file.exists()) {
 				if (file.isFile()) {
-					post.setUserIcon(file.getAbsolutePath());
+					post.put(User.COL_ICON, file.getAbsolutePath());
 					continue;
 				} else {
 					this.delete(file);
@@ -127,7 +128,7 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 			// find server
 			byte[] bytes = null;
 			try {
-				bytes = userService.getUserIcon(post.getUserIconUri());
+				bytes = userService.getUserIcon(iconUri);
 			} catch (Exception ex) {
 				Log.w(icon, "fetch user icon failed", ex);
 			}
@@ -135,7 +136,7 @@ public class RefreshPostListener implements RefreshableListView.RefreshableListe
 				FileOutputStream out = new FileOutputStream(file);
 				out.write(bytes);
 				out.close();
-				post.setUserIcon(file.getAbsolutePath());
+				post.put(User.COL_ICON, file.getAbsolutePath());
 			}
 		}
 	}

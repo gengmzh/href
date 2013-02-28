@@ -3,121 +3,150 @@
  */
 package cn.seddat.href.client.api;
 
+import java.util.Date;
+
+import android.provider.BaseColumns;
+
 /**
  * @author mzhgeng
  * 
  */
 public class Post extends Entity {
 
+	public static final String COL_ID = BaseColumns._ID;
+	public static final String COL_CHUNK = "chk";
+	public static final String COL_USER_ID = "uid";
+	public static final String COL_TITLE = "ttl";
+	public static final String COL_CONTENT = "ctt";
+	public static final String COL_SOURCE = "sn";
+	public static final String COL_LINK = "sl";
+	public static final String COL_TYPE = "tp";
+	public static final String COL_COMPANY = "com";
+	public static final String COL_CREATE_TIME = "ct";
+	public static final String COL_MARK = "mrk";
+	public static final String COL_LIKE = "like";
+	public static final String COL_CACHE_TIME = "cht";
+
 	public Post() {
 		super();
 	}
 
 	public String getId() {
-		return get("id");
+		return get(COL_ID);
 	}
 
 	public Post setId(String id) {
-		put("id", id);
+		put(COL_ID, id);
 		return this;
 	}
 
-	public String getTitle() {
-		return get("ttl");
+	public int getChunk() {
+		String chunk = get(COL_CHUNK);
+		return chunk != null ? Integer.parseInt(chunk) : 0;
 	}
 
-	public Post setTitle(String title) {
-		put("ttl", title);
-		return this;
-	}
-
-	public String getContent() {
-		return get("ctt");
-	}
-
-	public Post setContent(String content) {
-		put("ctt", content);
-		return this;
-	}
-
-	public String getSource() {
-		return get("sn");
-	}
-
-	public Post setSource(String source) {
-		put("sn", source);
-		return this;
-	}
-
-	public String getLink() {
-		return get("sl");
-	}
-
-	public Post setLink(String link) {
-		put("sl", link);
-		return this;
-	}
-
-	public String getType() {
-		return get("tp");
-	}
-
-	public Post setType(String type) {
-		put("tp", type);
-		return this;
-	}
-
-	public String getCompany() {
-		return get("com");
-	}
-
-	public Post setCompany(String company) {
-		put("com", company);
+	public Post setChunk(int chunk) {
+		put(COL_CHUNK, String.valueOf(chunk));
 		return this;
 	}
 
 	public String getUserId() {
-		return get("uid");
+		return get(COL_USER_ID);
 	}
 
 	public Post setUserId(String userId) {
-		put("uid", userId);
+		put(COL_USER_ID, userId);
 		return this;
 	}
 
-	public String getUserName() {
-		return get("un");
+	//
+	// public String getUserName() {
+	// return get(User.COL_NAME);
+	// }
+	//
+	// public Post setUserName(String name) {
+	// put(User.COL_NAME, name);
+	// return this;
+	// }
+	//
+	// public String getUserIcon() {
+	// return get(User.COL_ICON);
+	// }
+	//
+	// public Post setUserIcon(String icon) {
+	// put(User.COL_ICON, icon);
+	// return this;
+	// }
+	//
+	// public String getUserIconUri() {
+	// return get(User.COL_ICON_URI);
+	// }
+	//
+	// public Post setUserIconUri(String uri) {
+	// put(User.COL_ICON_URI, uri);
+	// return this;
+	// }
+
+	public String getTitle() {
+		return get(COL_TITLE);
 	}
 
-	public Post setUserName(String name) {
-		put("un", name);
+	public Post setTitle(String title) {
+		put(COL_TITLE, title);
 		return this;
 	}
 
-	public String getUserIcon() {
-		return get("ui");
+	public String getContent() {
+		return get(COL_CONTENT);
 	}
 
-	public Post setUserIcon(String icon) {
-		put("ui", icon);
+	public Post setContent(String content) {
+		put(COL_CONTENT, content);
 		return this;
 	}
 
-	public String getUserIconUri() {
-		return get("uiu");
+	public String getSource() {
+		return get(COL_SOURCE);
 	}
 
-	public Post setUserIconUri(String uri) {
-		put("uiu", uri);
+	public Post setSource(String source) {
+		put(COL_SOURCE, source);
+		return this;
+	}
+
+	public String getLink() {
+		return get(COL_LINK);
+	}
+
+	public Post setLink(String link) {
+		put(COL_LINK, link);
+		return this;
+	}
+
+	public String getType() {
+		return get(COL_TYPE);
+	}
+
+	public Post setType(String type) {
+		put(COL_TYPE, type);
+		return this;
+	}
+
+	public String getCompany() {
+		return get(COL_COMPANY);
+	}
+
+	public Post setCompany(String company) {
+		put(COL_COMPANY, company);
 		return this;
 	}
 
 	public long getCreateTime() {
-		return getLong("ct", 0);
+		return getLong(COL_CREATE_TIME, 0);
 	}
 
 	public Post setCreateTime(long createTime) {
-		put("ct", String.valueOf(createTime));
+		put(COL_CREATE_TIME, String.valueOf(createTime));
 		return this;
 	}
 
@@ -130,30 +159,43 @@ public class Post extends Entity {
 		return this;
 	}
 
-	public long getPv() {
-		return getLong("pv", 0);
-	}
-
-	public Post setPv(long pv) {
-		put("pv", String.valueOf(pv));
-		return this;
-	}
-
-	public long getClick() {
-		return getLong("clk", 0);
-	}
-
-	public Post setClick(long click) {
-		put("clk", String.valueOf(click));
-		return this;
-	}
+	// public long getPv() {
+	// return getLong("pv", 0);
+	// }
+	//
+	// public Post setPv(long pv) {
+	// put("pv", String.valueOf(pv));
+	// return this;
+	// }
+	//
+	// public long getClick() {
+	// return getLong("clk", 0);
+	// }
+	//
+	// public Post setClick(long click) {
+	// put("clk", String.valueOf(click));
+	// return this;
+	// }
 
 	public long getMark() {
-		return getLong("mrk", 0);
+		return getLong(COL_MARK, 0);
 	}
 
 	public Post setMark(long mark) {
-		put("mrk", String.valueOf(mark));
+		put(COL_MARK, String.valueOf(mark));
+		return this;
+	}
+
+	public Date getCacheTime() {
+		String time = get(COL_CACHE_TIME);
+		if (time == null) {
+			return null;
+		}
+		return new Date(Long.parseLong(time));
+	}
+
+	public Post setCacheTime(Date time) {
+		put(COL_CACHE_TIME, String.valueOf(time.getTime()));
 		return this;
 	}
 

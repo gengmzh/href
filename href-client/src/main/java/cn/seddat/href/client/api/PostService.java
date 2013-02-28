@@ -58,7 +58,9 @@ public class PostService {
 		post.setTitle(jo.optString("ttl")).setContent(jo.optString("ctt"));
 		post.setSource(jo.optString("sn")).setLink(jo.optString("sl"));
 		post.setType(jo.optString("tp")).setCompany(jo.optString("com"));
-		post.setUserId(jo.optString("uid")).setUserName(jo.optString("au")).setUserIconUri(jo.optString("icon"));
+		post.setUserId(jo.optString("uid"));
+		post.put(User.COL_NAME, jo.optString("au"));
+		post.put(User.COL_ICON_URI, jo.optString("icon"));
 		try {
 			Date date = dateFormat.parse(jo.optString("ct"));
 			post.setCreateTime(date.getTime());
@@ -66,7 +68,7 @@ public class PostService {
 			// ignore
 		}
 		post.setShowTime(this.parseShowTime(post.getCreateTime()));
-		post.setPv(jo.optLong("pv")).setClick(jo.optLong("clk")).setMark(jo.optLong("mrk"));
+		post.setMark(jo.optLong("mrk"));
 		return post;
 	}
 
