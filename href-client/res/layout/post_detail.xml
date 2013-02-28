@@ -74,7 +74,7 @@
                 android:layout_toLeftOf="@id/post_mark"
                 android:text="收藏："
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
-
+<!-- 
             <TextView
                 android:id="@+id/post_click"
                 android:layout_width="wrap_content"
@@ -109,6 +109,7 @@
                 android:layout_toLeftOf="@id/post_pv"
                 android:text="展示："
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+ -->
         </RelativeLayout>
     </LinearLayout>
 

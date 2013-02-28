@@ -73,10 +73,6 @@ public class PostDetailActivity extends Activity {
 			text.setText(post.getShowTime());
 			text = (TextView) findViewById(R.id.post_content);
 			text.setText(Html.fromHtml(post.getContent()));
-			text = (TextView) findViewById(R.id.post_pv);
-			text.setText(String.valueOf(post.getPv()));
-			text = (TextView) findViewById(R.id.post_click);
-			text.setText(String.valueOf(post.getClick()));
 			text = (TextView) findViewById(R.id.post_mark);
 			text.setText(String.valueOf(post.getMark()));
 		}
