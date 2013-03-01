@@ -5,16 +5,14 @@ package cn.seddat.href.client.api;
 
 import java.util.Date;
 
-import android.provider.BaseColumns;
-
 /**
  * @author mzhgeng
  * 
  */
 public class Post extends Entity {
 
-	public static final String COL_ID = BaseColumns._ID;
-	public static final String COL_CHUNK = "chk";
+	public static final String COL_ID = "id";
+	// public static final String COL_CHUNK = "chk";
 	public static final String COL_USER_ID = "uid";
 	public static final String COL_TITLE = "ttl";
 	public static final String COL_CONTENT = "ctt";
@@ -40,15 +38,15 @@ public class Post extends Entity {
 		return this;
 	}
 
-	public int getChunk() {
-		String chunk = get(COL_CHUNK);
-		return chunk != null ? Integer.parseInt(chunk) : 0;
-	}
-
-	public Post setChunk(int chunk) {
-		put(COL_CHUNK, String.valueOf(chunk));
-		return this;
-	}
+	// public int getChunk() {
+	// String chunk = get(COL_CHUNK);
+	// return chunk != null ? Integer.parseInt(chunk) : 0;
+	// }
+	//
+	// public Post setChunk(int chunk) {
+	// put(COL_CHUNK, String.valueOf(chunk));
+	// return this;
+	// }
 
 	public String getUserId() {
 		return get(COL_USER_ID);
@@ -150,14 +148,14 @@ public class Post extends Entity {
 		return this;
 	}
 
-	public String getShowTime() {
-		return get("pt");
-	}
-
-	public Post setShowTime(String showTime) {
-		put("pt", showTime);
-		return this;
-	}
+	// public String getShowTime() {
+	// return get("pt");
+	// }
+	//
+	// public Post setShowTime(String showTime) {
+	// put("pt", showTime);
+	// return this;
+	// }
 
 	// public long getPv() {
 	// return getLong("pv", 0);

@@ -5,15 +5,13 @@ package cn.seddat.href.client.api;
 
 import java.util.Date;
 
-import android.provider.BaseColumns;
-
 /**
  * @author mzhgeng
  * 
  */
 public class User extends Entity {
 
-	public static final String COL_ID = BaseColumns._ID;
+	public static final String COL_ID = "Id";
 	public static final String COL_NAME = "un";
 	public static final String COL_ICON = "ui";
 	public static final String COL_ICON_URI = "uiu";

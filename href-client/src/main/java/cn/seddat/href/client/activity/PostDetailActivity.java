@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.TextView;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.api.Post;
-import cn.seddat.href.client.api.PostService;
+import cn.seddat.href.client.api.ContentService;
 
 /**
  * @author mzhgeng
@@ -36,10 +36,10 @@ public class PostDetailActivity extends Activity {
 
 	class PostDetailTask extends AsyncTask<String, Integer, Post> {
 
-		private PostService postService;
+		private ContentService postService;
 
 		public PostDetailTask() {
-			postService = new PostService();
+			postService = new ContentService(PostDetailActivity.this);
 		}
 
 		@Override
@@ -52,7 +52,7 @@ public class PostDetailActivity extends Activity {
 			String id = params.length > 0 ? params[0] : null;
 			Post post = null;
 			try {
-				post = postService.findById(id);
+				post = postService.findPostById(id);
 			} catch (Exception e) {
 				Log.e(tag, "find post by id failed", e);
 			}
@@ -70,7 +70,7 @@ public class PostDetailActivity extends Activity {
 			text = (TextView) findViewById(R.id.post_source);
 			text.setText(post.getSource());
 			text = (TextView) findViewById(R.id.post_time);
-			text.setText(post.getShowTime());
+			text.setText(post.get("pt"));
 			text = (TextView) findViewById(R.id.post_content);
 			text.setText(Html.fromHtml(post.getContent()));
 			text = (TextView) findViewById(R.id.post_mark);

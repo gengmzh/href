@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import cn.seddat.href.client.R;
 
 /**
@@ -131,10 +132,12 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if (refreshableListener != null) {
-				try {
-					refreshableListener.onItemClick(RefreshableListView.this, position);
-				} catch (Exception e) {
-					Log.e(tag, "click item failed", e);
+				if (position < listView.getCount() - listView.getFooterViewsCount()) {
+					try {
+						refreshableListener.onItemClick(RefreshableListView.this, position);
+					} catch (Exception e) {
+						Log.e(tag, "click item failed", e);
+					}
 				}
 			} else {
 				Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
@@ -144,10 +147,12 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 			if (refreshableListener != null) {
-				try {
-					return refreshableListener.onItemLongClick(RefreshableListView.this, position);
-				} catch (Exception e) {
-					Log.e(tag, "click item failed", e);
+				if (position < listView.getCount() - listView.getFooterViewsCount()) {
+					try {
+						return refreshableListener.onItemLongClick(RefreshableListView.this, position);
+					} catch (Exception e) {
+						Log.e(tag, "click item failed", e);
+					}
 				}
 			} else {
 				Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
@@ -160,7 +165,9 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
 				if (refreshableListener != null) {
 					try {
-						displaying(view.getFirstVisiblePosition(), view.getLastVisiblePosition());
+						int last = view.getLastVisiblePosition();
+						last = Math.min(last, listView.getCount() - 1 - listView.getFooterViewsCount());
+						displaying(view.getFirstVisiblePosition(), last);
 					} catch (Exception e) {
 						Log.e(tag, "invoke scroll idle event failed", e);
 					}
@@ -174,10 +181,15 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 
 	}
 
-	public void init(RefreshableListener listener, int resource, String[] from, int[] to) {
+	@SuppressWarnings("unchecked")
+	public void init(RefreshableListener listener, List<? extends Map<String, ?>> data, int resource, String[] from,
+			int[] to) {
 		refreshableListener = listener;
-		data = new ArrayList<Map<String, Object>>();
-		adapter = new SimpleAdapter(getContext(), data, resource, from, to);
+		this.data = new ArrayList<Map<String, Object>>();
+		if (data != null && !data.isEmpty()) {
+			this.data.addAll((List<Map<String, Object>>) data);
+		}
+		adapter = new SimpleAdapter(getContext(), this.data, resource, from, to);
 		listView.setAdapter(adapter);
 		this.refreshing();
 	}
@@ -287,13 +299,13 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		header.setLayoutParams(header.getLayoutParams());
 		// header.setVisibility(View.VISIBLE);
 		Thread th = new Thread() {
-			@SuppressWarnings("unchecked")
 			public void run() {
-				List<Map<String, Object>> items = null;
+				List<? extends Map<String, ?>> items = null;
+				Message msg = internalHandler.obtainMessage(WHAT_REFRESHING_DONE);
 				if (refreshableListener != null) {
 					try {
-						items = (List<Map<String, Object>>) refreshableListener.onRefresh(RefreshableListView.this);
-						data.addAll(0, items);
+						items = refreshableListener.onRefresh(RefreshableListView.this);
+						msg.obj = items;
 					} catch (Exception e) {
 						Log.e(tag, "refreshing failed", e);
 					}
@@ -301,13 +313,13 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
 				}
 				Log.i(tag, "[Refreshing] find " + (items != null ? items.size() : 0) + " items");
-				internalHandler.sendEmptyMessage(WHAT_REFRESHING_DONE);
+				msg.sendToTarget();
 			};
 		};
 		th.start();
 	}
 
-	private void postRefreshing() {
+	private void postRefreshing(List<Map<String, Object>> items) {
 		if (!isRefreshing) {
 			return;
 		}
@@ -322,7 +334,12 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		header.setLayoutParams(header.getLayoutParams());
 		headerHeight = 0;
 		// header.setVisibility(View.GONE);
-		adapter.notifyDataSetChanged();
+		if (items == null) {
+			Toast.makeText(getContext(), "网络不给力啊", Toast.LENGTH_LONG).show();
+		} else {
+			data.addAll(items);
+			adapter.notifyDataSetChanged();
+		}
 		this.saveRefreshingTime();
 		headerSubtitle.setText(this.getRefreshingTime());
 		Log.i(tag, "[Refreshing] done");
@@ -416,13 +433,13 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		footerTitle.setText("正在加载...");
 		footerProgress.setVisibility(View.VISIBLE);
 		Thread th = new Thread() {
-			@SuppressWarnings("unchecked")
 			public void run() {
-				List<Map<String, Object>> items = null;
+				List<? extends Map<String, ?>> items = null;
+				Message msg = internalHandler.obtainMessage(WHAT_LOADING_DONE);
 				if (refreshableListener != null) {
 					try {
-						items = (List<Map<String, Object>>) refreshableListener.onLoad(RefreshableListView.this);
-						data.addAll(items);
+						items = refreshableListener.onLoad(RefreshableListView.this);
+						msg.obj = items;
 					} catch (Exception e) {
 						Log.e(tag, "loading failed", e);
 					}
@@ -430,20 +447,25 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
 				}
 				Log.i(tag, "[Loading] find " + (items != null ? items.size() : 0) + " items");
-				internalHandler.sendEmptyMessage(WHAT_LOADING_DONE);
+				msg.sendToTarget();
 			};
 		};
 		th.start();
 	}
 
-	private void postLoading() {
+	private void postLoading(List<Map<String, Object>> items) {
 		if (!isLoading) {
 			return;
 		}
 		isLoading = false;
-		footerTitle.setText("加载更多");
 		footerProgress.setVisibility(View.GONE);
-		adapter.notifyDataSetChanged();
+		if (items == null) {
+			footerTitle.setText("网络不给力啊");
+		} else {
+			footerTitle.setText("加载更多");
+			data.addAll(items);
+			adapter.notifyDataSetChanged();
+		}
 		Log.i(tag, "[Loading] done");
 	}
 
@@ -495,7 +517,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 					try {
 						refreshableListener.onDisplay(RefreshableListView.this, firstVisible, lastVisible);
 					} catch (Exception e) {
-						Log.e(tag, "refreshing failed", e);
+						Log.e(tag, "displaying failed", e);
 					}
 				} else {
 					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
@@ -515,6 +537,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private Handler internalHandler = new Handler() {
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case WHAT_HEADER_HEIGHT: {
@@ -526,7 +549,8 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 				break;
 			}
 			case WHAT_REFRESHING_DONE: {
-				postRefreshing();
+				List<Map<String, Object>> items = (List<Map<String, Object>>) msg.obj;
+				postRefreshing(items);
 				showFooter();
 				displaying();
 				break;
@@ -536,7 +560,8 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 				break;
 			}
 			case WHAT_LOADING_DONE: {
-				postLoading();
+				List<Map<String, Object>> items = (List<Map<String, Object>>) msg.obj;
+				postLoading(items);
 				break;
 			}
 			case WHAT_STOPSCROLLING_DONE: {

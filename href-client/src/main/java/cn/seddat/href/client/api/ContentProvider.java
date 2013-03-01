@@ -67,11 +67,10 @@ public class ContentProvider extends android.content.ContentProvider {
 					+ User.COL_ICON + " text, " + User.COL_CACHE_TIME + " text " + "); ";
 			sqlite.execSQL(sql);
 			sql = "create table if not exists " + TABLE_POST + "( " + BaseColumns._ID + " integer primary key, "
-					+ Post.COL_ID + " text, " + Post.COL_CHUNK + " text, " + Post.COL_USER_ID + " text, "
-					+ Post.COL_TITLE + " text, " + Post.COL_CONTENT + " text, " + Post.COL_SOURCE + " text, "
-					+ Post.COL_LINK + " text, " + Post.COL_TYPE + " text, " + Post.COL_COMPANY + " text, "
-					+ Post.COL_CREATE_TIME + " text, " + Post.COL_MARK + " text, " + Post.COL_LIKE + " text, "
-					+ Post.COL_CACHE_TIME + " text " + "); ";
+					+ Post.COL_ID + " text, " + Post.COL_USER_ID + " text, " + Post.COL_TITLE + " text, "
+					+ Post.COL_CONTENT + " text, " + Post.COL_SOURCE + " text, " + Post.COL_LINK + " text, "
+					+ Post.COL_TYPE + " text, " + Post.COL_COMPANY + " text, " + Post.COL_CREATE_TIME + " text, "
+					+ Post.COL_MARK + " text, " + Post.COL_LIKE + " text, " + Post.COL_CACHE_TIME + " text " + "); ";
 			sqlite.execSQL(sql);
 		}
 
@@ -119,7 +118,7 @@ public class ContentProvider extends android.content.ContentProvider {
 			break;
 		case 3:
 		case 4:
-			table = TABLE_USER;
+			table = TABLE_POST;
 			break;
 		}
 		SQLiteDatabase sqlite = databaseSupport.getWritableDatabase();
@@ -137,7 +136,7 @@ public class ContentProvider extends android.content.ContentProvider {
 			break;
 		case 3:
 		case 4:
-			table = TABLE_USER;
+			table = TABLE_POST;
 			break;
 		}
 		SQLiteDatabase sqlite = databaseSupport.getWritableDatabase();
@@ -155,28 +154,11 @@ public class ContentProvider extends android.content.ContentProvider {
 			break;
 		case 3:
 		case 4:
-			table = TABLE_USER;
+			table = TABLE_POST;
 			break;
 		}
 		SQLiteDatabase sqlite = databaseSupport.getReadableDatabase();
 		return sqlite.query(table, projection, selection, selectionArgs, null, null, sortOrder);
-	}
-
-	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder,
-			int limit) {
-		String table = null;
-		switch (matcher.match(uri)) {
-		case 1:
-		case 2:
-			table = TABLE_USER;
-			break;
-		case 3:
-		case 4:
-			table = TABLE_USER;
-			break;
-		}
-		SQLiteDatabase sqlite = databaseSupport.getReadableDatabase();
-		return sqlite.query(table, projection, selection, selectionArgs, null, null, sortOrder, String.valueOf(limit));
 	}
 
 }

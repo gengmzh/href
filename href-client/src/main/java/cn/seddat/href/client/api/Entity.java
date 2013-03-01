@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import android.content.ContentValues;
+
 /**
  * @author mzhgeng
  * 
@@ -97,6 +99,14 @@ public class Entity implements Map<String, String> {
 		}
 		Entity other = (Entity) o;
 		return value.equals(other.value);
+	}
+
+	public ContentValues toValues() {
+		ContentValues values = new ContentValues();
+		for (String key : this.keySet()) {
+			values.put(key, this.get(key));
+		}
+		return values;
 	}
 
 	@Override
