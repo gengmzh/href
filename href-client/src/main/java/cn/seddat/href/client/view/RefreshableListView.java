@@ -37,6 +37,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
+import cn.seddat.href.client.service.ToastService;
 
 /**
  * @author mzhgeng
@@ -335,7 +336,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		headerHeight = 0;
 		// header.setVisibility(View.GONE);
 		if (items == null) {
-			Toast.makeText(getContext(), "网络不给力啊", Toast.LENGTH_LONG).show();
+			ToastService.toast(getContext(), "网络不给力啊", Toast.LENGTH_LONG);
 		} else {
 			data.clear();
 			data.addAll(items);

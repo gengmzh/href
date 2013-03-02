@@ -17,6 +17,7 @@ import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
+import cn.seddat.href.client.service.ToastService;
 import cn.seddat.href.client.service.User;
 import cn.seddat.href.client.view.RefreshableListView;
 import cn.seddat.href.client.view.RefreshableListView.RefreshableListener;
@@ -152,7 +153,7 @@ public class HrefActivity extends Activity implements RefreshableListener {
 		long time = System.currentTimeMillis();
 		if (time - backTime > 2000) {
 			backTime = time;
-			Toast.makeText(this, "再按一次退出" + appName, Toast.LENGTH_SHORT).show();
+			ToastService.toast(this, "再按一次退出" + appName, Toast.LENGTH_SHORT);
 		} else {
 			super.onBackPressed();
 		}
