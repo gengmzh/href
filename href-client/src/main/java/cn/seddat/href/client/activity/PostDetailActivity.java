@@ -12,9 +12,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
-import cn.seddat.href.client.api.ContentService;
-import cn.seddat.href.client.api.Post;
-import cn.seddat.href.client.api.User;
+import cn.seddat.href.client.service.ContentService;
+import cn.seddat.href.client.service.Post;
+import cn.seddat.href.client.service.User;
 
 /**
  * @author mzhgeng

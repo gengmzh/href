@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.seddat.href.client.api;
+package cn.seddat.href.client.service;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.seddat.href.client.api;
+package cn.seddat.href.client.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
