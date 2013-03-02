@@ -32,8 +32,8 @@ public class HttpRequest {
 		HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 		conn.setRequestProperty("User-Agent", userAgent);
 		conn.setRequestProperty("Content-Type", "text/html; charset=utf-8");
-		conn.setConnectTimeout(10000);
-		conn.setReadTimeout(10000);
+		conn.setConnectTimeout(30000);
+		conn.setReadTimeout(30000);
 		conn.connect();
 		// read
 		ByteArrayOutputStream ous = new ByteArrayOutputStream();

@@ -337,6 +337,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		if (items == null) {
 			Toast.makeText(getContext(), "网络不给力啊", Toast.LENGTH_LONG).show();
 		} else {
+			data.clear();
 			data.addAll(items);
 			adapter.notifyDataSetChanged();
 		}

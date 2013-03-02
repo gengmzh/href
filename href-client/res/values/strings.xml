@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello HRef!</string>
-    <string name="app_name">HRef</string>
+    <string name="app_name">知遇</string>
 
     <color name="orange">#FFA500</color> <!-- 橙色 -->
 

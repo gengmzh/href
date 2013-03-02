@@ -105,7 +105,9 @@ public class HrefActivity extends Activity implements RefreshableListener {
 		ListAdapter adapter = listView.getListAdapter();
 		Post post = (Post) adapter.getItem(position);
 		Intent intent = new Intent(this, PostDetailActivity.class);
-		intent.putExtra(Intent.EXTRA_UID, post.getId());
+		for (String key : post.keySet()) {
+			intent.putExtra(key, post.get(key));
+		}
 		this.startActivity(intent);
 	}
 

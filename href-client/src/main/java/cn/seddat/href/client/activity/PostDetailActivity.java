@@ -4,15 +4,17 @@
 package cn.seddat.href.client.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import cn.seddat.href.client.R;
-import cn.seddat.href.client.api.Post;
 import cn.seddat.href.client.api.ContentService;
+import cn.seddat.href.client.api.Post;
+import cn.seddat.href.client.api.User;
 
 /**
  * @author mzhgeng
@@ -28,13 +30,31 @@ public class PostDetailActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.post_detail);
 		postDetailTask = new PostDetailTask();
-		// args
+		// show
+		Post post = new Post();
 		Bundle bundle = getIntent().getExtras();
-		String id = bundle.getString(Intent.EXTRA_UID);
-		postDetailTask.execute(id);
+		for (String key : bundle.keySet()) {
+			post.put(key, bundle.getString(key));
+		}
+		TextView text = (TextView) findViewById(R.id.post_title);
+		text.setText(post.getTitle());
+		text = (TextView) findViewById(R.id.author_name);
+		text.setText(post.get(User.COL_NAME));
+		text = (TextView) findViewById(R.id.post_time);
+		text.setText(post.get("pt"));
+		text = (TextView) findViewById(R.id.post_company);
+		if (post.getCompany() != null && !post.getCompany().isEmpty()) {
+			text.setVisibility(View.VISIBLE);
+			text.setText(post.getCompany());
+		}
+		text = (TextView) findViewById(R.id.post_source);
+		text.setText(post.getSource());
+		text = (TextView) findViewById(R.id.post_mark);
+		text.setText(String.valueOf(post.getMark()));
+		postDetailTask.execute(post);
 	}
 
-	class PostDetailTask extends AsyncTask<String, Integer, Post> {
+	class PostDetailTask extends AsyncTask<Post, Integer, Post> {
 
 		private ContentService postService;
 
@@ -48,13 +68,16 @@ public class PostDetailActivity extends Activity {
 		}
 
 		@Override
-		protected Post doInBackground(String... params) {
-			String id = params.length > 0 ? params[0] : null;
-			Post post = null;
-			try {
-				post = postService.findPostById(id);
-			} catch (Exception e) {
-				Log.e(tag, "find post by id failed", e);
+		protected Post doInBackground(Post... params) {
+			Post post = params.length > 0 ? params[0] : null;
+			if (post != null && post.getId() != null && !post.getId().isEmpty()) {
+				try {
+					String ctt = postService.findPostContent(post.getId());
+					post.setContent(ctt);
+				} catch (Exception e) {
+					post.remove(Post.COL_CONTENT);
+					Log.e(tag, "find post by id failed", e);
+				}
 			}
 			return post;
 		}
@@ -62,19 +85,14 @@ public class PostDetailActivity extends Activity {
 		@Override
 		protected void onPostExecute(Post post) {
 			super.onPostExecute(post);
-			if (post == null) {
+			if (post == null || post.getContent() == null) {
+				Toast.makeText(PostDetailActivity.this, "网络不给力啊", Toast.LENGTH_LONG).show();
 				return;
 			}
-			TextView text = (TextView) findViewById(R.id.post_title);
-			text.setText(post.getTitle());
-			text = (TextView) findViewById(R.id.post_source);
-			text.setText(post.getSource());
-			text = (TextView) findViewById(R.id.post_time);
-			text.setText(post.get("pt"));
-			text = (TextView) findViewById(R.id.post_content);
-			text.setText(Html.fromHtml(post.getContent()));
-			text = (TextView) findViewById(R.id.post_mark);
-			text.setText(String.valueOf(post.getMark()));
+			if (!post.getContent().isEmpty()) {
+				TextView text = (TextView) findViewById(R.id.post_content);
+				text.setText(Html.fromHtml(post.getContent()));
+			}
 		}
 
 		@Override

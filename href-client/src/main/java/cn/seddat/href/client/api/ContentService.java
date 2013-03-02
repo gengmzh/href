@@ -4,12 +4,12 @@
 package cn.seddat.href.client.api;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,10 +72,11 @@ public class ContentService {
 		if (cursor != null) {
 			boolean hasNext = cursor.moveToFirst();
 			while (hasNext) {
-				Post p = this.parsePost(cursor);
-				posts.add(p);
-				if (!userIds.contains(p.getUserId())) {
-					userIds.add(p.getUserId());
+				Post post = this.parsePost(cursor);
+				post.put("pt", this.parseShowTime(post.getCreateTime()));
+				posts.add(post);
+				if (!userIds.contains(post.getUserId())) {
+					userIds.add(post.getUserId());
 				}
 				hasNext = posts.size() < 20 && cursor.moveToNext();
 			}
@@ -90,7 +91,7 @@ public class ContentService {
 					post.put(User.COL_ICON_URI, user.getIconUri());
 					post.put(User.COL_ICON, user.getIcon());
 				} else {
-					post.put(User.COL_ICON, defaultUserIcon);// just kidding
+					post.put(User.COL_ICON, defaultUserIcon);// kidding me??
 				}
 			}
 		}
@@ -304,58 +305,56 @@ public class ContentService {
 		if (time == null) {
 			return;
 		}
-		String[] args = new String[] { String.valueOf(time.getTime()) };
+		long millis = time.getTime();
+		String[] args = new String[] { String.valueOf(millis) };
 		contentResolver.delete(ContentProvider.CONTENT_POST, Post.COL_CACHE_TIME + "<?", args);
 		contentResolver.delete(ContentProvider.CONTENT_USER, User.COL_CACHE_TIME + "<?", args);
+		File cache = this.getCacheDir();
+		File[] files = cache.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File file) {
+				return file.isFile();
+			}
+		});
+		for (File file : files) {
+			if (file.lastModified() < millis) {
+				file.delete();
+			}
+		}
 	}
 
-	public Post findPostById(String id) throws Exception {
-		if (id == null || id.isEmpty()) {
+	public String findPostContent(String postId) throws Exception {
+		if (postId == null || postId.isEmpty()) {
 			return null;
 		}
 		// cache
-		Post post = null;
-		Cursor cursor = contentResolver.query(ContentProvider.CONTENT_POST, null, Post.COL_ID + "=?",
-				new String[] { id }, null);
+		String content = null;
+		Cursor cursor = contentResolver.query(ContentProvider.CONTENT_POST, new String[] { Post.COL_CONTENT },
+				Post.COL_ID + "=?", new String[] { postId }, null);
 		if (cursor != null) {
 			if (cursor.moveToFirst()) {
-				post = this.parsePost(cursor);
+				content = cursor.getString(cursor.getColumnIndex(Post.COL_CONTENT));
 			}
 			cursor.close();
 		}
 		// server
-		if (post == null || post.getContent() == null || post.getContent().isEmpty()) {
+		if (content == null || content.isEmpty()) {
 			HttpRequest request = new HttpRequest();
-			String content = new String(request.request(api_host + "/" + id, null));
-			JSONObject jo = new JSONObject(content);
-			post = this.parsePost(jo);
-			this.save(ContentProvider.CONTENT_POST, post.toValues(), Post.COL_ID + "=?", new String[] { post.getId() });
-			User user = this.parseUser(jo);
-			this.save(ContentProvider.CONTENT_USER, user.toValues(), User.COL_ID + "=?", new String[] { user.getId() });
+			String json = new String(request.request(api_host + "/" + postId, null));
+			JSONObject jo = new JSONObject(json);
+			content = jo.optString("ctt", null);
+			if (content != null && !content.isEmpty()) {
+				ContentValues values = new ContentValues();
+				values.put(Post.COL_CONTENT, content);
+				this.save(ContentProvider.CONTENT_POST, values, Post.COL_ID + "=?", new String[] { postId });
+			}
 		}
-		// show
-		post.put("pt", this.parseShowTime(post.getCreateTime()));
-		Map<String, User> users = this.findUserByCache(Arrays.asList(post.getUserId()));
-		if (users.containsKey(post.getUserId())) {
-			User user = users.get(post.getUserId());
-			post.put(User.COL_NAME, user.getName());
-			post.put(User.COL_ICON_URI, user.getIconUri());
-			post.put(User.COL_ICON, user.getIcon());
-		}
-		return post;
+		return content;
 	}
 
 	public Map<String, String> findUserIcon(List<String> uris) throws Exception {
 		// init cache
-		File cache = null;
-		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			cache = new File(Environment.getExternalStorageDirectory(), context.getPackageName());
-			cache = new File(cache, "cache");
-			cache.mkdirs();
-		} else {
-			cache = context.getCacheDir();
-		}
-		Log.i(tag, "using cache " + cache.getAbsolutePath());
+		File cache = this.getCacheDir();
 		// find icon
 		Map<String, String> result = new HashMap<String, String>();
 		for (String uri : uris) {
@@ -383,6 +382,19 @@ public class ContentService {
 			result.put(uri, file.getAbsolutePath());
 		}
 		return result;
+	}
+
+	private File getCacheDir() {
+		File cache = null;
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			cache = new File(Environment.getExternalStorageDirectory(), context.getPackageName());
+			cache = new File(cache, "cache");
+			cache.mkdirs();
+		} else {
+			cache = context.getCacheDir();
+		}
+		Log.i(tag, "using cache " + cache.getAbsolutePath());
+		return cache;
 	}
 
 	private void delete(File file) {

@@ -31,7 +31,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
 
             <TextView
-                android:id="@+id/post_source"
+                android:id="@+id/author_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dip"
@@ -43,36 +43,43 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:background="@color/orange" />
+            android:background="@color/orange"
+            android:layout_marginBottom="15dip" />
 
+        <TextView
+            android:id="@+id/post_company"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
         <TextView
             android:id="@+id/post_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
-            android:layout_marginTop="15dip"
+            android:minHeight="256dip"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip" >
 
+			<TextView
+                android:id="@+id/post_mark_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Mark"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+            
             <TextView
                 android:id="@+id/post_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
-
-            <TextView
-                android:id="@+id/post_mark_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@id/post_mark_desc"
+                android:gravity="right"
                 android:layout_marginLeft="6dip"
-                android:layout_toLeftOf="@id/post_mark"
-                android:text="收藏："
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
 <!-- 
             <TextView
@@ -110,6 +117,13 @@
                 android:text="展示："
                 android:textAppearance="?android:attr/textAppearanceSmallInverse" />
  -->
+            <TextView
+                android:id="@+id/post_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/post_mark"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+            
         </RelativeLayout>
     </LinearLayout>
 
