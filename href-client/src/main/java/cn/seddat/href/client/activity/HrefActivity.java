@@ -131,7 +131,7 @@ public class HrefActivity extends Activity implements RefreshableListener {
 				continue;
 			}
 			String uri = post.get(User.COL_ICON_URI);
-			if (uri == null || uri.isEmpty()) {
+			if (uri == null || uri.length() == 0) {
 				continue;
 			}
 			posts.add(post);

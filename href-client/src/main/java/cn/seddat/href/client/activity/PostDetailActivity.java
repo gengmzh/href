@@ -43,7 +43,7 @@ public class PostDetailActivity extends Activity {
 		text = (TextView) findViewById(R.id.post_time);
 		text.setText(post.get("pt"));
 		text = (TextView) findViewById(R.id.post_company);
-		if (post.getCompany() != null && !post.getCompany().isEmpty()) {
+		if (post.getCompany() != null && post.getCompany().length() > 0) {
 			text.setVisibility(View.VISIBLE);
 			text.setText(post.getCompany());
 		}
@@ -70,7 +70,7 @@ public class PostDetailActivity extends Activity {
 		@Override
 		protected Post doInBackground(Post... params) {
 			Post post = params.length > 0 ? params[0] : null;
-			if (post != null && post.getId() != null && !post.getId().isEmpty()) {
+			if (post != null && post.getId() != null && post.getId().length() > 0) {
 				try {
 					String ctt = postService.findPostContent(post.getId());
 					post.setContent(ctt);
@@ -89,7 +89,7 @@ public class PostDetailActivity extends Activity {
 				Toast.makeText(PostDetailActivity.this, "网络不给力啊", Toast.LENGTH_LONG).show();
 				return;
 			}
-			if (!post.getContent().isEmpty()) {
+			if (post.getContent().length() > 0) {
 				TextView text = (TextView) findViewById(R.id.post_content);
 				text.setText(Html.fromHtml(post.getContent()));
 			}

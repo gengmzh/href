@@ -56,7 +56,7 @@ public class ContentService {
 			String comp = order == 0 ? ">" : "<";
 			where.append(Post.COL_CREATE_TIME).append(comp).append("?");
 			args.add(String.valueOf(time));
-			if (item != null && !item.isEmpty()) {
+			if (item != null && item.length() > 0) {
 				where.append(" or (").append(Post.COL_CREATE_TIME).append("=? and ");
 				where.append(Post.COL_ID).append(comp).append("?)");
 				args.add(String.valueOf(time));
@@ -167,7 +167,7 @@ public class ContentService {
 		if (time > 0) {
 			args.set("time", String.valueOf(time));
 		}
-		if (item != null && !item.isEmpty()) {
+		if (item != null && item.length() == 0) {
 			args.set("item", item);
 		}
 		if (order > 0) {
@@ -201,35 +201,35 @@ public class ContentService {
 		Post post = new Post();
 		post.setId(jo.optString("id", jo.optString("_id")));
 		String val = jo.optString("ttl");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			post.setTitle(val);
 		}
 		val = jo.optString("ctt");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			post.setContent(val);
 		}
 		val = jo.optString("sn");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			post.setSource(val);
 		}
 		val = jo.optString("sl");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			post.setLink(val);
 		}
 		val = jo.optString("tp");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			post.setType(val);
 		}
 		val = jo.optString("com");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			post.setCompany(val);
 		}
 		val = jo.optString("uid");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			post.setUserId(val);
 		}
 		val = jo.optString("ct");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			try {
 				post.setCreateTime(dateFormat.parse(val).getTime());
 			} catch (ParseException e) {
@@ -246,15 +246,15 @@ public class ContentService {
 	private User parseUser(JSONObject jo) {
 		User user = new User();
 		String val = jo.optString("uid");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			user.setId(val);
 		}
 		val = jo.optString("au");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			user.setName(val);
 		}
 		val = jo.optString("icon");
-		if (!val.isEmpty()) {
+		if (val.length() > 0) {
 			user.setIconUri(val);
 		}
 		user.setCacheTime(new Date());
@@ -265,7 +265,7 @@ public class ContentService {
 		if (uri == null || values == null || values.size() == 0) {
 			return;
 		}
-		if (where != null && !where.isEmpty()) {
+		if (where != null && where.length() > 0) {
 			Cursor cursor = contentResolver.query(uri, new String[] { BaseColumns._ID }, where, args, null);
 			if (cursor != null) {
 				if (cursor.moveToFirst()) {
@@ -324,7 +324,7 @@ public class ContentService {
 	}
 
 	public String findPostContent(String postId) throws Exception {
-		if (postId == null || postId.isEmpty()) {
+		if (postId == null || postId.length() == 0) {
 			return null;
 		}
 		// cache
@@ -338,12 +338,12 @@ public class ContentService {
 			cursor.close();
 		}
 		// server
-		if (content == null || content.isEmpty()) {
+		if (content == null || content.length() == 0) {
 			HttpRequest request = new HttpRequest();
 			String json = new String(request.request(api_host + "/" + postId, null));
 			JSONObject jo = new JSONObject(json);
 			content = jo.optString("ctt", null);
-			if (content != null && !content.isEmpty()) {
+			if (content != null && content.length() > 0) {
 				ContentValues values = new ContentValues();
 				values.put(Post.COL_CONTENT, content);
 				this.save(ContentProvider.CONTENT_POST, values, Post.COL_ID + "=?", new String[] { postId });
