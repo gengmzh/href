@@ -72,7 +72,14 @@ public class ContentService {
 		if (cursor != null) {
 			boolean hasNext = cursor.moveToFirst();
 			while (hasNext) {
-				Post post = this.parsePost(cursor);
+				Post post = new Post();
+				post.setId(cursor.getString(cursor.getColumnIndex(Post.COL_ID)));
+				post.setUserId(cursor.getString(cursor.getColumnIndex(Post.COL_USER_ID)));
+				post.setTitle(cursor.getString(cursor.getColumnIndex(Post.COL_TITLE)));
+				post.setSource(cursor.getString(cursor.getColumnIndex(Post.COL_SOURCE)));
+				post.setCompany(cursor.getString(cursor.getColumnIndex(Post.COL_COMPANY)));
+				post.setCreateTime(cursor.getLong(cursor.getColumnIndex(Post.COL_CREATE_TIME)));
+				post.setMark(cursor.getLong(cursor.getColumnIndex(Post.COL_MARK)));
 				post.put("pt", this.parseShowTime(post.getCreateTime()));
 				posts.add(post);
 				if (!userIds.contains(post.getUserId())) {
@@ -96,41 +103,6 @@ public class ContentService {
 			}
 		}
 		return posts;
-	}
-
-	private Post parsePost(Cursor cursor) {
-		Post post = new Post();
-		int index = cursor.getColumnIndex(Post.COL_ID);
-		if (index > -1)
-			post.setId(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_USER_ID);
-		if (index > -1)
-			post.setUserId(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_TITLE);
-		if (index > -1)
-			post.setTitle(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_CONTENT);
-		if (index > -1)
-			post.setContent(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_SOURCE);
-		if (index > -1)
-			post.setSource(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_LINK);
-		if (index > -1)
-			post.setLink(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_TYPE);
-		if (index > -1)
-			post.setType(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_COMPANY);
-		if (index > -1)
-			post.setCompany(cursor.getString(index));
-		index = cursor.getColumnIndex(Post.COL_CREATE_TIME);
-		if (index > -1)
-			post.setCreateTime(cursor.getLong(index));
-		index = cursor.getColumnIndex(Post.COL_MARK);
-		if (index > -1)
-			post.setMark(cursor.getLong(index));
-		return post;
 	}
 
 	public Map<String, User> findUserByCache(List<String> ids) throws Exception {
@@ -182,10 +154,21 @@ public class ContentService {
 		for (int i = 0; i < json.length(); i++) {
 			// post
 			JSONObject jo = (JSONObject) json.get(i);
-			Post post = this.parsePost(jo);
+			Post post = new Post();
+			post.setId(jo.optString("id", jo.optString("_id"))).setTitle(jo.optString("ttl"));
+			post.setSource(jo.optString("sn")).setLink(jo.optString("sl"));
+			post.setType(jo.optString("tp")).setCompany(jo.optString("com")).setUserId(jo.optString("uid"));
+			try {
+				post.setCreateTime(dateFormat.parse(jo.optString("ct")).getTime());
+			} catch (ParseException e) {
+			}
+			post.setMark(jo.optLong("mrk"));
+			post.setCacheTime(new Date());
 			this.save(ContentProvider.CONTENT_POST, post.toValues(), Post.COL_ID + "=?", new String[] { post.getId() });
 			// user
-			User user = this.parseUser(jo);
+			User user = new User();
+			user.setId(jo.optString("uid")).setName(jo.optString("au")).setIconUri(jo.optString("icon"));
+			user.setCacheTime(new Date());
 			this.save(ContentProvider.CONTENT_USER, user.toValues(), User.COL_ID + "=?", new String[] { user.getId() });
 			// show
 			post.put(User.COL_NAME, user.getName());
@@ -195,70 +178,6 @@ public class ContentService {
 			posts.add(post);
 		}
 		return posts;
-	}
-
-	private Post parsePost(JSONObject jo) {
-		Post post = new Post();
-		post.setId(jo.optString("id", jo.optString("_id")));
-		String val = jo.optString("ttl");
-		if (val.length() > 0) {
-			post.setTitle(val);
-		}
-		val = jo.optString("ctt");
-		if (val.length() > 0) {
-			post.setContent(val);
-		}
-		val = jo.optString("sn");
-		if (val.length() > 0) {
-			post.setSource(val);
-		}
-		val = jo.optString("sl");
-		if (val.length() > 0) {
-			post.setLink(val);
-		}
-		val = jo.optString("tp");
-		if (val.length() > 0) {
-			post.setType(val);
-		}
-		val = jo.optString("com");
-		if (val.length() > 0) {
-			post.setCompany(val);
-		}
-		val = jo.optString("uid");
-		if (val.length() > 0) {
-			post.setUserId(val);
-		}
-		val = jo.optString("ct");
-		if (val.length() > 0) {
-			try {
-				post.setCreateTime(dateFormat.parse(val).getTime());
-			} catch (ParseException e) {
-			}
-		}
-		long l = jo.optLong("mrk");
-		if (l > 0) {
-			post.setMark(l);
-		}
-		post.setCacheTime(new Date());
-		return post;
-	}
-
-	private User parseUser(JSONObject jo) {
-		User user = new User();
-		String val = jo.optString("uid");
-		if (val.length() > 0) {
-			user.setId(val);
-		}
-		val = jo.optString("au");
-		if (val.length() > 0) {
-			user.setName(val);
-		}
-		val = jo.optString("icon");
-		if (val.length() > 0) {
-			user.setIconUri(val);
-		}
-		user.setCacheTime(new Date());
-		return user;
 	}
 
 	private void save(Uri uri, ContentValues values, String where, String[] args) {
