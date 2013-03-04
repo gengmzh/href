@@ -26,9 +26,9 @@ import cn.seddat.href.client.view.RefreshableListView.RefreshableListener;
  * @author mzhgeng
  * 
  */
-public class HrefActivity extends Activity implements RefreshableListener {
+public class PostActivity extends Activity implements RefreshableListener {
 
-	private final String tag = HrefActivity.class.getSimpleName();
+	private final String tag = PostActivity.class.getSimpleName();
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
 	private String appName;
 	private ContentService contentService;
@@ -37,7 +37,7 @@ public class HrefActivity extends Activity implements RefreshableListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.post_list);
 		appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
 		// init
 		contentService = new ContentService(this);

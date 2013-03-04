@@ -27,17 +27,15 @@
         android:theme="@android:style/Theme.Light" >
         <uses-library android:name="android.test.runner" />
 
-        <activity android:name=".activity.HrefActivity" >
+        <activity android:name=".activity.PostActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activity.PostDetailActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
