@@ -13,11 +13,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListAdapter;
-import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
-import cn.seddat.href.client.service.ToastService;
 import cn.seddat.href.client.service.User;
 import cn.seddat.href.client.view.RefreshableListView;
 import cn.seddat.href.client.view.RefreshableListView.RefreshableListener;
@@ -30,7 +28,6 @@ public class PostActivity extends Activity implements RefreshableListener {
 
 	private final String tag = PostActivity.class.getSimpleName();
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
-	private String appName;
 	private ContentService contentService;
 	private RefreshableListView listView;
 
@@ -38,7 +35,6 @@ public class PostActivity extends Activity implements RefreshableListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.post_list);
-		appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
 		// init
 		contentService = new ContentService(this);
 		List<Post> posts = null;
@@ -146,14 +142,11 @@ public class PostActivity extends Activity implements RefreshableListener {
 		}
 	}
 
-	private long backTime = 0;
-
 	@Override
 	public void onBackPressed() {
-		long time = System.currentTimeMillis();
-		if (time - backTime > 2000) {
-			backTime = time;
-			ToastService.toast(this, "再按一次退出" + appName, Toast.LENGTH_SHORT);
+		Activity parent = getParent();
+		if (parent != null) {
+			parent.onBackPressed();
 		} else {
 			super.onBackPressed();
 		}
