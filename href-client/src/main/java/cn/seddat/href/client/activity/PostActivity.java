@@ -88,6 +88,7 @@ public class PostActivity extends Activity implements RefreshableListener {
 			refreshed = false;
 		} else {
 			contentService.clearCache(cacheTime);
+			Log.i(tag, "[Refreshing] clear cache");
 			refreshed = true;
 		}
 		result.setData(posts);
