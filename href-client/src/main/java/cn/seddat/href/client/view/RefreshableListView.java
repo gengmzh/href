@@ -5,6 +5,7 @@ package cn.seddat.href.client.view;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -301,26 +302,28 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		// header.setVisibility(View.VISIBLE);
 		Thread th = new Thread() {
 			public void run() {
-				List<? extends Map<String, ?>> items = null;
-				Message msg = internalHandler.obtainMessage(WHAT_REFRESHING_DONE);
-				if (refreshableListener != null) {
-					try {
-						items = refreshableListener.onRefresh(RefreshableListView.this);
-						msg.obj = items;
-					} catch (Exception e) {
-						Log.e(tag, "refreshing failed", e);
+				RefreshResult result = null;
+				try {
+					result = refreshableListener.onRefresh(RefreshableListView.this);
+					if (result == null) {
+						result = new RefreshResult();
+						result.setStatus(1).setMessage("列表刷新失败");
 					}
-				} else {
-					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
+				} catch (Exception e) {
+					result = new RefreshResult();
+					result.setStatus(1).setMessage("网络不给力啊");
+					Log.e(tag, "refreshing failed", e);
 				}
-				Log.i(tag, "[Refreshing] find " + (items != null ? items.size() : 0) + " items");
+				Log.i(tag, "[Refreshing] find " + result.getItemCount() + " items");
+				Message msg = internalHandler.obtainMessage(WHAT_REFRESHING_DONE);
+				msg.obj = result;
 				msg.sendToTarget();
 			};
 		};
 		th.start();
 	}
 
-	private void postRefreshing(List<Map<String, Object>> items) {
+	private void postRefreshing(RefreshResult result) {
 		if (!isRefreshing) {
 			return;
 		}
@@ -335,11 +338,11 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		header.setLayoutParams(header.getLayoutParams());
 		headerHeight = 0;
 		// header.setVisibility(View.GONE);
-		if (items == null) {
-			ToastService.toast(getContext(), "网络不给力啊", Toast.LENGTH_LONG);
+		if (result.getStatus() != 0) {
+			ToastService.toast(getContext(), result.getMessage(), Toast.LENGTH_LONG);
 		} else {
 			data.clear();
-			data.addAll(items);
+			data.addAll(result.getItems());
 			adapter.notifyDataSetChanged();
 		}
 		this.saveRefreshingTime();
@@ -436,36 +439,38 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		footerProgress.setVisibility(View.VISIBLE);
 		Thread th = new Thread() {
 			public void run() {
-				List<? extends Map<String, ?>> items = null;
-				Message msg = internalHandler.obtainMessage(WHAT_LOADING_DONE);
-				if (refreshableListener != null) {
-					try {
-						items = refreshableListener.onLoad(RefreshableListView.this);
-						msg.obj = items;
-					} catch (Exception e) {
-						Log.e(tag, "loading failed", e);
+				RefreshResult result = null;
+				try {
+					result = refreshableListener.onLoad(RefreshableListView.this);
+					if (result == null) {
+						result = new RefreshResult();
+						result.setStatus(1).setMessage("列表加载失败");
 					}
-				} else {
-					Log.e(tag, RefreshableListener.class.getSimpleName() + " is null");
+				} catch (Exception e) {
+					result = new RefreshResult();
+					result.setStatus(1).setMessage("网络不给力啊");
+					Log.e(tag, "loading failed", e);
 				}
-				Log.i(tag, "[Loading] find " + (items != null ? items.size() : 0) + " items");
+				Log.i(tag, "[Loading] find " + result.getItemCount() + " items");
+				Message msg = internalHandler.obtainMessage(WHAT_LOADING_DONE);
+				msg.obj = result;
 				msg.sendToTarget();
 			};
 		};
 		th.start();
 	}
 
-	private void postLoading(List<Map<String, Object>> items) {
+	private void postLoading(RefreshResult result) {
 		if (!isLoading) {
 			return;
 		}
 		isLoading = false;
 		footerProgress.setVisibility(View.GONE);
-		if (items == null) {
-			footerTitle.setText("网络不给力啊");
+		if (result.getStatus() != 0) {
+			footerTitle.setText(result.getMessage());
 		} else {
 			footerTitle.setText("加载更多");
-			data.addAll(items);
+			data.addAll(result.getItems());
 			adapter.notifyDataSetChanged();
 		}
 		Log.i(tag, "[Loading] done");
@@ -539,7 +544,6 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private Handler internalHandler = new Handler() {
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case WHAT_HEADER_HEIGHT: {
@@ -551,8 +555,8 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 				break;
 			}
 			case WHAT_REFRESHING_DONE: {
-				List<Map<String, Object>> items = (List<Map<String, Object>>) msg.obj;
-				postRefreshing(items);
+				RefreshResult result = (RefreshResult) msg.obj;
+				postRefreshing(result);
 				showFooter();
 				displaying();
 				break;
@@ -562,8 +566,8 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 				break;
 			}
 			case WHAT_LOADING_DONE: {
-				List<Map<String, Object>> items = (List<Map<String, Object>>) msg.obj;
-				postLoading(items);
+				RefreshResult result = (RefreshResult) msg.obj;
+				postLoading(result);
 				break;
 			}
 			case WHAT_STOPSCROLLING_DONE: {
@@ -589,15 +593,66 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 
 	public interface RefreshableListener {
 
-		public List<? extends Map<String, ?>> onRefresh(RefreshableListView listView) throws Exception;
+		public RefreshResult onRefresh(RefreshableListView listView) throws Exception;
 
-		public List<? extends Map<String, ?>> onLoad(RefreshableListView listView) throws Exception;
+		public RefreshResult onLoad(RefreshableListView listView) throws Exception;
 
 		public void onItemClick(RefreshableListView listView, int position) throws Exception;
 
 		public boolean onItemLongClick(RefreshableListView listView, int position) throws Exception;
 
 		public void onDisplay(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception;
+
+	}
+
+	public static class RefreshResult {
+
+		private int status;
+		private String message;
+		private List<? extends Map<String, ?>> data;
+
+		public RefreshResult() {
+			super();
+		}
+
+		public int getStatus() {
+			return status;
+		}
+
+		public RefreshResult setStatus(int status) {
+			this.status = status;
+			return this;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public RefreshResult setMessage(String message) {
+			this.message = message;
+			return this;
+		}
+
+		public List<? extends Map<String, ?>> getData() {
+			return data;
+		}
+
+		public RefreshResult setData(List<? extends Map<String, ?>> data) {
+			this.data = data;
+			return this;
+		}
+
+		public int getItemCount() {
+			return data != null ? data.size() : 0;
+		}
+
+		@SuppressWarnings("unchecked")
+		public List<Map<String, Object>> getItems() {
+			if (data == null) {
+				return Collections.emptyList();
+			}
+			return (List<Map<String, Object>>) data;
+		}
 
 	}
 

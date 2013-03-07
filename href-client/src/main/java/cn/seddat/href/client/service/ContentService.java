@@ -49,7 +49,7 @@ public class ContentService {
 		this.contentResolver = context.getContentResolver();
 	}
 
-	public List<Post> findPostByCache(long time, String item, int order) throws Exception {
+	public List<Post> findPostByCache(long time, String item, int order, int limit) throws Exception {
 		StringBuffer where = new StringBuffer();
 		List<String> args = new ArrayList<String>();
 		if (time > 0) {
@@ -70,6 +70,9 @@ public class ContentService {
 		List<Post> posts = new ArrayList<Post>();
 		List<String> userIds = new ArrayList<String>();
 		if (cursor != null) {
+			if (limit <= 0) {
+				limit = 20;
+			}
 			boolean hasNext = cursor.moveToFirst();
 			while (hasNext) {
 				Post post = new Post();
@@ -85,7 +88,7 @@ public class ContentService {
 				if (!userIds.contains(post.getUserId())) {
 					userIds.add(post.getUserId());
 				}
-				hasNext = posts.size() < 20 && cursor.moveToNext();
+				hasNext = posts.size() < limit && cursor.moveToNext();
 			}
 			cursor.close();
 		}
@@ -133,7 +136,7 @@ public class ContentService {
 		return result;
 	}
 
-	public List<Post> findPostByServer(long time, String item, int order) throws Exception {
+	public List<Post> findPostByServer(long time, String item, int order, int limit) throws Exception {
 		// args
 		HttpRequest.Parameter args = new HttpRequest.Parameter();
 		if (time > 0) {
@@ -145,6 +148,7 @@ public class ContentService {
 		if (order > 0) {
 			args.set("order", String.valueOf(order));
 		}
+		args.set("limit", String.valueOf(limit <= 0 ? 20 : limit));
 		// request
 		HttpRequest request = new HttpRequest();
 		String content = new String(request.request(api_host, args));
@@ -284,7 +288,7 @@ public class ContentService {
 			if (file.exists()) {
 				if (file.isFile()) {
 					result.put(uri, file.getAbsolutePath());
-					Log.w(tag, "find from cache " + file.getAbsolutePath());
+					Log.i(tag, "find " + file.getName() + " by cache");
 					continue;
 				} else {
 					this.delete(file);
@@ -299,6 +303,7 @@ public class ContentService {
 			out.write(bytes);
 			out.close();
 			result.put(uri, file.getAbsolutePath());
+			Log.i(tag, "find " + file.getName() + " by server");
 		}
 		return result;
 	}

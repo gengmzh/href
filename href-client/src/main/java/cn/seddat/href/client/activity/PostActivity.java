@@ -18,6 +18,7 @@ import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
 import cn.seddat.href.client.service.User;
 import cn.seddat.href.client.view.RefreshableListView;
+import cn.seddat.href.client.view.RefreshableListView.RefreshResult;
 import cn.seddat.href.client.view.RefreshableListView.RefreshableListener;
 
 /**
@@ -28,6 +29,7 @@ public class PostActivity extends Activity implements RefreshableListener {
 
 	private final String tag = PostActivity.class.getSimpleName();
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
+	private final int limit = 20;
 	private ContentService contentService;
 	private RefreshableListView listView;
 
@@ -39,7 +41,7 @@ public class PostActivity extends Activity implements RefreshableListener {
 		contentService = new ContentService(this);
 		List<Post> posts = null;
 		try {
-			posts = contentService.findPostByCache(0, null, 0);
+			posts = contentService.findPostByCache(0, null, 0, limit);
 		} catch (Exception e) {
 			Log.e(tag, "find post by cache failed", e);
 		}
@@ -63,26 +65,37 @@ public class PostActivity extends Activity implements RefreshableListener {
 	private boolean refreshed = false;
 
 	@Override
-	public List<? extends Map<String, ?>> onRefresh(RefreshableListView listView) throws Exception {
+	public RefreshResult onRefresh(RefreshableListView listView) throws Exception {
 		// args
 		long time = 0;
 		String item = null;
-		// ListAdapter adapter = listView.getListAdapter();
-		// if (adapter != null && adapter.getCount() > 0) {
-		// Post post = (Post) adapter.getItem(0);
-		// time = post.getCreateTime();
-		// item = post.getId();
-		// }
+		ListAdapter adapter = listView.getListAdapter();
+		if (adapter != null && adapter.getCount() > 0) {
+			Post post = (Post) adapter.getItem(0);
+			time = post.getCreateTime();
+			item = post.getId();
+		}
 		// query
+		RefreshResult result = new RefreshResult();
 		Date cacheTime = new Date();
-		List<Post> posts = contentService.findPostByServer(time, item, 0);
-		contentService.clearCache(cacheTime);
-		refreshed = true;
-		return posts;
+		List<Post> posts = contentService.findPostByServer(time, item, 0, limit);
+		Log.i(tag, "[Refreshing] find " + posts.size() + " items");
+		if (posts.size() < limit) {
+			int count = Math.min(limit - posts.size(), adapter != null ? adapter.getCount() : 0);
+			for (int i = 0; i < count; i++) {
+				posts.add((Post) adapter.getItem(i));
+			}
+			refreshed = false;
+		} else {
+			contentService.clearCache(cacheTime);
+			refreshed = true;
+		}
+		result.setData(posts);
+		return result;
 	}
 
 	@Override
-	public List<? extends Map<String, ?>> onLoad(RefreshableListView listView) throws Exception {
+	public RefreshResult onLoad(RefreshableListView listView) throws Exception {
 		// args
 		long time = 0;
 		String item = null;
@@ -93,11 +106,37 @@ public class PostActivity extends Activity implements RefreshableListener {
 			item = post.getId();
 		}
 		// query
+		RefreshResult result = new RefreshResult();
 		if (refreshed) {
-			return contentService.findPostByServer(time, item, 1);
+			try {
+				result.setData(contentService.findPostByServer(time, item, 1, limit));
+				Log.i(tag, "[Loading] find " + result.getItemCount() + " items by server");
+			} catch (Exception ex) {
+				Log.i(tag, "loading by server failed", ex);
+				result.setStatus(1).setMessage("网络不给力啊");
+			}
 		} else {
-			return contentService.findPostByCache(time, item, 1);
+			try {
+				result.setData(contentService.findPostByCache(time, item, 1, limit));
+				Log.i(tag, "[Loading] find " + result.getItemCount() + " items by cache");
+			} catch (Exception ex) {
+				Log.i(tag, "loading by cache failed", ex);
+				result.setStatus(1).setMessage("缓存加载失败");
+			}
+			if (result.getStatus() == 0 && result.getItemCount() == 0) {
+				try {
+					result.setData(contentService.findPostByServer(time, item, 1, limit));
+					Log.i(tag, "[Loading] find " + result.getItemCount() + " items by server");
+				} catch (Exception ex) {
+					Log.i(tag, "loading by server failed", ex);
+					result.setStatus(1).setMessage("网络不给力啊");
+				}
+			}
 		}
+		if (result.getStatus() == 0 && result.getItemCount() == 0) {
+			result.setStatus(1).setMessage("没有了哟，亲");
+		}
+		return result;
 	}
 
 	@Override
