@@ -15,7 +15,8 @@ def index(request):
         time = fromTimestamp(time)
     item = request.REQUEST.get('item', None)
     order = request.REQUEST.get('order', 0)
-    limit = request.REQUEST.get('limit', 20)
+    limit = request.REQUEST.get('limit', '20')
+    limit = int(limit)
     # query
     service = PostService()
     posts = service.findList(time, item, order, limit)
