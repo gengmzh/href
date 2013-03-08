@@ -65,7 +65,7 @@ public class HrefActivity extends ActivityGroup {
 	public void onBackPressed() {
 		if (slidingMenuView.isMenuShowing()) {
 			Log.i(tag, "hide left menu");
-			slidingMenuView.hideMenu();
+			slidingMenuView.scrollRight();
 		} else {
 			long time = System.currentTimeMillis();
 			if (time - backTime > 2000) {

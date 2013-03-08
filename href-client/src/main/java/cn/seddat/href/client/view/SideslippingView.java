@@ -1,51 +1,36 @@
 package cn.seddat.href.client.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.Scroller;
 import cn.seddat.href.client.R;
 
 /**
- * EffectSpace
- * 
- * @author lance
+ * @author mzhgeng
  * 
  */
 public class SideslippingView extends ViewGroup {
 
-	// private static String LOG_TAG = "SlidingMenuView";
-	private static final int INVALID_SCREEN = -1;
+	private final String tag = SideslippingView.class.getSimpleName();
 
-	private static final int SNAP_VELOCITY = 1000;
+	private final int SNAP_VELOCITY = 1000;
+	private final int touchSlop;
 
-	private int mDefaultScreen = 1;
-
-	private int mCurrentScreen;
-	private int mNextScreen = INVALID_SCREEN;
-	private Scroller mScroller;
-	private VelocityTracker mVelocityTracker;
-
-	private float mLastMotionX;
-	private float mLastMotionY;
-
-	private final static int TOUCH_STATE_REST = 0;
-	private final static int TOUCH_STATE_SCROLLING = 1;
-
-	public int mTouchState = TOUCH_STATE_REST;
-
-	private boolean mAllowLongPress;
-	private boolean mLocked;
-
-	private int mTouchSlop;
-
+	private ViewGroup menuView;
 	private ViewGroup contentView;
+	private Scroller mScroller;
+
+	private int currentScreen;
+	private float lastX, lastY;
+	private float distance;
+	private boolean isSideslipping;
+	private VelocityTracker velocityTracker;
 
 	public SideslippingView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
@@ -53,374 +38,199 @@ public class SideslippingView extends ViewGroup {
 
 	public SideslippingView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		initWorkspace();
+		mScroller = new Scroller(getContext());
+		currentScreen = 1;
+		touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 		postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				scrollTo(findViewById(R.id.sideslipping_menu).getWidth(), 0);
 			}
-		}, 50);
-	}
-
-	private void initWorkspace() {
-		mScroller = new Scroller(getContext());
-		mCurrentScreen = mDefaultScreen;
-
-		mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+		}, 10);
 	}
 
 	public void init() {
+		this.menuView = (ViewGroup) findViewById(R.id.sideslipping_menu);
 		this.contentView = (ViewGroup) findViewById(R.id.sideslipping_content);
 	}
 
+	/**
+	 * @return true if the side menu is showing, false if not
+	 */
 	public boolean isMenuShowing() {
-		return mCurrentScreen <= 0;
+		return currentScreen <= 0;
 	}
 
-	public void showMenu() {
-		this.scrollLeft();
-	}
-
-	public void hideMenu() {
-		this.scrollRight();
-	}
-
+	/**
+	 * show the content view
+	 * 
+	 * @param view
+	 */
 	public void showContent(View view) {
 		contentView.removeAllViews();
 		contentView.addView(view);
-		scrollRight();
-	}
-
-	boolean isDefaultScreenShowing() {
-		return mCurrentScreen == mDefaultScreen;
-	}
-
-	int getCurrentScreen() {
-		return mCurrentScreen;
-	}
-
-	public void setCurrentScreen(int currentScreen) {
-		mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
-
-		invalidate();
-	}
-
-	void showDefaultScreen() {
-		setCurrentScreen(mDefaultScreen);
+		this.scrollRight();
 	}
 
 	@Override
 	public void computeScroll() {
 		if (mScroller.computeScrollOffset()) {
 			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-		} else if (mNextScreen != INVALID_SCREEN) {
-			mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
-			mNextScreen = INVALID_SCREEN;
-			clearChildrenCache();
 		}
-	}
-
-	@Override
-	public void scrollTo(int x, int y) {
-		super.scrollTo(x, y);
-		postInvalidate();
-	}
-
-	@Override
-	protected void dispatchDraw(Canvas canvas) {
-		final int scrollX = getScrollX();
-		super.dispatchDraw(canvas);
-		canvas.translate(scrollX, 0);
 	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		measureViews(widthMeasureSpec, heightMeasureSpec);
-
-	}
-
-	public void measureViews(int widthMeasureSpec, int heightMeasureSpec) {
-		View v1 = findViewById(R.id.sideslipping_menu);
-
-		v1.measure(v1.getLayoutParams().width + v1.getLeft() + v1.getRight(), heightMeasureSpec);
-
-		View v2 = findViewById(R.id.sideslipping_content);
-		v2.measure(widthMeasureSpec, heightMeasureSpec);
+		menuView.measure(menuView.getRight() - menuView.getLeft(), heightMeasureSpec);
+		contentView.measure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		int childLeft = 0;
-
-		final int count = getChildCount();
-		for (int i = 0; i < count; i++) {
-			final View child = getChildAt(i);
+		for (int i = 0; i < getChildCount(); i++) {
+			View child = getChildAt(i);
 			if (child.getVisibility() != View.GONE) {
-				final int childWidth = child.getMeasuredWidth();
-				child.layout(childLeft, 0, childLeft + childWidth, child.getMeasuredHeight());
-				childLeft += childWidth;
+				int width = child.getMeasuredWidth();
+				child.layout(childLeft, 0, childLeft + width, child.getMeasuredHeight());
+				childLeft += width;
 			}
 		}
-	}
-
-	@Override
-	public boolean dispatchUnhandledMove(View focused, int direction) {
-		if (direction == View.FOCUS_LEFT) {
-			if (getCurrentScreen() > 0) {
-				snapToScreen(getCurrentScreen() - 1);
-				return true;
-			}
-		} else if (direction == View.FOCUS_RIGHT) {
-			if (getCurrentScreen() < getChildCount() - 1) {
-				snapToScreen(getCurrentScreen() + 1);
-				return true;
-			}
-		}
-		return super.dispatchUnhandledMove(focused, direction);
 	}
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-		if (mLocked) {
-			return true;
-		}
-
 		final int action = ev.getAction();
-		if ((action == MotionEvent.ACTION_MOVE) && (mTouchState != TOUCH_STATE_REST)) {
+		if (action == MotionEvent.ACTION_MOVE && isSideslipping) {
 			return true;
 		}
-
-		final float x = ev.getX();
-		final float y = ev.getY();
+		final float x = ev.getX(), y = ev.getY();
 
 		switch (action) {
+		case MotionEvent.ACTION_DOWN:
+			lastX = x;
+			lastY = y;
+			distance = 0;
+			isSideslipping = !mScroller.isFinished();
+			break;
 		case MotionEvent.ACTION_MOVE:
-
-			final int xDiff = (int) Math.abs(x - mLastMotionX);
-			final int yDiff = (int) Math.abs(y - mLastMotionY);
-
-			final int touchSlop = mTouchSlop;
-			boolean xMoved = xDiff > touchSlop;
-			boolean yMoved = yDiff > touchSlop;
-
-			if (xMoved || yMoved) {
-
-				if (xMoved) {
-					// Scroll if the user moved far enough along the X axis
-					mTouchState = TOUCH_STATE_SCROLLING;
-					enableChildrenCache();
-				}
-				// Either way, cancel any pending longpress
-				if (mAllowLongPress) {
-					mAllowLongPress = false;
-					// Try canceling the long press. It could also have been
-					// scheduled
-					// by a distant descendant, so use the mAllowLongPress flag
-					// to block
-					// everything
-					final View currentScreen = getChildAt(mCurrentScreen);
-					currentScreen.cancelLongPress();
-				}
+			final int xDiff = (int) Math.abs(x - lastX);
+			final int yDiff = (int) Math.abs(y - lastY);
+			if (xDiff > touchSlop && xDiff > yDiff) {
+				isSideslipping = true;
 			}
 			break;
-
-		case MotionEvent.ACTION_DOWN:
-			// Remember location of down touch
-			mLastMotionX = x;
-			mLastMotionY = y;
-			mAllowLongPress = true;
-
-			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST : TOUCH_STATE_SCROLLING;
-
-			break;
-
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
-			// Release the drag
-			clearChildrenCache();
-			mTouchState = TOUCH_STATE_REST;
-			mAllowLongPress = false;
+			isSideslipping = false;
 			break;
 		}
-
-		/*
-		 * The only time we want to intercept motion events is if we are in the
-		 * drag mode.
-		 */
-		return mTouchState != TOUCH_STATE_REST;
-	}
-
-	void enableChildrenCache() {
-		final int count = getChildCount();
-		for (int i = 0; i < count; i++) {
-			final View layout = (View) getChildAt(i);
-			layout.setDrawingCacheEnabled(true);
-		}
-	}
-
-	void clearChildrenCache() {
-		final int count = getChildCount();
-		for (int i = 0; i < count; i++) {
-			final View layout = (View) getChildAt(i);
-			layout.setDrawingCacheEnabled(false);
-		}
+		return isSideslipping;
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
-		if (mLocked) {
+		if (!isSideslipping) {
+			Log.w(tag, tag + " isn't sideslipping, are you kidding me??");
 			return true;
 		}
-
-		if (mVelocityTracker == null) {
-			mVelocityTracker = VelocityTracker.obtain();
+		if (velocityTracker == null) {
+			velocityTracker = VelocityTracker.obtain();
 		}
-		mVelocityTracker.addMovement(ev);
-
+		velocityTracker.addMovement(ev);
 		final int action = ev.getAction();
 		final float x = ev.getX();
-
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			/*
-			 * If being flinged and user touches, stop the fling. isFinished
-			 * will be false if being flinged.
-			 */
 			if (!mScroller.isFinished()) {
 				mScroller.abortAnimation();
 			}
-
-			// Remember where the motion event started
-			mLastMotionX = x;
+			lastX = x;
+			distance = 0;
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (mTouchState == TOUCH_STATE_SCROLLING) {
-				// Scroll to follow the motion event
-				final int deltaX = (int) (mLastMotionX - x);
-				mLastMotionX = x;
-
-				if (deltaX < 0) {
-					if (getScrollX() > 0) {
-
-						scrollBy(Math.max(-getScrollX(), deltaX), 0);
-					}
-				} else if (deltaX > 0) {
-					final int availableToScroll = getChildAt(getChildCount() - 1).getRight() - getScrollX()
-							- getWidth();
-					if (availableToScroll > 0) {
-
-						scrollBy(Math.min(availableToScroll, deltaX), 0);
-					}
+			final int deltaX = (int) (lastX - x);
+			lastX = x;
+			if (deltaX < 0) {
+				if (getScrollX() > 0) {
+					int delta = Math.max(-getScrollX(), deltaX);
+					scrollBy(delta, 0);
+					distance += delta;
+				}
+			} else if (deltaX > 0) {
+				final int availableToScroll = getChildAt(getChildCount() - 1).getRight() - getScrollX() - getWidth();
+				if (availableToScroll > 0) {
+					int delta = Math.min(availableToScroll, deltaX);
+					scrollBy(delta, 0);
+					distance += delta;
 				}
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			if (mTouchState == TOUCH_STATE_SCROLLING) {
-				final VelocityTracker velocityTracker = mVelocityTracker;
-				velocityTracker.computeCurrentVelocity(1000);
-				int velocityX = (int) velocityTracker.getXVelocity();
-
-				if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0) {
-					// Fling hard enough to move left
-					snapToScreen(mCurrentScreen - 1);
-				} else if (velocityX < -SNAP_VELOCITY && mCurrentScreen < getChildCount() - 1) {
-					// Fling hard enough to move right
-					snapToScreen(mCurrentScreen + 1);
-				} else {
-					snapToDestination();
+			velocityTracker.computeCurrentVelocity(1000);
+			int velocityX = (int) velocityTracker.getXVelocity();
+			if (velocityX > SNAP_VELOCITY && currentScreen > 0) {
+				snapToScreen(currentScreen - 1);
+			} else if (velocityX < -SNAP_VELOCITY && currentScreen < getChildCount() - 1) {
+				snapToScreen(currentScreen + 1);
+			} else {
+				int whichScreen = currentScreen;
+				if (distance < 0) {
+					if (currentScreen > 0) {
+						int width = getChildAt(currentScreen - 1).getWidth();
+						if (width / 5 + distance <= 0) {
+							whichScreen = currentScreen - 1;
+						}
+					}
+				} else if (distance > 0) {
+					if (currentScreen < getChildCount() - 1) {
+						int width = getChildAt(currentScreen).getWidth();
+						if (width / 5 - distance <= 0) {
+							whichScreen = currentScreen + 1;
+						}
+					}
 				}
-
-				if (mVelocityTracker != null) {
-					mVelocityTracker.recycle();
-					mVelocityTracker = null;
-				}
+				snapToScreen(whichScreen);
 			}
-			mTouchState = TOUCH_STATE_REST;
+			velocityTracker.recycle();
+			velocityTracker = null;
+			isSideslipping = false;
 			break;
 		case MotionEvent.ACTION_CANCEL:
-			mTouchState = TOUCH_STATE_REST;
+			isSideslipping = false;
 		}
-
 		return true;
 	}
 
-	protected void snapToDestination() {
-		final int screenWidth = findViewById(R.id.sideslipping_menu).getWidth();
-		final int whichScreen = (getScrollX() + (screenWidth / 2)) / screenWidth;
-
-		snapToScreen(whichScreen);
-	}
-
 	protected void snapToScreen(int whichScreen) {
-
-		enableChildrenCache();
-
-		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
-		boolean changingScreens = whichScreen != mCurrentScreen;
-
-		mNextScreen = whichScreen;
-
+		int screen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
+		if (screen == currentScreen) {
+			return;
+		}
 		View focusedChild = getFocusedChild();
-		if (focusedChild != null && changingScreens && focusedChild == getChildAt(mCurrentScreen)) {
+		if (focusedChild != null && focusedChild == getChildAt(currentScreen)) {
 			focusedChild.clearFocus();
 		}
-
-		final int newX = whichScreen * findViewById(R.id.sideslipping_menu).getWidth();
-		final int delta = newX - getScrollX();
+		int delta = -getScrollX();
+		for (int i = 0; i < screen; i++) {
+			delta += getChildAt(i).getWidth();
+		}
 		mScroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);
 		invalidate();
+		currentScreen = screen;
+		Log.i(tag, "current screen is " + currentScreen);
 	}
 
 	public void scrollLeft() {
-		if (mNextScreen == INVALID_SCREEN && mCurrentScreen > 0 && mScroller.isFinished()) {
-			snapToScreen(mCurrentScreen - 1);
+		if (currentScreen > 0 && mScroller.isFinished()) {
+			snapToScreen(currentScreen - 1);
 		}
 	}
 
 	public void scrollRight() {
-		if (mNextScreen == INVALID_SCREEN && mCurrentScreen < getChildCount() - 1 && mScroller.isFinished()) {
-			snapToScreen(mCurrentScreen + 1);
-		}
-	}
-
-	public int getScreenForView(View v) {
-		int result = -1;
-		if (v != null) {
-			ViewParent vp = v.getParent();
-			int count = getChildCount();
-			for (int i = 0; i < count; i++) {
-				if (vp == getChildAt(i)) {
-					return i;
-				}
-			}
-		}
-		return result;
-	}
-
-	public void unlock() {
-		mLocked = false;
-	}
-
-	public void lock() {
-		mLocked = true;
-	}
-
-	void moveToDefaultScreen() {
-		snapToScreen(mDefaultScreen);
-		getChildAt(mDefaultScreen).requestFocus();
-	}
-
-	@Override
-	protected void onFinishInflate() {
-		// TODO Auto-generated method stub
-		super.onFinishInflate();
-		View child;
-		for (int i = 0; i < getChildCount(); i++) {
-			child = getChildAt(i);
-			child.setFocusable(true);
-			child.setClickable(true);
+		if (currentScreen < getChildCount() - 1 && mScroller.isFinished()) {
+			snapToScreen(currentScreen + 1);
 		}
 	}
 
