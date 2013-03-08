@@ -73,7 +73,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private List<Map<String, Object>> data;
 	private SimpleAdapter adapter;
 
-	private int headerHeightThreshold = 100;
+	private int headerHeightThreshold = 72;
 	private int headerHeight; // 增量
 	private float lasty;
 	private boolean isBackTop; // 是否回推完成
@@ -110,7 +110,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		footerProgress = (ProgressBar) footer.findViewById(R.id.refreshable_progress);
 		// event
 		DefaultListViewListener listener = new DefaultListViewListener();
-		header.getViewTreeObserver().addOnPreDrawListener(listener);
+		// header.getViewTreeObserver().addOnPreDrawListener(listener);
 		listView.setOnItemClickListener(listener);
 		listView.setOnItemLongClickListener(listener);
 		listView.setOnScrollListener(listener);

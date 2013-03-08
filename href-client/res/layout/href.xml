@@ -13,7 +13,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="7dip"
-            android:background="@android:color/darker_gray" >
+            android:background="@android:color/darker_gray"
+            android:minWidth="128dip" >
 
             <View
                 android:layout_width="match_parent"
