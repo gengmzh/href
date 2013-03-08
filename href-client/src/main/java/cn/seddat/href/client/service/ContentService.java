@@ -37,7 +37,7 @@ public class ContentService {
 
 	private final String tag = ContentService.class.getSimpleName();
 	private final String api = "http://42.96.143.229";
-	private final String api_host = "http://42.96.143.229/href/post";
+	private final String api_post = "http://42.96.143.229/href/post";
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
 	private DateFormat dateFormat;
 	private Context context;
@@ -151,7 +151,7 @@ public class ContentService {
 		args.set("limit", String.valueOf(limit <= 0 ? 20 : limit));
 		// request
 		HttpRequest request = new HttpRequest();
-		String content = new String(request.request(api_host, args));
+		String content = new String(request.request(api_post, args));
 		// parse
 		List<Post> posts = new ArrayList<Post>();
 		JSONArray json = new JSONArray(content);
@@ -263,7 +263,7 @@ public class ContentService {
 		// server
 		if (content == null || content.length() == 0) {
 			HttpRequest request = new HttpRequest();
-			String json = new String(request.request(api_host + "/" + postId, null));
+			String json = new String(request.request(api_post + "/" + postId, null));
 			JSONObject jo = new JSONObject(json);
 			content = jo.optString("ctt", null);
 			if (content != null && content.length() > 0) {
