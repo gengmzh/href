@@ -18,7 +18,7 @@ import cn.seddat.href.client.R;
  * @author lance
  * 
  */
-public class SlidingMenuView extends ViewGroup {
+public class SideslippingView extends ViewGroup {
 
 	// private static String LOG_TAG = "SlidingMenuView";
 	private static final int INVALID_SCREEN = -1;
@@ -47,17 +47,17 @@ public class SlidingMenuView extends ViewGroup {
 
 	private ViewGroup contentView;
 
-	public SlidingMenuView(Context context, AttributeSet attrs) {
+	public SideslippingView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public SlidingMenuView(Context context, AttributeSet attrs, int defStyle) {
+	public SideslippingView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initWorkspace();
 		postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				scrollTo(findViewById(R.id.sliding_tab).getWidth(), 0);
+				scrollTo(findViewById(R.id.sideslipping_menu).getWidth(), 0);
 			}
 		}, 50);
 	}
@@ -70,7 +70,7 @@ public class SlidingMenuView extends ViewGroup {
 	}
 
 	public void init() {
-		this.contentView = (ViewGroup) findViewById(R.id.sliding_body);
+		this.contentView = (ViewGroup) findViewById(R.id.sideslipping_content);
 	}
 
 	public boolean isMenuShowing() {
@@ -141,11 +141,11 @@ public class SlidingMenuView extends ViewGroup {
 	}
 
 	public void measureViews(int widthMeasureSpec, int heightMeasureSpec) {
-		View v1 = findViewById(R.id.sliding_tab);
+		View v1 = findViewById(R.id.sideslipping_menu);
 
 		v1.measure(v1.getLayoutParams().width + v1.getLeft() + v1.getRight(), heightMeasureSpec);
 
-		View v2 = findViewById(R.id.sliding_body);
+		View v2 = findViewById(R.id.sideslipping_content);
 		v2.measure(widthMeasureSpec, heightMeasureSpec);
 	}
 
@@ -347,7 +347,7 @@ public class SlidingMenuView extends ViewGroup {
 	}
 
 	protected void snapToDestination() {
-		final int screenWidth = findViewById(R.id.sliding_tab).getWidth();
+		final int screenWidth = findViewById(R.id.sideslipping_menu).getWidth();
 		final int whichScreen = (getScrollX() + (screenWidth / 2)) / screenWidth;
 
 		snapToScreen(whichScreen);
@@ -367,7 +367,7 @@ public class SlidingMenuView extends ViewGroup {
 			focusedChild.clearFocus();
 		}
 
-		final int newX = whichScreen * findViewById(R.id.sliding_tab).getWidth();
+		final int newX = whichScreen * findViewById(R.id.sideslipping_menu).getWidth();
 		final int delta = newX - getScrollX();
 		mScroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);
 		invalidate();
