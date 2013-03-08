@@ -12,7 +12,13 @@
             android:id="@+id/sideslipping_menu"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginTop="7dip"
             android:background="@android:color/darker_gray" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="7dip"
+                android:background="@android:color/transparent" />
 
             <TableRow
                 android:id="@+id/sideslipping_menu_default"
@@ -78,7 +84,7 @@
             </TableRow>
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="10dip"
                 android:background="@android:color/transparent" />
 
@@ -127,8 +133,8 @@
 
         <FrameLayout
             android:id="@+id/sideslipping_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
         </FrameLayout>
     </cn.seddat.href.client.view.SideslippingView>
 

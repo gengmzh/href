@@ -24,7 +24,7 @@ public class HrefActivity extends ActivityGroup {
 		appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
 		slidingMenuView = (SideslippingView) findViewById(R.id.sideslipping_view);
 		slidingMenuView.init();
-		this.showPostList(null);
+		this.onMenuClick(findViewById(R.id.sideslipping_menu_default));
 	}
 
 	public void onMenuClick(View view) {
