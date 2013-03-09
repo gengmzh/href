@@ -19,7 +19,7 @@ public class SideslippingView extends ViewGroup {
 
 	private final String tag = SideslippingView.class.getSimpleName();
 
-	private final int SNAP_VELOCITY = 1000;
+	private final int velocitySlop = 1000;
 	private final int touchSlop;
 
 	private ViewGroup menuView;
@@ -46,7 +46,7 @@ public class SideslippingView extends ViewGroup {
 			public void run() {
 				scrollTo(findViewById(R.id.sideslipping_menu).getWidth(), 0);
 			}
-		}, 10);
+		}, 0);
 	}
 
 	public void init() {
@@ -100,13 +100,9 @@ public class SideslippingView extends ViewGroup {
 	}
 
 	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		final int action = ev.getAction();
-		if (action == MotionEvent.ACTION_MOVE && isSideslipping) {
-			return true;
-		}
-		final float x = ev.getX(), y = ev.getY();
-
+	public boolean onInterceptTouchEvent(MotionEvent event) {
+		int action = event.getAction();
+		float x = event.getX(), y = event.getY();
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			lastX = x;
@@ -115,10 +111,12 @@ public class SideslippingView extends ViewGroup {
 			isSideslipping = !mScroller.isFinished();
 			break;
 		case MotionEvent.ACTION_MOVE:
-			final int xDiff = (int) Math.abs(x - lastX);
-			final int yDiff = (int) Math.abs(y - lastY);
-			if (xDiff > touchSlop && xDiff > yDiff) {
-				isSideslipping = true;
+			if (!isSideslipping) {
+				final int xDiff = (int) Math.abs(x - lastX);
+				final int yDiff = (int) Math.abs(y - lastY);
+				if (xDiff > touchSlop && xDiff > yDiff) {
+					isSideslipping = true;
+				}
 			}
 			break;
 		case MotionEvent.ACTION_CANCEL:
@@ -130,7 +128,7 @@ public class SideslippingView extends ViewGroup {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
+	public boolean onTouchEvent(MotionEvent event) {
 		if (!isSideslipping) {
 			Log.w(tag, tag + " isn't sideslipping, are you kidding me??");
 			return true;
@@ -138,9 +136,9 @@ public class SideslippingView extends ViewGroup {
 		if (velocityTracker == null) {
 			velocityTracker = VelocityTracker.obtain();
 		}
-		velocityTracker.addMovement(ev);
-		final int action = ev.getAction();
-		final float x = ev.getX();
+		velocityTracker.addMovement(event);
+		final int action = event.getAction();
+		final float x = event.getX();
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			if (!mScroller.isFinished()) {
@@ -169,10 +167,10 @@ public class SideslippingView extends ViewGroup {
 			break;
 		case MotionEvent.ACTION_UP:
 			velocityTracker.computeCurrentVelocity(1000);
-			int velocityX = (int) velocityTracker.getXVelocity();
-			if (velocityX > SNAP_VELOCITY && currentScreen > 0) {
+			int velocity = (int) velocityTracker.getXVelocity();
+			if (velocity > velocitySlop && currentScreen > 0) {
 				snapToScreen(currentScreen - 1);
-			} else if (velocityX < -SNAP_VELOCITY && currentScreen < getChildCount() - 1) {
+			} else if (velocity < -velocitySlop && currentScreen < getChildCount() - 1) {
 				snapToScreen(currentScreen + 1);
 			} else {
 				int whichScreen = currentScreen;
@@ -205,11 +203,8 @@ public class SideslippingView extends ViewGroup {
 
 	protected void snapToScreen(int whichScreen) {
 		int screen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
-		if (screen == currentScreen) {
-			return;
-		}
 		View focusedChild = getFocusedChild();
-		if (focusedChild != null && focusedChild == getChildAt(currentScreen)) {
+		if (focusedChild != null && screen != currentScreen && focusedChild == getChildAt(currentScreen)) {
 			focusedChild.clearFocus();
 		}
 		int delta = -getScrollX();
