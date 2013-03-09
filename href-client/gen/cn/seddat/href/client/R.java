@@ -38,13 +38,12 @@ public final class R {
         public static final int post_source=0x7f060010;
         public static final int post_time=0x7f06000a;
         public static final int post_title=0x7f060008;
-        public static final int refreshable_arrow=0x7f060018;
+        public static final int refreshable_arrow=0x7f060017;
         public static final int refreshable_footer=0x7f060013;
         public static final int refreshable_header=0x7f060016;
-        public static final int refreshable_line=0x7f060017;
         public static final int refreshable_progress=0x7f060015;
-        public static final int refreshable_subtitle=0x7f06001a;
-        public static final int refreshable_text=0x7f060019;
+        public static final int refreshable_subtitle=0x7f060019;
+        public static final int refreshable_text=0x7f060018;
         public static final int refreshable_title=0x7f060014;
         public static final int sideslipping_content=0x7f060007;
         public static final int sideslipping_menu=0x7f060001;

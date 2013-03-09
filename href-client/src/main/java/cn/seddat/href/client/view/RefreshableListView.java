@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,7 +111,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		footerProgress = (ProgressBar) footer.findViewById(R.id.refreshable_progress);
 		// event
 		DefaultListViewListener listener = new DefaultListViewListener();
-		// header.getViewTreeObserver().addOnPreDrawListener(listener);
+		header.getViewTreeObserver().addOnPreDrawListener(listener);
 		listView.setOnItemClickListener(listener);
 		listView.setOnItemLongClickListener(listener);
 		listView.setOnScrollListener(listener);
