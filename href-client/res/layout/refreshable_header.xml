@@ -6,61 +6,54 @@
     android:paddingBottom="10dp"
     android:paddingTop="10dp" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/refreshable_arrow"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/refreshable_line"
-        android:paddingLeft="20dip" >
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/refreshable_arrow" />
 
-        <ImageView
-            android:id="@+id/refreshable_arrow"
+    <ProgressBar
+        android:id="@+id/refreshable_progress"
+        style="@android:style/Widget.ProgressBar.Small.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp" />
+
+    <LinearLayout
+        android:id="@+id/refreshable_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/refreshable_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/refreshable_arrow" />
+            android:layout_gravity="center_horizontal"
+            android:text="下拉刷新"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <ProgressBar
-            android:id="@+id/refreshable_progress"
-            style="@android:style/Widget.ProgressBar.Small.Inverse"
+        <TextView
+            android:id="@+id/refreshable_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true" />
-
-        <LinearLayout
-            android:id="@+id/refreshable_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/refreshable_arrow"
-            android:layout_alignTop="@id/refreshable_arrow"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_vertical"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/refreshable_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="下拉刷新"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <TextView
-                android:id="@+id/refreshable_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="上次刷新："
-                android:textAppearance="?android:attr/textAppearanceSmallInverse" />
-        </LinearLayout>
-    </RelativeLayout>
+            android:layout_gravity="center_horizontal"
+            android:text="上次刷新："
+            android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+    </LinearLayout>
 
     <View
-        android:id="@+id/refreshable_line"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/refreshable_text"
         android:background="@android:drawable/divider_horizontal_bright" />
 
 </RelativeLayout>
