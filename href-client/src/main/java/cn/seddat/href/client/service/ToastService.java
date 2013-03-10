@@ -25,4 +25,10 @@ public class ToastService {
 		toast.show();
 	}
 
+	public static void cancel() {
+		if (toast != null) {
+			toast.cancel();
+		}
+	}
+
 }

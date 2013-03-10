@@ -14,6 +14,7 @@ import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
+import cn.seddat.href.client.service.ToastService;
 import cn.seddat.href.client.service.User;
 
 /**
@@ -86,7 +87,7 @@ public class PostDetailActivity extends Activity {
 		protected void onPostExecute(Post post) {
 			super.onPostExecute(post);
 			if (post == null || post.getContent() == null) {
-				Toast.makeText(PostDetailActivity.this, "网络不给力啊", Toast.LENGTH_LONG).show();
+				ToastService.toast(PostDetailActivity.this, "网络不给力啊", Toast.LENGTH_SHORT);
 				return;
 			}
 			if (post.getContent().length() > 0) {
@@ -99,6 +100,12 @@ public class PostDetailActivity extends Activity {
 		protected void onProgressUpdate(Integer... values) {
 			super.onProgressUpdate(values);
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		ToastService.cancel();
+		super.onBackPressed();
 	}
 
 }
