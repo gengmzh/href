@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello HRef!</string>
     <string name="app_name">知遇</string>
+    <string name="feedback_advice_hint">请留下您的宝贵意见</string>
+    <string name="feedback_advice_error_message">反馈意见不可为空</string>
 
     <color name="orange">#FFA500</color> <!-- 橙色 -->
     <color name="more_darker_gray">#999999</color> <!-- 深黑灰色 -->
