@@ -79,7 +79,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private boolean isBackTop; // 是否回推完成
 	private boolean isRefreshing; // 是否下拉刷新中
 	private boolean isLoading; // 是否获取更多中
-	private boolean stopMove;
+	private boolean isScrolling;
 
 	public RefreshableListView(Context context) {
 		super(context);
@@ -134,7 +134,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if (refreshableListener != null) {
-				if (position < listView.getCount() - listView.getFooterViewsCount()) {
+				if (!isScrolling && position < listView.getCount() - listView.getFooterViewsCount()) {
 					try {
 						refreshableListener.onItemClick(RefreshableListView.this, position);
 					} catch (Exception e) {
@@ -149,7 +149,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 			if (refreshableListener != null) {
-				if (position < listView.getCount() - listView.getFooterViewsCount()) {
+				if (!isScrolling && position < listView.getCount() - listView.getFooterViewsCount()) {
 					try {
 						return refreshableListener.onItemLongClick(RefreshableListView.this, position);
 					} catch (Exception e) {
@@ -221,12 +221,13 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 	private boolean onPressDown(ListView view, MotionEvent event) {
 		lasty = event.getRawY();
 		isBackTop = false;
-		stopMove = isRefreshing || isLoading;
+		isScrolling = false;
+		Log.i(tag, "isScrolling " + isScrolling);
 		return false;
 	}
 
 	private boolean onPressMove(ListView view, MotionEvent event) {
-		if (stopMove) {
+		if (isRefreshing || isLoading) {
 			return true;
 		}
 		int childCount = listView.getChildCount();
@@ -240,6 +241,9 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			return true;
 		}
 		float delta = y - lasty;
+		if (delta != 0) {
+			isScrolling = true;
+		}
 		int incr = (int) Math.ceil(delta / 2);
 		// 下拉
 		if (header.getLayoutParams().height > 0 && delta < 0) {
@@ -284,6 +288,7 @@ public class RefreshableListView extends LinearLayout implements OnTouchListener
 			lasty = y;
 			handled = true;
 		}
+		Log.i(tag, "isScrolling " + isScrolling);
 		return handled;
 	}
 
