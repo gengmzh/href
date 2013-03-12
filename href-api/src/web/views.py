@@ -66,3 +66,5 @@ def feedback(request):
         value['message'] = 'feed can not be empty!'
         log.warn('feed can not be empty!')
     return __json(value)
+
+
