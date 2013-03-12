@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     # href api
     url(r'^href/post/$', 'web.views.findPostList', name='api-post-list'),
     url(r'^href/post/(?P<post_id>[A-Za-z\d]+)/$', 'web.views.findPostContent', name='api-post-content'),
+    url(r'^href/feedback/$', 'web.views.feedback', name='api-feedback'),
     
 )
 
