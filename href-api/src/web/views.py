@@ -6,7 +6,6 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render_to_response
 from datetime import datetime
 
-from models.PostService import PostService
 import json
 
 
@@ -17,17 +16,18 @@ def findPostList(request):
     # args
     time = request.REQUEST.get('time', None)
     if time:
-        time = fromTimestamp(time)
+        time = __fromTimestamp(time)
     item = request.REQUEST.get('item', None)
     order = request.REQUEST.get('order', 0)
     limit = request.REQUEST.get('limit', '20')
     limit = int(limit)
     # query
+    from models.PostService import PostService
     service = PostService()
     posts = service.findList(time, item, order, limit)
-    return HttpResponse(json.dumps(posts, ensure_ascii=False), content_type="application/json; charset=UTF-8")
+    return __json(posts)
 
-def fromTimestamp(millis):
+def __fromTimestamp(millis):
     if not millis:
         return None
     try:
@@ -39,7 +39,28 @@ def fromTimestamp(millis):
     d = datetime.fromtimestamp(millis/1000)
     return d.strftime("%Y%m%d %H:%M:%S")
 
+def __json(value):
+    return HttpResponse(json.dumps(value, ensure_ascii=False), content_type="application/json; charset=UTF-8")
+
 def findPostContent(request, post_id):
+    from models.PostService import PostService
     service = PostService()
     post = service.findContent(post_id)
-    return HttpResponse(json.dumps(post, ensure_ascii=False), content_type="application/json; charset=UTF-8")
+    return __json(post)
+
+def feedback(request):
+    feed = request.REQUEST.get('feed', None)
+    value = {}
+    if feed:
+        rating = request.REQUEST.get('rating', None)
+        email = request.REQUEST.get('email', None)
+        from models.FeedbackService import FeedbackService
+        service = FeedbackService()
+        service.save(feed, rating, email)
+        value['code'] = 0
+        value['message'] = 'ok'
+    else:
+        value['code'] = 1
+        value['message'] = 'feed can not be empty!'
+        log.warn('feed can not be empty!')
+    return __json(value)
