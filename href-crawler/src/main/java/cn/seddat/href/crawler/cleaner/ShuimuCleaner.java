@@ -57,6 +57,9 @@ public class ShuimuCleaner implements Cleaner {
 		if (title == null || title.isEmpty()) {
 			return false;
 		}
+		if (title.startsWith("[合集]")) {
+			return false;
+		}
 		Matcher m = titleCancelled.matcher(title);
 		if (m.find()) {
 			return false;

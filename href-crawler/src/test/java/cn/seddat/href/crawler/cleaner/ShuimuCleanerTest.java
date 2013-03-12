@@ -35,6 +35,7 @@ public class ShuimuCleanerTest extends TestCase {
 		System.out.println(m.group());
 
 		System.out.println(title.matches("取消[\\s\\S]*发文权限"));
+		System.out.println("[合集]fdsfsfds".startsWith("[合集]"));
 	}
 
 	public void test_cleanContent() throws Exception {
