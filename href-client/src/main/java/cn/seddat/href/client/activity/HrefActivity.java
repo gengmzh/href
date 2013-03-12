@@ -40,7 +40,7 @@ public class HrefActivity extends ActivityGroup {
 		view.setBackgroundColor(R.color.more_darker_gray);
 		switch (view.getId()) {
 		case R.id.sideslipping_menu_default:
-			this.startContent(PostActivity.class);
+			this.showContent(PostActivity.class);
 			break;
 		case R.id.sideslipping_menu_recommend:
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
@@ -49,7 +49,7 @@ public class HrefActivity extends ActivityGroup {
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 			break;
 		case R.id.sideslipping_menu_feedback:
-			this.startContent(FeedbackActivity.class);
+			this.startActivity(new Intent(this, FeedbackActivity.class));
 			break;
 		case R.id.sideslipping_menu_about:
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
@@ -57,7 +57,7 @@ public class HrefActivity extends ActivityGroup {
 		}
 	}
 
-	private void startContent(Class<? extends Activity> activityClass) {
+	private void showContent(Class<? extends Activity> activityClass) {
 		isMain = activityClass == PostActivity.class;
 		Intent i = new Intent(this, activityClass);
 		Window window = getLocalActivityManager().startActivity(activityClass.getName(), i);

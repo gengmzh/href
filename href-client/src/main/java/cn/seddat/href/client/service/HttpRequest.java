@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class HttpRequest {
 				if (buf.length() > 0) {
 					buf.append("&");
 				}
-				buf.append(name).append("=").append(args.get(name));
+				buf.append(name).append("=").append(URLEncoder.encode(args.get(name)));
 			}
 			return buf.toString();
 		}

@@ -36,8 +36,10 @@ import cn.seddat.href.client.R;
 public class ContentService {
 
 	private final String tag = ContentService.class.getSimpleName();
-	private final String api = "http://42.96.143.229";
-	private final String api_post = "http://42.96.143.229/href/post";
+	private static final String api = "http://42.96.143.229";
+	private static final String api_post = api + "/href/post";
+	public static final String api_feedback = api + "/href/feedback";
+
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
 	private DateFormat dateFormat;
 	private Context context;
