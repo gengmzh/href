@@ -3,6 +3,7 @@ package cn.seddat.href.client.activity;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,24 +43,7 @@ public class FeedbackActivity extends Activity {
 		if (email.getText().length() > 0) {
 			args.set("email", email.getText().toString());
 		}
-		try {
-			HttpRequest http = new HttpRequest();
-			String result = new String(http.request(ContentService.api_feedback, args));
-			JSONObject jo = new JSONObject(result);
-			int code = jo.getInt("code");
-			if (code == 0) {
-				ToastService.toast(this, "感谢您的宝贵意见", Toast.LENGTH_SHORT);
-				this.onBackPressed();
-			} else {
-				Log.e(tag, result);
-			}
-		} catch (Exception ex) {
-			Log.e(tag, "send feedback failed", ex);
-			ToastService.toast(this, "网络不给力啊", Toast.LENGTH_SHORT);
-		}
-		// reset
-		advice.setText("");
-		advice.setHint(R.string.feedback_advice_hint);
+		new FeedbackTask().execute(args);
 	}
 
 	@Override
@@ -69,6 +53,40 @@ public class FeedbackActivity extends Activity {
 			parent.onBackPressed();
 		} else {
 			super.onBackPressed();
+		}
+	}
+
+	class FeedbackTask extends AsyncTask<HttpRequest.Parameter, Integer, Boolean> {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Boolean doInBackground(HttpRequest.Parameter... params) {
+			if (params == null || params.length < 0) {
+				return false;
+			}
+			try {
+				HttpRequest http = new HttpRequest();
+				byte[] result = http.request(ContentService.api_feedback, params[0]);
+				JSONObject jo = new JSONObject(new String(result));
+				return jo.optInt("code", 1) == 0;
+			} catch (Exception ex) {
+				Log.e(tag, "send feedback failed", ex);
+				return false;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result != null && result) {
+				ToastService.toast(FeedbackActivity.this, "感谢您的宝贵意见", Toast.LENGTH_SHORT);
+				onBackPressed();
+			} else {
+				ToastService.toast(FeedbackActivity.this, "网络不给力啊", Toast.LENGTH_SHORT);
+			}
 		}
 	}
 
