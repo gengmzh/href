@@ -53,14 +53,7 @@ class PostService(object):
             users[user['_id']] = {'un':user['uid'], 'icon':self.icon_path+user['icon']}
         return users
 
-    def getById(self, post_id):
-        post = self.postColl.find_one(post_id)
-        if 'au' in post:
-            users = self.__findUser([post['au']])
-            if post['au'] in users:
-                u = users[post['au']]
-                post['uid'] = post['au']
-                post['au'] = u['un']
-                post['icon'] = u['icon']
+    def findContent(self, post_id):
+        post = self.postColl.find_one(post_id, fields={'_id':0, 'ctt':1})
         return post
 

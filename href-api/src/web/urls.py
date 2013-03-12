@@ -21,7 +21,9 @@ urlpatterns = patterns('',
     url(r'^index$', 'web.views.index', name='index'),
     url(r'^index.html$', 'web.views.index', name='index'),
     # href api
-    url(r'^href/', include('web.api.urls')),
+    url(r'^href/post/$', 'web.views.findPostList', name='api-post-list'),
+    url(r'^href/post/(?P<post_id>[A-Za-z\d]+)/$', 'web.views.findPostContent', name='api-post-content'),
+    
 )
 
 # urlpatterns += static(settings.MEDIA_URL , document_root = settings.MEDIA_ROOT )
