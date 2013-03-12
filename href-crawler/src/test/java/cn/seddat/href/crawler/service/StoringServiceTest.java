@@ -43,7 +43,7 @@ public class StoringServiceTest extends TestCase {
 		dbColl.getDB().getMongo().close();
 	}
 
-	public void testSave() throws Exception {
+	public void test_savePost() throws Exception {
 		Post post = new Post().setTitle("【睿善科技】招聘 游戏策划").setContent("【睿善科技】招聘 游戏策划").setSource("newsmth.net")
 				.setType("社会招聘").setCompany("睿善科技").setAuthor("").setPubtime(new Date());
 		postService.save(post);
@@ -57,7 +57,20 @@ public class StoringServiceTest extends TestCase {
 		dbColl.remove(obj);
 	}
 
-	public void testRun() throws Exception {
+	public void test_saveUser() throws Exception {
+		Post p = new Post().setSource(Source.SHUIMU.getName()).setAuthor("gengmzh");
+		p.setTitle("【睿善科技】招聘 游戏策划").setContent("【睿善科技】招聘 游戏策划");
+		p.setLink("http://www.newsmth.net/nForum/article/Career_Upgrade/167768");
+		postService.save(p);
+
+		String uid = p.getAuthor();
+		Assert.assertNotNull(uid);
+		File icon = new File(Config.getInstance().getUserIconPath(), uid + ".png");
+		Assert.assertTrue(icon.exists());
+		System.out.println(icon);
+	}
+
+	public void test_execute() throws Exception {
 		// put
 		Post post = new Post().setTitle("【睿善科技】招聘 游戏策划").setContent("【睿善科技】招聘 游戏策划").setSource("newsmth.net")
 				.setType("社会招聘").setCompany("睿善科技").setAuthor("").setPubtime(new Date());
@@ -74,19 +87,6 @@ public class StoringServiceTest extends TestCase {
 		// remove
 		dbColl.remove(obj);
 		executor.shutdown();
-	}
-
-	public void test_saveUser() throws Exception {
-		Post p = new Post().setSource(Source.SHUIMU.getName()).setAuthor("gengmzh");
-		p.setTitle("【睿善科技】招聘 游戏策划").setContent("【睿善科技】招聘 游戏策划");
-		p.setLink("http://www.newsmth.net/nForum/article/Career_Upgrade/167768");
-		postService.save(p);
-
-		String uid = p.getAuthor();
-		Assert.assertNotNull(uid);
-		File icon = new File(Config.getInstance().getUserIconPath(), uid + ".png");
-		Assert.assertTrue(icon.exists());
-		System.out.println(icon);
 	}
 
 }
