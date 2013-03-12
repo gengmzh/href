@@ -21,11 +21,12 @@ public class FeedbackActivity extends Activity {
 		EditText advice = (EditText) findViewById(R.id.feedback_advice);
 		if (advice.getText().length() == 0) {
 			advice.setHint(R.string.feedback_advice_error_message);
+			advice.requestFocus();
 			return;
 		}
 		RatingBar rating = (RatingBar) findViewById(R.id.feedback_rating);
 		EditText email = (EditText) findViewById(R.id.feedback_email);
-		//TODO
+		// TODO
 		ToastService.toast(this, rating.getRating() + "\n" + email.getText() + "\n" + advice.getText(),
 				Toast.LENGTH_SHORT);
 		// reset
