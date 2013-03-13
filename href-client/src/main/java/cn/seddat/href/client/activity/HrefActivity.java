@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.TableLayout;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ToastService;
@@ -29,23 +28,32 @@ public class HrefActivity extends ActivityGroup {
 		this.onMenuClick(findViewById(R.id.sideslipping_menu_default));
 	}
 
-	private boolean isMain;
+	private View curMenu = null;
 
 	public void onMenuClick(View view) {
-		TableLayout menus = (TableLayout) view.getParent();
-		for (int i = 0; i < menus.getChildCount(); i++) {
-			View menu = menus.getChildAt(i);
-			menu.setBackgroundColor(android.R.color.transparent);
-		}
-		view.setBackgroundColor(R.color.more_darker_gray);
 		switch (view.getId()) {
 		case R.id.sideslipping_menu_default:
+			if (curMenu != null) {
+				curMenu.setBackgroundColor(android.R.color.transparent);
+			}
+			view.setBackgroundColor(R.color.more_darker_gray);
+			curMenu = view;
 			this.showContent(PostActivity.class);
 			break;
 		case R.id.sideslipping_menu_recommend:
+			if (curMenu != null) {
+				curMenu.setBackgroundColor(android.R.color.transparent);
+			}
+			view.setBackgroundColor(R.color.more_darker_gray);
+			curMenu = view;
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 			break;
 		case R.id.sideslipping_menu_mark:
+			if (curMenu != null) {
+				curMenu.setBackgroundColor(android.R.color.transparent);
+			}
+			view.setBackgroundColor(R.color.more_darker_gray);
+			curMenu = view;
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 			break;
 		case R.id.sideslipping_menu_feedback:
@@ -58,7 +66,6 @@ public class HrefActivity extends ActivityGroup {
 	}
 
 	private void showContent(Class<? extends Activity> activityClass) {
-		isMain = activityClass == PostActivity.class;
 		Intent i = new Intent(this, activityClass);
 		Window window = getLocalActivityManager().startActivity(activityClass.getName(), i);
 		slidingMenuView.showContent(window.getDecorView());
@@ -68,7 +75,7 @@ public class HrefActivity extends ActivityGroup {
 
 	@Override
 	public void onBackPressed() {
-		if (isMain) {
+		if (curMenu == null || curMenu.getId() == R.id.sideslipping_menu_default) {
 			if (slidingMenuView.isMenuShowing()) {
 				Log.i(tag, "hide left menu");
 				slidingMenuView.scrollRight();
