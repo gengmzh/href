@@ -58,13 +58,14 @@ public final class R {
         public static final int sideslipping_view=0x7f060003;
     }
     public static final class layout {
-        public static final int feedback=0x7f030000;
-        public static final int href=0x7f030001;
-        public static final int post_detail=0x7f030002;
-        public static final int post_item=0x7f030003;
-        public static final int post_list=0x7f030004;
-        public static final int refreshable_footer=0x7f030005;
-        public static final int refreshable_header=0x7f030006;
+        public static final int about=0x7f030000;
+        public static final int feedback=0x7f030001;
+        public static final int href=0x7f030002;
+        public static final int post_detail=0x7f030003;
+        public static final int post_item=0x7f030004;
+        public static final int post_list=0x7f030005;
+        public static final int refreshable_footer=0x7f030006;
+        public static final int refreshable_header=0x7f030007;
     }
     public static final class string {
         public static final int app_name=0x7f040000;

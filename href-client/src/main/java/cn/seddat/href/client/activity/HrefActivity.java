@@ -60,7 +60,7 @@ public class HrefActivity extends ActivityGroup {
 			this.startActivity(new Intent(this, FeedbackActivity.class));
 			break;
 		case R.id.sideslipping_menu_about:
-			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
+			this.startActivity(new Intent(this, AboutActivity.class));
 			break;
 		}
 	}
