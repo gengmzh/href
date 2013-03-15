@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">知遇</string>
+    <string name="page_label_about">关于知遇</string>
+    <string name="page_label_feedback">意见反馈</string>
+    <string name="page_label_post_detail">明细信息</string>
     <string name="feedback_advice_hint">请留下您的宝贵意见</string>
     <string name="feedback_advice_error_message">反馈意见不可为空</string>
 
@@ -9,12 +12,12 @@
     <color name="more_darker_gray">#999999</color> <!-- 深黑灰色 -->
 
     <style name="href_tile" parent="android:Theme.Light">
-        <item name="android:windowTitleSize">28dip</item>
+        <item name="android:windowTitleSize">40dip</item>
         <item name="android:windowTitleBackgroundStyle">@style/href_title_backgroud</item>
     </style>
 
     <style name="href_title_backgroud">
-        <item name="android:background">#cc0033</item>
+        <item name="android:background">#A52A2A</item>
     </style>
 
 </resources>

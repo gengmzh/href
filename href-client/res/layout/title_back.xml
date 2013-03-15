@@ -6,12 +6,21 @@
     android:orientation="horizontal" >
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:onClick="goBack"
         android:src="@drawable/title_back" />
+
+    <View
+        android:layout_width="1dip"
+        android:layout_height="24dip"
+        android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip"
+        android:background="@android:drawable/divider_horizontal_bright" />
 
     <TextView
         android:id="@android:id/title"
+        style="?android:attr/windowTitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center" >

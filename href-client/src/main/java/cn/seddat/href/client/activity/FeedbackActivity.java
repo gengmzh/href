@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ContentService;
@@ -22,7 +24,26 @@ public class FeedbackActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		this.setContentView(R.layout.feedback);
+		this.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_back);
+		// title
+		TextView title = (TextView) this.findViewById(android.R.id.title);
+		title.setText(R.string.page_label_feedback);
+	}
+
+	public void goBack(View view) {
+		this.onBackPressed();
+	}
+
+	@Override
+	public void onBackPressed() {
+		Activity parent = getParent();
+		if (parent != null) {
+			parent.onBackPressed();
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 	public void sendAdvice(View view) {
@@ -44,16 +65,6 @@ public class FeedbackActivity extends Activity {
 			args.set("email", email.getText().toString());
 		}
 		new FeedbackTask().execute(args);
-	}
-
-	@Override
-	public void onBackPressed() {
-		Activity parent = getParent();
-		if (parent != null) {
-			parent.onBackPressed();
-		} else {
-			super.onBackPressed();
-		}
 	}
 
 	class FeedbackTask extends AsyncTask<HttpRequest.Parameter, Integer, Boolean> {

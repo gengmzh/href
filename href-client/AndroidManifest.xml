@@ -21,13 +21,10 @@
         android:label="Test for my app"
         android:targetPackage="cn.seddat.href.client" />
 
-    <application
-        android:icon="@drawable/icon"
-        android:label="@string/app_name"
-        android:theme="@android:style/Theme.Light" >
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/href_tile" >
         <uses-library android:name="android.test.runner" />
 
-        <activity android:name=".activity.HrefActivity" >
+        <activity android:name=".activity.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -51,7 +48,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AboutActivity" android:theme="@style/href_tile" >
+        <activity android:label="@string/page_label_about" android:name=".activity.AboutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
@@ -29,7 +30,12 @@ public class PostDetailActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		this.setContentView(R.layout.post_detail);
+		this.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_back);
+		// title
+		TextView title = (TextView) this.findViewById(android.R.id.title);
+		title.setText(R.string.page_label_post_detail);
 		postDetailTask = new PostDetailTask();
 		// show
 		Post post = new Post();
@@ -53,6 +59,10 @@ public class PostDetailActivity extends Activity {
 		text = (TextView) findViewById(R.id.post_mark);
 		text.setText(String.valueOf(post.getMark()));
 		postDetailTask.execute(post);
+	}
+
+	public void goBack(View view) {
+		this.onBackPressed();
 	}
 
 	class PostDetailTask extends AsyncTask<Post, Integer, Post> {

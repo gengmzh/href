@@ -12,16 +12,16 @@ import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ToastService;
 import cn.seddat.href.client.view.SideslippingView;
 
-public class HrefActivity extends ActivityGroup {
+public class HomeActivity extends ActivityGroup {
 
-	private final String tag = HrefActivity.class.getSimpleName();
+	private final String tag = HomeActivity.class.getSimpleName();
 	private String appName;
 	private SideslippingView slidingMenuView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.href);
+		setContentView(R.layout.home);
 		appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
 		slidingMenuView = (SideslippingView) findViewById(R.id.sideslipping_view);
 		slidingMenuView.init();
