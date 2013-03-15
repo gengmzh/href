@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ToastService;
@@ -21,11 +22,22 @@ public class HomeActivity extends ActivityGroup {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home);
+		this.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		this.setContentView(R.layout.home);
+		this.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_home);
+		// title
+		TextView title = (TextView) this.findViewById(android.R.id.title);
+		title.setText(R.string.app_name);
 		appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
 		slidingMenuView = (SideslippingView) findViewById(R.id.sideslipping_view);
 		slidingMenuView.init();
 		this.onMenuClick(findViewById(R.id.sideslipping_menu_default));
+	}
+
+	public void goBack(View view) {
+		if (!slidingMenuView.isMenuShowing()) {
+			slidingMenuView.scrollLeft();
+		}
 	}
 
 	private View curMenu = null;

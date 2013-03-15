@@ -26,6 +26,7 @@ public final class R {
         public static final int menu_recommend=0x7f020006;
         public static final int refreshable_arrow=0x7f020007;
         public static final int title_back=0x7f020008;
+        public static final int title_home=0x7f020009;
     }
     public static final class id {
         public static final int author_icon=0x7f070014;
@@ -68,6 +69,7 @@ public final class R {
         public static final int refreshable_footer=0x7f030006;
         public static final int refreshable_header=0x7f030007;
         public static final int title_back=0x7f030008;
+        public static final int title_home=0x7f030009;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
