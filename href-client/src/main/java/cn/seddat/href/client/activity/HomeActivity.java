@@ -48,7 +48,7 @@ public class HomeActivity extends ActivityGroup {
 			if (curMenu != null) {
 				curMenu.setBackgroundColor(android.R.color.transparent);
 			}
-			view.setBackgroundColor(R.color.more_darker_gray);
+			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
 			this.showContent(PostActivity.class);
 			break;
@@ -56,7 +56,7 @@ public class HomeActivity extends ActivityGroup {
 			if (curMenu != null) {
 				curMenu.setBackgroundColor(android.R.color.transparent);
 			}
-			view.setBackgroundColor(R.color.more_darker_gray);
+			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 			break;
@@ -64,7 +64,7 @@ public class HomeActivity extends ActivityGroup {
 			if (curMenu != null) {
 				curMenu.setBackgroundColor(android.R.color.transparent);
 			}
-			view.setBackgroundColor(R.color.more_darker_gray);
+			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 			break;

@@ -11,10 +11,13 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int gray_dark=0x7f050002;
         /**  橙色 
          */
-        public static final int more_darker_gray=0x7f050001;
+        public static final int gray_light=0x7f050001;
         public static final int orange=0x7f050000;
+        public static final int white_ghost=0x7f050004;
+        public static final int white_smoke=0x7f050003;
     }
     public static final class drawable {
         public static final int default_user_icon=0x7f020000;
@@ -81,8 +84,6 @@ public final class R {
         public static final int page_label_post_detail=0x7f040003;
     }
     public static final class style {
-        /**  深黑灰色 
-         */
         public static final int href_tile=0x7f060000;
         public static final int href_title_backgroud=0x7f060001;
     }
