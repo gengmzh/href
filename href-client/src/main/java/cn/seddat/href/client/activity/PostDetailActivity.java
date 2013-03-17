@@ -10,6 +10,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
@@ -26,6 +27,8 @@ public class PostDetailActivity extends Activity {
 
 	private final String tag = PostDetailActivity.class.getSimpleName();
 	private PostDetailTask postDetailTask;
+
+	private boolean marked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +61,28 @@ public class PostDetailActivity extends Activity {
 		text.setText(post.getSource());
 		text = (TextView) findViewById(R.id.post_mark);
 		text.setText(String.valueOf(post.getMark()));
+		// TODO
+		marked = false;
 		postDetailTask.execute(post);
 	}
 
 	public void goBack(View view) {
 		this.onBackPressed();
+	}
+
+	public void onMark(View view) {
+		ImageView image = (ImageView) view;
+		marked = !marked;
+		image.setImageResource(marked ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
+		ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
+	}
+
+	public void onSource(View view) {
+		ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
+	}
+
+	public void onShare(View view) {
+		ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 	}
 
 	class PostDetailTask extends AsyncTask<Post, Integer, Post> {
