@@ -34,8 +34,9 @@ public final class R {
         public static final int menu_share=0x7f02000b;
         public static final int menu_source=0x7f02000c;
         public static final int refreshable_arrow=0x7f02000d;
-        public static final int title_back=0x7f02000e;
-        public static final int title_home=0x7f02000f;
+        public static final int splash_tiger=0x7f02000e;
+        public static final int title_back=0x7f02000f;
+        public static final int title_home=0x7f020010;
     }
     public static final class id {
         public static final int author_icon=0x7f070018;
@@ -71,6 +72,8 @@ public final class R {
         public static final int sideslipping_menu_mark=0x7f070007;
         public static final int sideslipping_menu_recommend=0x7f070006;
         public static final int sideslipping_view=0x7f070003;
+        public static final int watch_image=0x7f070021;
+        public static final int watch_title=0x7f070022;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -82,8 +85,9 @@ public final class R {
         public static final int post_mark=0x7f030006;
         public static final int refreshable_footer=0x7f030007;
         public static final int refreshable_header=0x7f030008;
-        public static final int title_back=0x7f030009;
-        public static final int title_home=0x7f03000a;
+        public static final int splash=0x7f030009;
+        public static final int title_back=0x7f03000a;
+        public static final int title_home=0x7f03000b;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
