@@ -25,9 +25,9 @@ import cn.seddat.href.client.view.RefreshableListView.RefreshableListener;
  * @author mzhgeng
  * 
  */
-public class PostActivity extends Activity implements RefreshableListener {
+public class PostListActivity extends Activity implements RefreshableListener {
 
-	private final String tag = PostActivity.class.getSimpleName();
+	private final String tag = PostListActivity.class.getSimpleName();
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
 	private final int limit = 20;
 	private ContentService contentService;

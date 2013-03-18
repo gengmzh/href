@@ -50,7 +50,7 @@ public class HomeActivity extends ActivityGroup {
 			}
 			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
-			this.showContent(PostActivity.class);
+			this.showContent(PostListActivity.class);
 			break;
 		case R.id.sideslipping_menu_recommend:
 			if (curMenu != null) {
