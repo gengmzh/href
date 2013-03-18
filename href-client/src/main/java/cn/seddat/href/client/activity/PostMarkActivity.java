@@ -14,9 +14,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
+import cn.seddat.href.client.service.ToastService;
 
 /**
  * @author mzhgeng
@@ -57,7 +59,11 @@ public class PostMarkActivity extends Activity implements AdapterView.OnItemClic
 		}
 		if (pl != null) {
 			posts.clear();
-			posts.addAll(pl);
+			if (!pl.isEmpty()) {
+				posts.addAll(pl);
+			} else {
+				ToastService.toast(this, "没有收藏记录", Toast.LENGTH_SHORT);
+			}
 			adapter.notifyDataSetChanged();
 		}
 	}
