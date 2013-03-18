@@ -53,10 +53,12 @@ def markPost(request, post_id=None):
         post_id = request.REQUEST.get('id', None)
     value = {}
     if post_id:
+        mark = request.REQUEST.get('mark', None)
+        mark = False if mark and mark=='false' else True
         from models.PostService import PostService
         service = PostService()
         try:
-            service.mark(post_id)
+            service.mark(post_id, mark)
             value['code'] = 0
             value['message'] = 'ok'
         except Exception, ex:

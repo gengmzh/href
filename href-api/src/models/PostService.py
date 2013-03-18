@@ -57,6 +57,6 @@ class PostService(object):
         post = self.postColl.find_one(post_id, fields={'_id':0, 'sl':1, 'ctt':1, 'addr':1})
         return post
 
-    def mark(self, post_id):
-        self.postColl.update({'_id':post_id}, {'$inc':{'mrk':1}})
+    def mark(self, post_id, mark=True):
+        self.postColl.update({'_id':post_id}, {'$inc':{'mrk':1 if mark else -1}})
 
