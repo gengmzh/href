@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,6 +40,7 @@ public class ContentService {
 	private final String tag = ContentService.class.getSimpleName();
 	private static final String api = "http://42.96.143.229";
 	private static final String api_post = api + "/href/post";
+	private static final String api_mark = api + "/href/mark";
 	public static final String api_feedback = api + "/href/feedback";
 
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
@@ -110,7 +113,7 @@ public class ContentService {
 		return posts;
 	}
 
-	public Map<String, User> findUserByCache(List<String> ids) throws Exception {
+	private Map<String, User> findUserByCache(List<String> ids) throws Exception {
 		Map<String, User> result = new HashMap<String, User>();
 		if (ids == null || ids.isEmpty()) {
 			return result;
@@ -230,51 +233,105 @@ public class ContentService {
 		if (time == null) {
 			return;
 		}
-		long millis = time.getTime();
-		String[] args = new String[] { String.valueOf(millis) };
-		contentResolver.delete(ContentProvider.CONTENT_POST, Post.COL_CACHE_TIME + "<?", args);
-		contentResolver.delete(ContentProvider.CONTENT_USER, User.COL_CACHE_TIME + "<?", args);
+		// post
+		final long millis = time.getTime();
+		contentResolver.delete(ContentProvider.CONTENT_POST, Post.COL_CACHE_TIME + "<? and " + Post.COL_LIKE + "<=?",
+				new String[] { String.valueOf(millis), "0" });
+		// user
+		StringBuffer selection = new StringBuffer();
+		Set<String> userIds = new HashSet<String>();
+		Cursor cursor = contentResolver.query(ContentProvider.CONTENT_POST, new String[] { Post.COL_USER_ID },
+				Post.COL_LIKE + ">?", new String[] { "0" }, null);
+		if (cursor != null) {
+			if (cursor.moveToFirst()) {
+				selection.append("(?");
+				String userId = cursor.getString(cursor.getColumnIndex(Post.COL_USER_ID));
+				userIds.add(userId);
+				while (cursor.moveToNext()) {
+					userId = cursor.getString(cursor.getColumnIndex(Post.COL_USER_ID));
+					if (userIds.add(userId)) {
+						selection.append(",?");
+					}
+				}
+				selection.append(")");
+			}
+			cursor.close();
+		}
+		String where = (selection.length() > 0 ? User.COL_ID + " not in" + selection + " and " : "")
+				+ User.COL_CACHE_TIME + "<?";
+		String[] args = userIds.toArray(new String[userIds.size() + 1]);
+		args[args.length - 1] = String.valueOf(millis);
+		contentResolver.delete(ContentProvider.CONTENT_USER, where, args);
+		// icon
 		File cache = this.getCacheDir();
+		final Set<String> icons = new HashSet<String>();
+		if (!userIds.isEmpty()) {
+			where = User.COL_ID + " in " + selection;
+			args = userIds.toArray(new String[userIds.size()]);
+			cursor = contentResolver.query(ContentProvider.CONTENT_USER, new String[] { User.COL_ICON_URI }, where,
+					args, null);
+			if (cursor != null) {
+				boolean hasNext = cursor.moveToFirst();
+				while (hasNext) {
+					String uri = cursor.getString(cursor.getColumnIndex(User.COL_ICON_URI));
+					int index = uri.lastIndexOf("/");
+					icons.add(index > 0 ? uri.substring(index + 1) : uri);
+					hasNext = cursor.moveToNext();
+				}
+				cursor.close();
+			}
+		}
 		File[] files = cache.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
-				return file.isFile();
+				return file.isFile() && file.lastModified() < millis && !icons.contains(file.getName());
 			}
 		});
 		for (File file : files) {
-			if (file.lastModified() < millis) {
-				file.delete();
-			}
+			file.delete();
 		}
 	}
 
-	public String findPostContent(String postId) throws Exception {
-		if (postId == null || postId.length() == 0) {
+	public Post findPostDetail(Post post) throws Exception {
+		if (post == null || post.getId() == null) {
 			return null;
 		}
 		// cache
-		String content = null;
-		Cursor cursor = contentResolver.query(ContentProvider.CONTENT_POST, new String[] { Post.COL_CONTENT },
-				Post.COL_ID + "=?", new String[] { postId }, null);
+		Cursor cursor = contentResolver.query(ContentProvider.CONTENT_POST, new String[] { Post.COL_LINK,
+				Post.COL_CONTENT, Post.COL_ADDRESS, Post.COL_LIKE }, Post.COL_ID + "=?", new String[] { post.getId() },
+				null);
 		if (cursor != null) {
 			if (cursor.moveToFirst()) {
-				content = cursor.getString(cursor.getColumnIndex(Post.COL_CONTENT));
+				post.setLink(cursor.getString(cursor.getColumnIndex(Post.COL_LINK)));
+				post.setContent(cursor.getString(cursor.getColumnIndex(Post.COL_CONTENT)));
+				post.setAddress(cursor.getString(cursor.getColumnIndex(Post.COL_ADDRESS)));
+				String like = cursor.getString(cursor.getColumnIndex(Post.COL_LIKE));
+				post.setLike(like == null || like.length() == 0 ? false : Integer.valueOf(like) > 0);
 			}
 			cursor.close();
 		}
 		// server
-		if (content == null || content.length() == 0) {
+		if (post.getContent() == null || post.getContent().length() == 0) {
 			HttpRequest request = new HttpRequest();
-			String json = new String(request.request(api_post + "/" + postId, null));
+			String json = new String(request.request(api_post + "/" + post.getId(), null));
 			JSONObject jo = new JSONObject(json);
-			content = jo.optString("ctt", null);
-			if (content != null && content.length() > 0) {
-				ContentValues values = new ContentValues();
-				values.put(Post.COL_CONTENT, content);
-				this.save(ContentProvider.CONTENT_POST, values, Post.COL_ID + "=?", new String[] { postId });
+			post.setLink(jo.optString("sl", null)).setAddress(jo.optString("addr", null))
+					.setContent(jo.optString("ctt", null));
+			ContentValues values = new ContentValues();
+			if (post.getLink() != null) {
+				values.put(Post.COL_LINK, post.getLink());
+			}
+			if (post.getAddress() != null) {
+				values.put(Post.COL_ADDRESS, post.getAddress());
+			}
+			if (post.getContent() != null) {
+				values.put(Post.COL_CONTENT, post.getContent());
+			}
+			if (values.size() > 0) {
+				this.save(ContentProvider.CONTENT_POST, values, Post.COL_ID + "=?", new String[] { post.getId() });
 			}
 		}
-		return content;
+		return post;
 	}
 
 	public Map<String, String> findUserIcon(List<String> uris) throws Exception {
@@ -333,6 +390,28 @@ public class ContentService {
 			}
 		}
 		file.delete();
+	}
+
+	public void markPost(String postId, boolean marked) throws Exception {
+		if (postId == null) {
+			return;
+		}
+		// server
+		HttpRequest.Parameter args = new HttpRequest.Parameter();
+		args.set("id", postId);
+		if (marked == false) {
+			args.set("mark", "false");
+		}
+		HttpRequest http = new HttpRequest();
+		byte[] bytes = http.request(api_mark, args);
+		JSONObject jo = new JSONObject(new String(bytes));
+		if (jo.optInt("code", 1) != 0) {
+			throw new Exception("mark post failed, " + jo.optString("message"));
+		}
+		// cache
+		ContentValues values = new ContentValues();
+		values.put(Post.COL_LIKE, marked ? "1" : "0");
+		this.save(ContentProvider.CONTENT_POST, values, Post.COL_ID + "=?", new String[] { postId });
 	}
 
 }

@@ -69,15 +69,16 @@ public class ContentProvider extends android.content.ContentProvider {
 			sql = "create table if not exists " + TABLE_POST + "( " + BaseColumns._ID + " integer primary key, "
 					+ Post.COL_ID + " text, " + Post.COL_USER_ID + " text, " + Post.COL_TITLE + " text, "
 					+ Post.COL_CONTENT + " text, " + Post.COL_SOURCE + " text, " + Post.COL_LINK + " text, "
-					+ Post.COL_TYPE + " text, " + Post.COL_COMPANY + " text, " + Post.COL_CREATE_TIME + " text, "
-					+ Post.COL_MARK + " text, " + Post.COL_LIKE + " text, " + Post.COL_CACHE_TIME + " text " + "); ";
+					+ Post.COL_TYPE + " text, " + Post.COL_COMPANY + " text, " + Post.COL_ADDRESS + " text, "
+					+ Post.COL_CREATE_TIME + " text, " + Post.COL_MARK + " text, " + Post.COL_LIKE + " text, "
+					+ Post.COL_CACHE_TIME + " text " + "); ";
 			sqlite.execSQL(sql);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase sqlite, int arg1, int arg2) {
-			// sqlite.execSQL("drop table if exists " + User.TABLE);
-			// sqlite.execSQL("drop table if exists " + Post.TABLE);
+			sqlite.execSQL("drop table if exists " + TABLE_USER);
+			sqlite.execSQL("drop table if exists " + TABLE_POST);
 			onCreate(sqlite);
 		}
 

@@ -4,6 +4,8 @@
 package cn.seddat.href.client.activity;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -26,9 +28,8 @@ import cn.seddat.href.client.service.User;
 public class PostDetailActivity extends Activity {
 
 	private final String tag = PostDetailActivity.class.getSimpleName();
-	private PostDetailTask postDetailTask;
-
-	private boolean marked;
+	private ContentService contentService;
+	private Post post;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +40,9 @@ public class PostDetailActivity extends Activity {
 		// title
 		TextView title = (TextView) this.findViewById(android.R.id.title);
 		title.setText(R.string.page_label_post_detail);
-		postDetailTask = new PostDetailTask();
 		// show
-		Post post = new Post();
+		contentService = new ContentService(this);
+		post = new Post();
 		Bundle bundle = getIntent().getExtras();
 		for (String key : bundle.keySet()) {
 			post.put(key, bundle.getString(key));
@@ -61,9 +62,7 @@ public class PostDetailActivity extends Activity {
 		text.setText(post.getSource());
 		text = (TextView) findViewById(R.id.post_mark);
 		text.setText(String.valueOf(post.getMark()));
-		// TODO
-		marked = false;
-		postDetailTask.execute(post);
+		new PostDetailTask().execute(post);
 	}
 
 	public void goBack(View view) {
@@ -72,13 +71,24 @@ public class PostDetailActivity extends Activity {
 
 	public void onMark(View view) {
 		ImageView image = (ImageView) view;
-		marked = !marked;
-		image.setImageResource(marked ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
-		ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
+		post.setLike(!post.isLiked());
+		image.setImageResource(post.isLiked() ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
+		try {
+			contentService.markPost(post.getId(), post.isLiked());
+			ToastService.toast(this, post.isLiked() ? "已添加收藏" : "已取消收藏", Toast.LENGTH_SHORT);
+		} catch (Exception e) {
+			ToastService.toast(this, "网络不给力啊", Toast.LENGTH_SHORT);
+		}
 	}
 
 	public void onSource(View view) {
-		ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
+		String link = post.getLink();
+		if (link == null || link.isEmpty()) {
+			ToastService.toast(this, "没有原文", Toast.LENGTH_SHORT);
+			return;
+		}
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+		this.startActivity(intent);
 	}
 
 	public void onShare(View view) {
@@ -101,14 +111,12 @@ public class PostDetailActivity extends Activity {
 		@Override
 		protected Post doInBackground(Post... params) {
 			Post post = params.length > 0 ? params[0] : null;
-			if (post != null && post.getId() != null && post.getId().length() > 0) {
-				try {
-					String ctt = postService.findPostContent(post.getId());
-					post.setContent(ctt);
-				} catch (Exception e) {
-					post.remove(Post.COL_CONTENT);
-					Log.e(tag, "find post by id failed", e);
-				}
+			try {
+				post = postService.findPostDetail(post);
+			} catch (Exception e) {
+				// post.remove(Post.COL_CONTENT);
+				post = null;
+				Log.e(tag, "find post by id failed", e);
 			}
 			return post;
 		}

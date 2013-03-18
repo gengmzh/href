@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class User extends Entity {
 
-	public static final String COL_ID = "Id";
+	public static final String COL_ID = "id";
 	public static final String COL_NAME = "un";
 	public static final String COL_ICON = "ui";
 	public static final String COL_ICON_URI = "uiu";

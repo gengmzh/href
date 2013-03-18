@@ -20,6 +20,7 @@ public class Post extends Entity {
 	public static final String COL_LINK = "sl";
 	public static final String COL_TYPE = "tp";
 	public static final String COL_COMPANY = "com";
+	public static final String COL_ADDRESS = "addr";
 	public static final String COL_CREATE_TIME = "ct";
 	public static final String COL_MARK = "mrk";
 	public static final String COL_LIKE = "like";
@@ -139,6 +140,15 @@ public class Post extends Entity {
 		return this;
 	}
 
+	public String getAddress() {
+		return get(COL_ADDRESS);
+	}
+
+	public Post setAddress(String address) {
+		put(COL_ADDRESS, address);
+		return this;
+	}
+
 	public long getCreateTime() {
 		return getLong(COL_CREATE_TIME, 0);
 	}
@@ -181,6 +191,15 @@ public class Post extends Entity {
 
 	public Post setMark(long mark) {
 		put(COL_MARK, String.valueOf(mark));
+		return this;
+	}
+
+	public boolean isLiked() {
+		return getLong(COL_LIKE, 0) > 0;
+	}
+
+	public Post setLike(boolean like) {
+		put(COL_LIKE, like ? "1" : "0");
 		return this;
 	}
 
