@@ -53,7 +53,10 @@ class PostService(object):
             users[user['_id']] = {'un':user['uid'], 'icon':self.icon_path+user['icon']}
         return users
 
-    def findContent(self, post_id):
-        post = self.postColl.find_one(post_id, fields={'_id':0, 'ctt':1})
+    def findDetail(self, post_id):
+        post = self.postColl.find_one(post_id, fields={'_id':0, 'sl':1, 'ctt':1, 'addr':1})
         return post
+
+    def mark(self, post_id):
+        self.postColl.update({'_id':post_id}, {'$inc':{'mrk':1}})
 

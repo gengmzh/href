@@ -42,11 +42,32 @@ def __fromTimestamp(millis):
 def __json(value):
     return HttpResponse(json.dumps(value, ensure_ascii=False), content_type="application/json; charset=UTF-8")
 
-def findPostContent(request, post_id):
+def findPostDetail(request, post_id):
     from models.PostService import PostService
     service = PostService()
-    post = service.findContent(post_id)
+    post = service.findDetail(post_id)
     return __json(post)
+
+def markPost(request, post_id=None):
+    if not post_id:
+        post_id = request.REQUEST.get('id', None)
+    value = {}
+    if post_id:
+        from models.PostService import PostService
+        service = PostService()
+        try:
+            service.mark(post_id)
+            value['code'] = 0
+            value['message'] = 'ok'
+        except Exception, ex:
+            log.error(ex)
+            value['code'] = 1
+            value['message'] = 'href is busy'
+    else:
+        value['code'] = 1
+        value['message'] = 'post id can not be empty!'
+        log.warn('post id can not be empty!')
+    return __json(value)
 
 def feedback(request):
     feed = request.REQUEST.get('feed', None)

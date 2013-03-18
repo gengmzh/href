@@ -22,7 +22,9 @@ urlpatterns = patterns('',
     url(r'^index.html$', 'web.views.index', name='index'),
     # href api
     url(r'^href/post/$', 'web.views.findPostList', name='api-post-list'),
-    url(r'^href/post/(?P<post_id>[A-Za-z\d]+)/$', 'web.views.findPostContent', name='api-post-content'),
+    url(r'^href/post/(?P<post_id>[A-Za-z\d]+)/$', 'web.views.findPostDetail', name='api-post-content'),
+    url(r'^href/mark/$', 'web.views.markPost', name='api-post-mark'),
+    url(r'^href/mark/(?P<post_id>[A-Za-z\d]+)/$', 'web.views.markPost', name='api-post-mark-by-id'),
     url(r'^href/feedback/$', 'web.views.feedback', name='api-feedback'),
     
 )
