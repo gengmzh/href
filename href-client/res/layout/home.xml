@@ -47,7 +47,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:onClick="onMenuClick"
-                android:padding="3dip" >
+                android:padding="3dip"
+                android:visibility="gone" >
 
                 <ImageView
                     android:layout_width="22dip"

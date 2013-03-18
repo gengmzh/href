@@ -87,7 +87,8 @@ public class HomeActivity extends ActivityGroup {
 
 	@Override
 	public void onBackPressed() {
-		if (curMenu == null || curMenu.getId() == R.id.sideslipping_menu_default) {
+		if (curMenu == null || curMenu.getId() == R.id.sideslipping_menu_default
+				|| curMenu.getId() == R.id.sideslipping_menu_mark) {
 			if (slidingMenuView.isMenuShowing()) {
 				Log.i(tag, "hide left menu");
 				slidingMenuView.scrollRight();
