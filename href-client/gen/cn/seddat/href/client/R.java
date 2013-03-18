@@ -79,10 +79,11 @@ public final class R {
         public static final int post_detail=0x7f030003;
         public static final int post_item=0x7f030004;
         public static final int post_list=0x7f030005;
-        public static final int refreshable_footer=0x7f030006;
-        public static final int refreshable_header=0x7f030007;
-        public static final int title_back=0x7f030008;
-        public static final int title_home=0x7f030009;
+        public static final int post_mark=0x7f030006;
+        public static final int refreshable_footer=0x7f030007;
+        public static final int refreshable_header=0x7f030008;
+        public static final int title_back=0x7f030009;
+        public static final int title_home=0x7f03000a;
     }
     public static final class string {
         public static final int app_name=0x7f040000;

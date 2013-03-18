@@ -66,7 +66,7 @@ public class HomeActivity extends ActivityGroup {
 			}
 			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
-			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
+			this.showContent(PostMarkActivity.class);
 			break;
 		case R.id.sideslipping_menu_feedback:
 			this.startActivity(new Intent(this, FeedbackActivity.class));

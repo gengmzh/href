@@ -70,8 +70,8 @@ public class ContentService {
 		}
 		Cursor cursor = contentResolver.query(ContentProvider.CONTENT_POST, new String[] { Post.COL_ID,
 				Post.COL_USER_ID, Post.COL_TITLE, Post.COL_SOURCE, Post.COL_COMPANY, Post.COL_CREATE_TIME,
-				Post.COL_MARK }, where.toString(), args.toArray(new String[args.size()]), Post.COL_CREATE_TIME
-				+ " desc, " + Post.COL_ID + " desc");
+				Post.COL_MARK, Post.COL_LIKE }, where.toString(), args.toArray(new String[args.size()]),
+				Post.COL_CREATE_TIME + " desc, " + Post.COL_ID + " desc");
 		List<Post> posts = new ArrayList<Post>();
 		List<String> userIds = new ArrayList<String>();
 		if (cursor != null) {
@@ -94,6 +94,49 @@ public class ContentService {
 					userIds.add(post.getUserId());
 				}
 				hasNext = posts.size() < limit && cursor.moveToNext();
+			}
+			cursor.close();
+		}
+		if (!userIds.isEmpty()) {
+			Map<String, User> users = this.findUserByCache(userIds);
+			for (Post post : posts) {
+				if (users.containsKey(post.getUserId())) {
+					User user = users.get(post.getUserId());
+					post.put(User.COL_NAME, user.getName());
+					post.put(User.COL_ICON_URI, user.getIconUri());
+					post.put(User.COL_ICON, user.getIcon());
+				} else {
+					post.put(User.COL_ICON, defaultUserIcon);// kidding me??
+				}
+			}
+		}
+		return posts;
+	}
+
+	public List<Post> findMarkedPost(int limit) throws Exception {
+		Cursor cursor = contentResolver.query(ContentProvider.CONTENT_POST, new String[] { Post.COL_ID,
+				Post.COL_USER_ID, Post.COL_TITLE, Post.COL_SOURCE, Post.COL_COMPANY, Post.COL_CREATE_TIME,
+				Post.COL_MARK }, Post.COL_LIKE + ">?", new String[] { "0" }, Post.COL_CREATE_TIME + " desc, "
+				+ Post.COL_ID + " desc");
+		List<Post> posts = new ArrayList<Post>();
+		List<String> userIds = new ArrayList<String>();
+		if (cursor != null) {
+			boolean hasNext = cursor.moveToFirst();
+			while (hasNext) {
+				Post post = new Post();
+				post.setId(cursor.getString(cursor.getColumnIndex(Post.COL_ID)));
+				post.setUserId(cursor.getString(cursor.getColumnIndex(Post.COL_USER_ID)));
+				post.setTitle(cursor.getString(cursor.getColumnIndex(Post.COL_TITLE)));
+				post.setSource(cursor.getString(cursor.getColumnIndex(Post.COL_SOURCE)));
+				post.setCompany(cursor.getString(cursor.getColumnIndex(Post.COL_COMPANY)));
+				post.setCreateTime(cursor.getLong(cursor.getColumnIndex(Post.COL_CREATE_TIME)));
+				post.setMark(cursor.getLong(cursor.getColumnIndex(Post.COL_MARK)));
+				post.put("pt", this.parseShowTime(post.getCreateTime()));
+				posts.add(post);
+				if (!userIds.contains(post.getUserId())) {
+					userIds.add(post.getUserId());
+				}
+				hasNext = cursor.moveToNext() && (limit <= 0 || posts.size() < limit);
 			}
 			cursor.close();
 		}
@@ -392,13 +435,13 @@ public class ContentService {
 		file.delete();
 	}
 
-	public void markPost(String postId, boolean marked) throws Exception {
-		if (postId == null) {
+	public void markPost(Post post, boolean marked) throws Exception {
+		if (post == null || post.getId() == null) {
 			return;
 		}
 		// server
 		HttpRequest.Parameter args = new HttpRequest.Parameter();
-		args.set("id", postId);
+		args.set("id", post.getId());
 		if (marked == false) {
 			args.set("mark", "false");
 		}
@@ -409,9 +452,11 @@ public class ContentService {
 			throw new Exception("mark post failed, " + jo.optString("message"));
 		}
 		// cache
+		post.setLike(marked).setMark(post.getMark() + (marked ? 1 : -1));
 		ContentValues values = new ContentValues();
 		values.put(Post.COL_LIKE, marked ? "1" : "0");
-		this.save(ContentProvider.CONTENT_POST, values, Post.COL_ID + "=?", new String[] { postId });
+		values.put(Post.COL_MARK, String.valueOf(post.getMark()));
+		this.save(ContentProvider.CONTENT_POST, values, Post.COL_ID + "=?", new String[] { post.getId() });
 	}
 
 }

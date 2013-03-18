@@ -30,6 +30,7 @@ public class PostDetailActivity extends Activity {
 	private final String tag = PostDetailActivity.class.getSimpleName();
 	private ContentService contentService;
 	private Post post;
+	private ImageView markImage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class PostDetailActivity extends Activity {
 		text = (TextView) findViewById(R.id.post_mark);
 		text.setText(String.valueOf(post.getMark()));
 		new PostDetailTask().execute(post);
+		markImage = (ImageView) this.findViewById(R.id.menu_mark);
 	}
 
 	public void goBack(View view) {
@@ -70,8 +72,7 @@ public class PostDetailActivity extends Activity {
 	}
 
 	public void onMark(View view) {
-		ImageView image = (ImageView) view;
-		new MarkPostTask().execute(image);
+		new MarkPostTask().execute(post);
 	}
 
 	public void onSource(View view) {
@@ -125,6 +126,9 @@ public class PostDetailActivity extends Activity {
 				TextView text = (TextView) findViewById(R.id.post_content);
 				text.setText(Html.fromHtml(post.getContent()));
 			}
+			if (post.isLiked()) {
+				markImage.setImageResource(R.drawable.menu_mark_on);
+			}
 		}
 
 		@Override
@@ -133,18 +137,16 @@ public class PostDetailActivity extends Activity {
 		}
 	}
 
-	class MarkPostTask extends AsyncTask<ImageView, Integer, Boolean> {
-
-		private ImageView image;
+	class MarkPostTask extends AsyncTask<Post, Integer, Boolean> {
 
 		@Override
-		protected Boolean doInBackground(ImageView... params) {
-			image = params != null && params.length > 0 ? params[0] : null;
-			if (image == null) {
+		protected Boolean doInBackground(Post... params) {
+			Post post = params != null && params.length > 0 ? params[0] : null;
+			if (post == null) {
 				return false;
 			}
 			try {
-				contentService.markPost(post.getId(), !post.isLiked());
+				contentService.markPost(post, !post.isLiked());
 			} catch (Exception e) {
 				Log.e(tag, "mark post failed", e);
 				return false;
@@ -158,8 +160,7 @@ public class PostDetailActivity extends Activity {
 			if (result == null || !result) {
 				ToastService.toast(PostDetailActivity.this, "网络不给力啊", Toast.LENGTH_SHORT);
 			} else {
-				post.setLike(!post.isLiked());
-				image.setImageResource(post.isLiked() ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
+				markImage.setImageResource(post.isLiked() ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
 				ToastService.toast(PostDetailActivity.this, post.isLiked() ? "已添加收藏" : "已取消收藏", Toast.LENGTH_SHORT);
 			}
 		}
