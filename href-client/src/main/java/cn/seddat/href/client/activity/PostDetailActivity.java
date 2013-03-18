@@ -71,14 +71,7 @@ public class PostDetailActivity extends Activity {
 
 	public void onMark(View view) {
 		ImageView image = (ImageView) view;
-		post.setLike(!post.isLiked());
-		image.setImageResource(post.isLiked() ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
-		try {
-			contentService.markPost(post.getId(), post.isLiked());
-			ToastService.toast(this, post.isLiked() ? "已添加收藏" : "已取消收藏", Toast.LENGTH_SHORT);
-		} catch (Exception e) {
-			ToastService.toast(this, "网络不给力啊", Toast.LENGTH_SHORT);
-		}
+		new MarkPostTask().execute(image);
 	}
 
 	public void onSource(View view) {
@@ -137,6 +130,38 @@ public class PostDetailActivity extends Activity {
 		@Override
 		protected void onProgressUpdate(Integer... values) {
 			super.onProgressUpdate(values);
+		}
+	}
+
+	class MarkPostTask extends AsyncTask<ImageView, Integer, Boolean> {
+
+		private ImageView image;
+
+		@Override
+		protected Boolean doInBackground(ImageView... params) {
+			image = params != null && params.length > 0 ? params[0] : null;
+			if (image == null) {
+				return false;
+			}
+			try {
+				contentService.markPost(post.getId(), !post.isLiked());
+			} catch (Exception e) {
+				Log.e(tag, "mark post failed", e);
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result == null || !result) {
+				ToastService.toast(PostDetailActivity.this, "网络不给力啊", Toast.LENGTH_SHORT);
+			} else {
+				post.setLike(!post.isLiked());
+				image.setImageResource(post.isLiked() ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
+				ToastService.toast(PostDetailActivity.this, post.isLiked() ? "已添加收藏" : "已取消收藏", Toast.LENGTH_SHORT);
+			}
 		}
 	}
 
