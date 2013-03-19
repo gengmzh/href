@@ -5,6 +5,7 @@ package cn.seddat.href.client.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,15 +87,17 @@ public class CacheService {
 
 	public void clearUserIcon(Date beforeTime, List<String> reservedIcons) throws Exception {
 		long time = beforeTime != null ? beforeTime.getTime() : 0;
-		if (reservedIcons != null) {
-			for (int i = 0; i < reservedIcons.size(); i++) {
-				String file = reservedIcons.get(i);
-				int index = file.lastIndexOf("/");
-				if (index > 0) {
-					reservedIcons.set(i, file.substring(index + 1));
-				}
+		if (reservedIcons == null) {
+			reservedIcons = new ArrayList<String>();
+		}
+		for (int i = 0; i < reservedIcons.size(); i++) {
+			String file = reservedIcons.get(i);
+			int index = file.lastIndexOf("/");
+			if (index > 0) {
+				reservedIcons.set(i, file.substring(index + 1));
 			}
 		}
+		reservedIcons.add(Config.getSplashImageName());
 		// cache
 		File cache = context.getCacheDir();
 		for (File icon : cache.listFiles()) {
@@ -116,6 +119,30 @@ public class CacheService {
 				}
 			}
 		}
+	}
+
+	public String findSplashImage() throws Exception {
+		// cache
+		File cache = getCacheDir(context);
+		File file = new File(cache, Config.getSplashImageName());
+		if (file.exists()) {
+			if (file.isFile()) {
+				long now = new Date().getTime();
+				if (now - file.lastModified() < 6 * 60 * 60 * 1000) {
+					return file.getAbsolutePath();
+				}
+			} else {
+				this.delete(file);
+				Log.w(tag, "delete illegal splash iamge " + file.getAbsolutePath());
+			}
+		}
+		// server
+		HttpRequest request = new HttpRequest();
+		byte[] bytes = request.request(Config.getBaseApi() + "/static/splash.png", null);
+		FileOutputStream out = new FileOutputStream(file);
+		out.write(bytes);
+		out.close();
+		return file.getAbsolutePath();
 	}
 
 }

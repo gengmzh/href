@@ -5,9 +5,16 @@ package cn.seddat.href.client.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
 import cn.seddat.href.client.R;
+import cn.seddat.href.client.service.CacheService;
+import cn.seddat.href.client.service.ToastService;
 
 /**
  * @author mzhgeng
@@ -15,10 +22,16 @@ import cn.seddat.href.client.R;
  */
 public class SplashActivity extends Activity {
 
+	private final String tag = SplashActivity.class.getSimpleName();
+	private CacheService cacheService;
+	private ImageView image;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.splash);
+		cacheService = new CacheService(this);
+		image = (ImageView) this.findViewById(R.id.splash_image);
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -26,6 +39,33 @@ public class SplashActivity extends Activity {
 				startActivity(intent);
 			}
 		}, 3000);
+		new SplashImageTask().execute();
+	}
+
+	class SplashImageTask extends AsyncTask<Integer, Integer, String> {
+		@Override
+		protected String doInBackground(Integer... params) {
+			String file = null;
+			try {
+				file = cacheService.findSplashImage();
+			} catch (Exception e) {
+				Log.e(tag, "find splash image failed", e);
+			}
+			return file;
+		}
+
+		@Override
+		protected void onPostExecute(String file) {
+			if (file == null) {
+				ToastService.toast(SplashActivity.this, "网络不给力啊", Toast.LENGTH_SHORT);
+				return;
+			}
+			try {
+				image.setImageURI(Uri.parse(file));
+			} catch (Exception ex) {
+				Log.e(tag, "find splash image failed", ex);
+			}
+		}
 	}
 
 }
