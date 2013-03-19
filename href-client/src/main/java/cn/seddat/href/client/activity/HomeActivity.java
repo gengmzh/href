@@ -31,7 +31,7 @@ public class HomeActivity extends ActivityGroup {
 		appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
 		slidingMenuView = (SideslippingView) findViewById(R.id.sideslipping_view);
 		slidingMenuView.init();
-		this.onMenuClick(findViewById(R.id.sideslipping_menu_default));
+		this.onMenuClick(findViewById(R.id.menu_default));
 	}
 
 	public void goBack(View view) {
@@ -44,7 +44,7 @@ public class HomeActivity extends ActivityGroup {
 
 	public void onMenuClick(View view) {
 		switch (view.getId()) {
-		case R.id.sideslipping_menu_default:
+		case R.id.menu_default:
 			if (curMenu != null) {
 				curMenu.setBackgroundColor(android.R.color.transparent);
 			}
@@ -52,7 +52,7 @@ public class HomeActivity extends ActivityGroup {
 			curMenu = view;
 			this.showContent(PostListActivity.class);
 			break;
-		case R.id.sideslipping_menu_recommend:
+		case R.id.menu_recommend:
 			if (curMenu != null) {
 				curMenu.setBackgroundColor(android.R.color.transparent);
 			}
@@ -60,7 +60,7 @@ public class HomeActivity extends ActivityGroup {
 			curMenu = view;
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 			break;
-		case R.id.sideslipping_menu_mark:
+		case R.id.menu_mark:
 			if (curMenu != null) {
 				curMenu.setBackgroundColor(android.R.color.transparent);
 			}
@@ -68,10 +68,10 @@ public class HomeActivity extends ActivityGroup {
 			curMenu = view;
 			this.showContent(PostMarkActivity.class);
 			break;
-		case R.id.sideslipping_menu_feedback:
+		case R.id.menu_feedback:
 			this.startActivity(new Intent(this, FeedbackActivity.class));
 			break;
-		case R.id.sideslipping_menu_about:
+		case R.id.menu_about:
 			this.startActivity(new Intent(this, AboutActivity.class));
 			break;
 		}
@@ -87,8 +87,7 @@ public class HomeActivity extends ActivityGroup {
 
 	@Override
 	public void onBackPressed() {
-		if (curMenu == null || curMenu.getId() == R.id.sideslipping_menu_default
-				|| curMenu.getId() == R.id.sideslipping_menu_mark) {
+		if (curMenu == null || curMenu.getId() == R.id.menu_default || curMenu.getId() == R.id.menu_mark) {
 			if (slidingMenuView.isMenuShowing()) {
 				Log.i(tag, "hide left menu");
 				slidingMenuView.scrollRight();
@@ -102,7 +101,7 @@ public class HomeActivity extends ActivityGroup {
 				}
 			}
 		} else {
-			this.onMenuClick(findViewById(R.id.sideslipping_menu_default));
+			this.onMenuClick(findViewById(R.id.menu_default));
 		}
 	}
 

@@ -9,7 +9,7 @@
         android:layout_height="match_parent" >
 
         <TableLayout
-            android:id="@+id/sideslipping_menu"
+            android:id="@+id/menu_container"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="7dip"
@@ -22,7 +22,7 @@
                 android:background="@android:color/transparent" />
 
             <TableRow
-                android:id="@+id/sideslipping_menu_default"
+                android:id="@+id/menu_default"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:onClick="onMenuClick"
@@ -43,7 +43,7 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/sideslipping_menu_recommend"
+                android:id="@+id/menu_recommend"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:onClick="onMenuClick"
@@ -65,7 +65,7 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/sideslipping_menu_mark"
+                android:id="@+id/menu_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:onClick="onMenuClick"
@@ -91,7 +91,7 @@
                 android:background="@android:color/transparent" />
 
             <TableRow
-                android:id="@+id/sideslipping_menu_feedback"
+                android:id="@+id/menu_feedback"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:onClick="onMenuClick"
@@ -112,7 +112,7 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/sideslipping_menu_about"
+                android:id="@+id/menu_about"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:onClick="onMenuClick"
@@ -134,7 +134,7 @@
         </TableLayout>
 
         <FrameLayout
-            android:id="@+id/sideslipping_content"
+            android:id="@+id/content_container"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
         </FrameLayout>

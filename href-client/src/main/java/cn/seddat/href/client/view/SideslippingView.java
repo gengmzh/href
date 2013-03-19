@@ -44,14 +44,14 @@ public class SideslippingView extends ViewGroup {
 		postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				scrollTo(findViewById(R.id.sideslipping_menu).getWidth(), 0);
+				scrollTo(findViewById(R.id.menu_container).getWidth(), 0);
 			}
 		}, 0);
 	}
 
 	public void init() {
-		this.menuView = (ViewGroup) findViewById(R.id.sideslipping_menu);
-		this.contentView = (ViewGroup) findViewById(R.id.sideslipping_content);
+		this.menuView = (ViewGroup) findViewById(R.id.menu_container);
+		this.contentView = (ViewGroup) findViewById(R.id.content_container);
 	}
 
 	/**
