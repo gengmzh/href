@@ -3,6 +3,8 @@
  */
 package cn.seddat.href.client.activity;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.CacheService;
+import cn.seddat.href.client.service.Config;
 import cn.seddat.href.client.service.ToastService;
 
 /**
@@ -25,6 +28,7 @@ public class SplashActivity extends Activity {
 	private final String tag = SplashActivity.class.getSimpleName();
 	private CacheService cacheService;
 	private ImageView image;
+	private long lastModified = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,15 @@ public class SplashActivity extends Activity {
 		this.setContentView(R.layout.splash);
 		cacheService = new CacheService(this);
 		image = (ImageView) this.findViewById(R.id.splash_image);
+		try {
+			File file = new File(CacheService.getCacheDir(this), Config.getSplashImageName());
+			if (file.exists() && file.isFile()) {
+				lastModified = file.lastModified();
+				image.setImageURI(Uri.parse(file.getAbsolutePath()));
+			}
+		} catch (Exception e) {
+			Log.e(tag, "get splash image failed", e);
+		}
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -61,7 +74,10 @@ public class SplashActivity extends Activity {
 				return;
 			}
 			try {
-				image.setImageURI(Uri.parse(file));
+				File f = new File(file);
+				if (f.lastModified() > lastModified) {
+					image.setImageURI(Uri.parse(file));
+				}
 			} catch (Exception ex) {
 				Log.e(tag, "find splash image failed", ex);
 			}
