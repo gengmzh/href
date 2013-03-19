@@ -17,6 +17,7 @@ public class HomeActivity extends ActivityGroup {
 
 	private final String tag = HomeActivity.class.getSimpleName();
 	private String appName;
+	private TextView title;
 	private SideslippingView slidingMenuView;
 
 	@Override
@@ -26,7 +27,7 @@ public class HomeActivity extends ActivityGroup {
 		this.setContentView(R.layout.home);
 		this.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_home);
 		// title
-		TextView title = (TextView) this.findViewById(android.R.id.title);
+		title = (TextView) this.findViewById(android.R.id.title);
 		title.setText(R.string.app_name);
 		appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
 		slidingMenuView = (SideslippingView) findViewById(R.id.sideslipping_view);
@@ -50,6 +51,7 @@ public class HomeActivity extends ActivityGroup {
 			}
 			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
+			title.setText(R.string.app_name);
 			this.showContent(PostListActivity.class);
 			break;
 		case R.id.menu_recommend:
@@ -58,6 +60,7 @@ public class HomeActivity extends ActivityGroup {
 			}
 			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
+			title.setText(R.string.page_label_recommend);
 			ToastService.toast(this, "敬请期待", Toast.LENGTH_SHORT);
 			break;
 		case R.id.menu_mark:
@@ -66,6 +69,7 @@ public class HomeActivity extends ActivityGroup {
 			}
 			view.setBackgroundColor(R.color.gray_dark);
 			curMenu = view;
+			title.setText(R.string.page_label_mark);
 			this.showContent(PostMarkActivity.class);
 			break;
 		case R.id.menu_feedback:

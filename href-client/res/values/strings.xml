@@ -5,6 +5,8 @@
     <string name="page_label_about">关于知遇</string>
     <string name="page_label_feedback">意见反馈</string>
     <string name="page_label_post_detail">明细信息</string>
+    <string name="page_label_recommend">精选推荐</string>
+    <string name="page_label_mark">我的收藏</string>
     <string name="feedback_advice_hint">请留下您的宝贵意见</string>
     <string name="feedback_advice_error_message">反馈意见不可为空</string>
 

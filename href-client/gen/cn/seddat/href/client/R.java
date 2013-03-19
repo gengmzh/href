@@ -89,11 +89,13 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
-        public static final int feedback_advice_error_message=0x7f040005;
-        public static final int feedback_advice_hint=0x7f040004;
+        public static final int feedback_advice_error_message=0x7f040007;
+        public static final int feedback_advice_hint=0x7f040006;
         public static final int page_label_about=0x7f040001;
         public static final int page_label_feedback=0x7f040002;
+        public static final int page_label_mark=0x7f040005;
         public static final int page_label_post_detail=0x7f040003;
+        public static final int page_label_recommend=0x7f040004;
     }
     public static final class style {
         public static final int href_tile=0x7f060000;
