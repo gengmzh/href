@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListAdapter;
 import cn.seddat.href.client.R;
+import cn.seddat.href.client.service.CacheService;
 import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
 import cn.seddat.href.client.service.User;
@@ -31,6 +32,7 @@ public class PostListActivity extends Activity implements RefreshableListener {
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
 	private final int limit = 20;
 	private ContentService contentService;
+	private CacheService cacheService;
 	private RefreshableListView listView;
 
 	@Override
@@ -39,6 +41,7 @@ public class PostListActivity extends Activity implements RefreshableListener {
 		setContentView(R.layout.post_list);
 		// init
 		contentService = new ContentService(this);
+		cacheService = new CacheService(this);
 		List<Post> posts = null;
 		try {
 			posts = contentService.findPostByCache(0, null, 0, limit);
@@ -49,17 +52,6 @@ public class PostListActivity extends Activity implements RefreshableListener {
 		listView.init(this, posts, R.layout.post_item, new String[] { "un", "ui", "com", "pt", "ttl", "sn", "mrk" },
 				new int[] { R.id.author_name, R.id.author_icon, R.id.post_company, R.id.post_time, R.id.post_title,
 						R.id.post_source, R.id.post_mark });
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		// this.listView.refreshing();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}
 
 	private boolean refreshed = false;
@@ -79,7 +71,7 @@ public class PostListActivity extends Activity implements RefreshableListener {
 		RefreshResult result = new RefreshResult();
 		Date cacheTime = new Date();
 		List<Post> posts = contentService.findPostByServer(time, item, 0, limit);
-		Log.i(tag, "[Refreshing] find " + posts.size() + " items");
+		Log.i(tag, "[Refreshing] find " + posts.size() + " items by server");
 		if (posts.size() < limit) {
 			int count = Math.min(limit - posts.size(), adapter != null ? adapter.getCount() : 0);
 			for (int i = 0; i < count; i++) {
@@ -87,7 +79,17 @@ public class PostListActivity extends Activity implements RefreshableListener {
 			}
 			refreshed = false;
 		} else {
-			contentService.clearCache(cacheTime);
+			List<String> reservedUserIds = contentService.clearPostAndUser(cacheTime, true);
+			List<String> reservedIcons = new ArrayList<String>();
+			if (!reservedUserIds.isEmpty()) {
+				Map<String, User> users = contentService.findUserByCache(reservedUserIds);
+				for (User user : users.values()) {
+					if (user.getIcon() != null) {
+						reservedIcons.add(user.getIcon());
+					}
+				}
+			}
+			cacheService.clearUserIcon(cacheTime, reservedIcons);
 			Log.i(tag, "[Refreshing] clear cache");
 			refreshed = true;
 		}
@@ -173,7 +175,7 @@ public class PostListActivity extends Activity implements RefreshableListener {
 			posts.add(post);
 			uris.add(uri);
 		}
-		Map<String, String> icons = contentService.findUserIcon(uris);
+		Map<String, String> icons = cacheService.findUserIcon(uris);
 		for (Post post : posts) {
 			String uri = post.get(User.COL_ICON_URI);
 			if (icons.containsKey(uri)) {

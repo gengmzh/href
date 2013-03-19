@@ -13,7 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
-import cn.seddat.href.client.service.ContentService;
+import cn.seddat.href.client.service.Config;
 import cn.seddat.href.client.service.HttpRequest;
 import cn.seddat.href.client.service.ToastService;
 
@@ -80,7 +80,7 @@ public class FeedbackActivity extends Activity {
 			}
 			try {
 				HttpRequest http = new HttpRequest();
-				byte[] result = http.request(ContentService.api_feedback, params[0]);
+				byte[] result = http.request(Config.getFeedbackApi(), params[0]);
 				JSONObject jo = new JSONObject(new String(result));
 				return jo.optInt("code", 1) == 0;
 			} catch (Exception ex) {
