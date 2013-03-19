@@ -26,8 +26,10 @@ public class ContentProvider extends android.content.ContentProvider {
 	public static final String AUTHORITY = "cn.seddat.href.client.provider";
 	public static final Uri CONTENT_USER = Uri.parse("content://" + AUTHORITY + "/user");
 	public static final Uri CONTENT_POST = Uri.parse("content://" + AUTHORITY + "/post");
+	public static final Uri CONTENT_TRACK = Uri.parse("content://" + AUTHORITY + "/track");
 	public static final String TABLE_POST = "post";
 	public static final String TABLE_USER = "user";
+	public static final String TABLE_TRACK = "track";
 
 	private UriMatcher matcher;
 	private DatabaseSupport databaseSupport;
@@ -40,6 +42,8 @@ public class ContentProvider extends android.content.ContentProvider {
 		matcher.addURI(AUTHORITY, "user" + "/#", 2);
 		matcher.addURI(AUTHORITY, "post", 3);
 		matcher.addURI(AUTHORITY, "post" + "/#", 4);
+		matcher.addURI(AUTHORITY, "track", 5);
+		matcher.addURI(AUTHORITY, "track" + "/#", 6);
 		// database
 		Context context = getContext();
 		String packageName = context.getPackageName();
@@ -73,12 +77,17 @@ public class ContentProvider extends android.content.ContentProvider {
 					+ Post.COL_CREATE_TIME + " text, " + Post.COL_MARK + " text, " + Post.COL_LIKE + " text, "
 					+ Post.COL_CACHE_TIME + " text " + "); ";
 			sqlite.execSQL(sql);
+			sql = "create table if not exists " + TABLE_TRACK + "( " + BaseColumns._ID + " integer primary key, "
+					+ Track.COL_ACTION + " text, " + Track.COL_VALUE + " text, " + Track.COL_CACHE_TIME + " text "
+					+ "); ";
+			sqlite.execSQL(sql);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase sqlite, int arg1, int arg2) {
 			sqlite.execSQL("drop table if exists " + TABLE_USER);
 			sqlite.execSQL("drop table if exists " + TABLE_POST);
+			sqlite.execSQL("drop table if exists " + TABLE_TRACK);
 			onCreate(sqlite);
 		}
 
@@ -105,6 +114,10 @@ public class ContentProvider extends android.content.ContentProvider {
 		case 4:
 			id = sqlite.insert(TABLE_POST, null, values);
 			break;
+		case 5:
+		case 6:
+			id = sqlite.insert(TABLE_TRACK, null, values);
+			break;
 		}
 		return Uri.withAppendedPath(uri, String.valueOf(id));
 	}
@@ -120,6 +133,10 @@ public class ContentProvider extends android.content.ContentProvider {
 		case 3:
 		case 4:
 			table = TABLE_POST;
+			break;
+		case 5:
+		case 6:
+			table = TABLE_TRACK;
 			break;
 		}
 		SQLiteDatabase sqlite = databaseSupport.getWritableDatabase();
@@ -139,6 +156,10 @@ public class ContentProvider extends android.content.ContentProvider {
 		case 4:
 			table = TABLE_POST;
 			break;
+		case 5:
+		case 6:
+			table = TABLE_TRACK;
+			break;
 		}
 		SQLiteDatabase sqlite = databaseSupport.getWritableDatabase();
 		int res = sqlite.update(table, values, selection, selectionArgs);
@@ -156,6 +177,10 @@ public class ContentProvider extends android.content.ContentProvider {
 		case 3:
 		case 4:
 			table = TABLE_POST;
+			break;
+		case 5:
+		case 6:
+			table = TABLE_TRACK;
 			break;
 		}
 		SQLiteDatabase sqlite = databaseSupport.getReadableDatabase();

@@ -19,6 +19,8 @@ import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
 import cn.seddat.href.client.service.ToastService;
+import cn.seddat.href.client.service.Track;
+import cn.seddat.href.client.service.TrackService;
 import cn.seddat.href.client.service.User;
 
 /**
@@ -91,22 +93,20 @@ public class PostDetailActivity extends Activity {
 
 	class PostDetailTask extends AsyncTask<Post, Integer, Post> {
 
-		private ContentService postService;
-
-		public PostDetailTask() {
-			postService = new ContentService(PostDetailActivity.this);
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
 		@Override
 		protected Post doInBackground(Post... params) {
-			Post post = params.length > 0 ? params[0] : null;
+			if (params == null || params.length < 1) {
+				return null;
+			}
+			Post post = params[0];
 			try {
-				post = postService.findPostDetail(post);
+				TrackService.cacheTrack(PostDetailActivity.this,
+						new Track().setAction(Track.ACTION_CLICK).setValue(post.getId()));
+			} catch (Exception e) {
+				Log.e(tag, "track click failed", e);
+			}
+			try {
+				post = contentService.findPostDetail(post);
 			} catch (Exception e) {
 				// post.remove(Post.COL_CONTENT);
 				post = null;
@@ -144,6 +144,12 @@ public class PostDetailActivity extends Activity {
 			Post post = params != null && params.length > 0 ? params[0] : null;
 			if (post == null) {
 				return false;
+			}
+			try {
+				TrackService.cacheTrack(PostDetailActivity.this,
+						new Track().setAction(Track.ACTION_MARK).setValue(post.getId()));
+			} catch (Exception e) {
+				Log.e(tag, "track click failed", e);
 			}
 			try {
 				contentService.markPost(post, !post.isLiked());

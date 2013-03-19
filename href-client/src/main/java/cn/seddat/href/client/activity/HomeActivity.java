@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.ToastService;
+import cn.seddat.href.client.service.TrackService;
 import cn.seddat.href.client.view.SideslippingView;
 
 public class HomeActivity extends ActivityGroup {
@@ -33,11 +34,14 @@ public class HomeActivity extends ActivityGroup {
 		slidingMenuView = (SideslippingView) findViewById(R.id.sideslipping_view);
 		slidingMenuView.init();
 		this.onMenuClick(findViewById(R.id.menu_default));
+		this.sendTrack();
 	}
 
 	public void goBack(View view) {
 		if (!slidingMenuView.isMenuShowing()) {
 			slidingMenuView.scrollLeft();
+		} else {
+			slidingMenuView.scrollRight();
 		}
 	}
 
@@ -73,9 +77,11 @@ public class HomeActivity extends ActivityGroup {
 			this.showContent(PostMarkActivity.class);
 			break;
 		case R.id.menu_feedback:
+			this.sendTrack();
 			this.startActivity(new Intent(this, FeedbackActivity.class));
 			break;
 		case R.id.menu_about:
+			this.sendTrack();
 			this.startActivity(new Intent(this, AboutActivity.class));
 			break;
 		}
@@ -107,6 +113,19 @@ public class HomeActivity extends ActivityGroup {
 		} else {
 			this.onMenuClick(findViewById(R.id.menu_default));
 		}
+	}
+
+	private void sendTrack() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					TrackService.sendTrack(HomeActivity.this);
+				} catch (Exception e) {
+					Log.e(tag, "send track failed", e);
+				}
+			}
+		}).start();
 	}
 
 }

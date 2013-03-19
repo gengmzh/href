@@ -17,6 +17,8 @@ import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.CacheService;
 import cn.seddat.href.client.service.ContentService;
 import cn.seddat.href.client.service.Post;
+import cn.seddat.href.client.service.Track;
+import cn.seddat.href.client.service.TrackService;
 import cn.seddat.href.client.service.User;
 import cn.seddat.href.client.view.RefreshableListView;
 import cn.seddat.href.client.view.RefreshableListView.RefreshResult;
@@ -161,10 +163,11 @@ public class PostListActivity extends Activity implements RefreshableListener {
 	@Override
 	public void onDisplay(RefreshableListView listView, int firstVisible, int lastVisible) throws Exception {
 		List<Post> posts = new ArrayList<Post>();
-		List<String> uris = new ArrayList<String>();
+		List<String> uris = new ArrayList<String>(), pids = new ArrayList<String>();
 		ListAdapter adapter = listView.getListAdapter();
 		for (int i = firstVisible; i <= lastVisible; i++) {
 			Post post = (Post) adapter.getItem(i);
+			pids.add(post.getId());
 			if (!defaultUserIcon.equals(post.get(User.COL_ICON))) {
 				continue;
 			}
@@ -181,6 +184,9 @@ public class PostListActivity extends Activity implements RefreshableListener {
 			if (icons.containsKey(uri)) {
 				post.put(User.COL_ICON, icons.get(uri));
 			}
+		}
+		if (!pids.isEmpty()) {
+			TrackService.cacheTrack(this, Track.ACTION_IMPRESS, pids);
 		}
 	}
 

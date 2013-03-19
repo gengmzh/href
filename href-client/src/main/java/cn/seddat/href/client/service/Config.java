@@ -13,6 +13,7 @@ public class Config {
 	private static final String api_post = api + "/href/post";
 	private static final String api_mark = api + "/href/mark";
 	private static final String api_feedback = api + "/href/feedback";
+	private static final String api_track = api + "/href/track";
 	private static final String splash_image = "splash.png";
 
 	public static final String getBaseApi() {
@@ -29,6 +30,10 @@ public class Config {
 
 	public static final String getFeedbackApi() {
 		return api_feedback;
+	}
+
+	public static final String getTrackApi() {
+		return api_track;
 	}
 
 	public static final String getSplashImageName() {

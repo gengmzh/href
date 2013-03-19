@@ -34,12 +34,12 @@ public class ContentService {
 	private final String defaultUserIcon = String.valueOf(R.drawable.default_user_icon);
 
 	private DateFormat dateFormat;
-	// private Context context;
+	private Context context;
 	private ContentResolver contentResolver;
 
 	public ContentService(Context context) {
 		dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-		// this.context = context;
+		this.context = context;
 		this.contentResolver = context.getContentResolver();
 	}
 
@@ -175,7 +175,7 @@ public class ContentService {
 
 	public List<Post> findPostByServer(long time, String item, int order, int limit) throws Exception {
 		// args
-		HttpRequest.Parameter args = new HttpRequest.Parameter();
+		HttpRequest.Parameter args = TrackService.getTrackHeader(context);
 		if (time > 0) {
 			args.set("time", String.valueOf(time));
 		}
@@ -347,9 +347,10 @@ public class ContentService {
 		}
 		// server
 		if (post.getContent() == null || post.getContent().length() == 0) {
+			HttpRequest.Parameter args = TrackService.getTrackHeader(context);
 			HttpRequest request = new HttpRequest();
-			String json = new String(request.request(Config.getPostApi() + "/" + post.getId(), null));
-			JSONObject jo = new JSONObject(json);
+			byte[] bytes = request.request(Config.getPostApi() + "/" + post.getId(), args);
+			JSONObject jo = new JSONObject(new String(bytes));
 			post.setLink(jo.optString("sl", null)).setAddress(jo.optString("addr", null))
 					.setContent(jo.optString("ctt", null));
 			ContentValues values = new ContentValues();
@@ -373,19 +374,6 @@ public class ContentService {
 		if (post == null || post.getId() == null) {
 			return;
 		}
-		// server
-		HttpRequest.Parameter args = new HttpRequest.Parameter();
-		args.set("id", post.getId());
-		if (marked == false) {
-			args.set("mark", "false");
-		}
-		HttpRequest http = new HttpRequest();
-		byte[] bytes = http.request(Config.getMarkApi(), args);
-		JSONObject jo = new JSONObject(new String(bytes));
-		if (jo.optInt("code", 1) != 0) {
-			throw new Exception("mark post failed, " + jo.optString("message"));
-		}
-		// cache
 		post.setLike(marked).setMark(post.getMark() + (marked ? 1 : -1));
 		ContentValues values = new ContentValues();
 		values.put(Post.COL_LIKE, marked ? "1" : "0");

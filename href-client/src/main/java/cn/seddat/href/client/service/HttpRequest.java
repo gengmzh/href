@@ -85,7 +85,8 @@ public class HttpRequest {
 				if (buf.length() > 0) {
 					buf.append("&");
 				}
-				buf.append(name).append("=").append(URLEncoder.encode(args.get(name)));
+				String value = args.get(name);
+				buf.append(name).append("=").append(value != null ? URLEncoder.encode(value) : null);
 			}
 			return buf.toString();
 		}
