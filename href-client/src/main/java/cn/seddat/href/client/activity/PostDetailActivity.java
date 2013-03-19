@@ -64,7 +64,7 @@ public class PostDetailActivity extends Activity {
 		// text = (TextView) findViewById(R.id.post_mark);
 		// text.setText(String.valueOf(post.getMark()));
 		new PostDetailTask().execute(post);
-		markImage = (ImageView) this.findViewById(R.id.menu_mark);
+		markImage = (ImageView) this.findViewById(R.id.action_mark);
 	}
 
 	public void goBack(View view) {
@@ -127,7 +127,7 @@ public class PostDetailActivity extends Activity {
 				text.setText(Html.fromHtml(post.getContent()));
 			}
 			if (post.isLiked()) {
-				markImage.setImageResource(R.drawable.menu_mark_on);
+				markImage.setImageResource(R.drawable.action_mark_on);
 			}
 		}
 
@@ -160,7 +160,7 @@ public class PostDetailActivity extends Activity {
 			if (result == null || !result) {
 				ToastService.toast(PostDetailActivity.this, "网络不给力啊", Toast.LENGTH_SHORT);
 			} else {
-				markImage.setImageResource(post.isLiked() ? R.drawable.menu_mark_on : R.drawable.menu_mark_off);
+				markImage.setImageResource(post.isLiked() ? R.drawable.action_mark_on : R.drawable.action_mark_off);
 				ToastService.toast(PostDetailActivity.this, post.isLiked() ? "已添加收藏" : "已取消收藏", Toast.LENGTH_SHORT);
 			}
 		}
