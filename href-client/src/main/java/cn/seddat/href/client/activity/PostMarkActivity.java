@@ -41,8 +41,8 @@ public class PostMarkActivity extends Activity implements AdapterView.OnItemClic
 		contentService = new ContentService(this);
 		posts = new ArrayList<Post>();
 		adapter = new SimpleAdapter(this, posts, R.layout.post_item, new String[] { "un", "ui", "com", "pt", "ttl",
-				"sn", "mrk" }, new int[] { R.id.author_name, R.id.author_icon, R.id.post_company, R.id.post_time,
-				R.id.post_title, R.id.post_source, R.id.post_mark });
+				"sn" }, new int[] { R.id.author_name, R.id.author_icon, R.id.post_company, R.id.post_time,
+				R.id.post_title, R.id.post_source });
 		ListView listView = (ListView) findViewById(R.id.post_list);
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(this);

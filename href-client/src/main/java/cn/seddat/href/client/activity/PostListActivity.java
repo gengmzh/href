@@ -49,9 +49,9 @@ public class PostListActivity extends Activity implements RefreshableListener {
 			Log.e(tag, "find post by cache failed", e);
 		}
 		listView = (RefreshableListView) findViewById(R.id.post_list);
-		listView.init(this, posts, R.layout.post_item, new String[] { "un", "ui", "com", "pt", "ttl", "sn", "mrk" },
+		listView.init(this, posts, R.layout.post_item, new String[] { "un", "ui", "com", "pt", "ttl", "sn" },
 				new int[] { R.id.author_name, R.id.author_icon, R.id.post_company, R.id.post_time, R.id.post_title,
-						R.id.post_source, R.id.post_mark });
+						R.id.post_source });
 	}
 
 	private boolean refreshed = false;

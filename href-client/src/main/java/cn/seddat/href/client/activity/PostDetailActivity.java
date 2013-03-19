@@ -61,8 +61,8 @@ public class PostDetailActivity extends Activity {
 		}
 		text = (TextView) findViewById(R.id.post_source);
 		text.setText(post.getSource());
-		text = (TextView) findViewById(R.id.post_mark);
-		text.setText(String.valueOf(post.getMark()));
+		// text = (TextView) findViewById(R.id.post_mark);
+		// text.setText(String.valueOf(post.getMark()));
 		new PostDetailTask().execute(post);
 		markImage = (ImageView) this.findViewById(R.id.menu_mark);
 	}
