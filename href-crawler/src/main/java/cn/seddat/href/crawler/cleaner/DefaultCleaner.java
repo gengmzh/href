@@ -40,11 +40,11 @@ public class DefaultCleaner implements Cleaner {
 		}
 		// clean
 		for (String source : pm.keySet()) {
-			if (!cleaners.containsKey(source)) {
-				continue;
-			}
 			List<Post> list = pm.get(source);
-			result.addAll(cleaners.get(source).clean(list.toArray(new Post[list.size()])));
+			if (cleaners.containsKey(source)) {
+				list = cleaners.get(source).clean(list.toArray(new Post[list.size()]));
+			}
+			result.addAll(list);
 		}
 		return result;
 	}
