@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  * @author mzhgeng
  * 
  */
-public class CrawlerSchedulerTest extends TestCase {
+public class CrawlerSchedulerBaseTest extends TestCase {
 
 	private CrawlerScheduler scheduler;
 
