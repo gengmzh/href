@@ -38,12 +38,11 @@ public class SpiderServiceTest extends TestCase {
 			if (post != null) {
 				pass = true;
 				System.out.println(i + ": " + post);
-			} else {
 				break;
 			}
 		}
 		Assert.assertTrue(pass);
-		executor.shutdown();
+		executor.shutdownNow();
 	}
 
 }

@@ -52,16 +52,18 @@ public class ShuimuSpider implements Spider {
 		log.info("crawl " + Source.SHUIMU + " starts...");
 		List<Post> posts = new LinkedList<Post>();
 		PostHandler handler = new PostHandler();
-		for (String url : rssUrls) {
-			log.info("crawl " + url);
-			HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+		for (int i = 0; i < rssUrls.length; i++) {
+			log.info("crawl " + rssUrls[i]);
+			HttpURLConnection conn = (HttpURLConnection) new URL(rssUrls[i]).openConnection();
 			conn.setRequestProperty("User-Agent", USERAGENT);
 			conn.connect();
 			InputSource inputSource = new InputSource(conn.getInputStream());
 			saxParser.parse(inputSource, handler);
 			conn.disconnect();
 			posts.addAll(handler.getPosts());
-			Thread.sleep(Config.getInstance().getPoliteTime());
+			if (i < rssUrls.length - 1) {
+				Thread.sleep(Config.getInstance().getPoliteTime());
+			}
 		}
 		log.info("crawl " + Source.SHUIMU + " done");
 		return posts;

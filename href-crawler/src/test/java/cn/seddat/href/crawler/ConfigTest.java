@@ -26,6 +26,13 @@ public class ConfigTest extends TestCase {
 		}
 	}
 
+	public void test_getPiloteTime() throws Exception {
+		long time = config.getPoliteTime();
+		Assert.assertTrue(time > 0);
+		System.out.println(time);
+		Thread.sleep(time);
+	}
+
 	public void testLogging() throws Exception {
 		System.out.println(System.getProperty("java.util.logging.config.file"));
 		Log log = LogFactory.getLog(ConfigTest.class.getSimpleName());
