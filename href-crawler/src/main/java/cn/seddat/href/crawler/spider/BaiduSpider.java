@@ -52,6 +52,7 @@ public class BaiduSpider implements Spider {
 		int page = 1;
 		boolean hasNextPage = true;
 		while (hasNextPage) {
+			log.info("current page " + page);
 			String buf = this.crawl(page);
 			// parse
 			BasicDBObject result = (BasicDBObject) JSON.parse(buf.toString());
