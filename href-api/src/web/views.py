@@ -16,7 +16,13 @@ def findPostList(request):
     # args
     time = request.REQUEST.get('time', None)
     if time:
-        time = __fromTimestamp(time)
+        try:
+            time = datetime.fromtimestamp(long(time)/1000)
+            time = time.strftime("%Y%m%d %H:%M:%S")
+        except Exception, ex:
+            time = None
+            log.error('convert time %s failed' % time)
+            log.error(ex)
     item = request.REQUEST.get('item', None)
     order = request.REQUEST.get('order', 0)
     limit = request.REQUEST.get('limit', '20')
@@ -25,51 +31,20 @@ def findPostList(request):
     from models.PostService import PostService
     service = PostService()
     posts = service.findList(time, item, order, limit)
+    # track
+    __track(request, 'query', ','.join([ p['_id'] for p in posts ]))
     return __json(posts)
-
-def __fromTimestamp(millis):
-    if not millis:
-        return None
-    try:
-        millis = long(millis)
-    except Exception, ex:
-        log.error('convert timestamp %s failed' % millis)
-        log.error(ex)
-        return None
-    d = datetime.fromtimestamp(millis/1000)
-    return d.strftime("%Y%m%d %H:%M:%S")
 
 def __json(value):
     return HttpResponse(json.dumps(value, ensure_ascii=False), content_type="application/json; charset=UTF-8")
 
 def findPostDetail(request, post_id):
+    __track(request, 'click', post_id)
+    # query
     from models.PostService import PostService
     service = PostService()
     post = service.findDetail(post_id)
     return __json(post)
-
-def markPost(request, post_id=None):
-    if not post_id:
-        post_id = request.REQUEST.get('id', None)
-    value = {}
-    if post_id:
-        mark = request.REQUEST.get('mark', None)
-        mark = False if mark and mark=='false' else True
-        from models.PostService import PostService
-        service = PostService()
-        try:
-            service.mark(post_id, mark)
-            value['code'] = 0
-            value['message'] = 'ok'
-        except Exception, ex:
-            log.error(ex)
-            value['code'] = 1
-            value['message'] = 'href is busy'
-    else:
-        value['code'] = 1
-        value['message'] = 'post id can not be empty!'
-        log.warn('post id can not be empty!')
-    return __json(value)
 
 def feedback(request):
     feed = request.REQUEST.get('feed', None)
@@ -88,6 +63,31 @@ def feedback(request):
         value['code'] = 1
         value['message'] = 'feed can not be empty!'
         log.warn('feed can not be empty!')
+    return __json(value)
+
+def __track(request, action=None, value=None):
+    did = request.REQUEST.get('did', None)
+    mdl = request.REQUEST.get('mdl', None)
+    loc = request.REQUEST.get('loc', None)
+    if not action:
+        action = request.REQUEST.get('act', None)
+    if not value:
+        value = request.REQUEST.get('val', None)
+    if did or mdl or loc or action or value:
+        log.info('did=%s mdl=%s loc=%s act=%s val=%s' % (did, mdl, loc, action, value))
+        return True
+    else:
+        return False
+
+def track(request):
+    value = {}
+    if __track(request):
+        value['code'] = 0
+        value['message'] = 'ok'
+    else:
+        value['code'] = 1
+        value['message'] = 'track can not be empty'
+        log.warn('track can not be empty!')
     return __json(value)
 
 
