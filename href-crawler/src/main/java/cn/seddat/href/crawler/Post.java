@@ -16,6 +16,8 @@ public class Post implements Serializable {
 	private String title;
 	private String content;
 	private String company;
+	private String department;
+	private String address;
 	private String type;
 	private String source;
 	private String link;
@@ -108,12 +110,32 @@ public class Post implements Serializable {
 		return this;
 	}
 
+	public String getDepartment() {
+		return department;
+	}
+
+	public Post setDepartment(String department) {
+		this.department = department;
+		return this;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public Post setAddress(String address) {
+		this.address = address;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer().append(Post.class.getSimpleName()).append("{");
 		buf.append("title:").append(getTitle()).append(", ");
 		buf.append("content:").append(getContent()).append(", ");
 		buf.append("company:").append(getCompany()).append(", ");
+		buf.append("department:").append(getDepartment()).append(", ");
+		buf.append("address:").append(getAddress()).append(", ");
 		buf.append("type:").append(getType()).append(", ");
 		buf.append("source:").append(getSource()).append(", ");
 		buf.append("link:").append(getLink()).append(", ");
