@@ -40,8 +40,6 @@ public class HomeActivity extends ActivityGroup {
 	public void goBack(View view) {
 		if (!slidingMenuView.isMenuShowing()) {
 			slidingMenuView.scrollLeft();
-		} else {
-			slidingMenuView.scrollRight();
 		}
 	}
 
