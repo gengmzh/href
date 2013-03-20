@@ -31,6 +31,7 @@ public class PostDetailActivity extends Activity {
 
 	private final String tag = PostDetailActivity.class.getSimpleName();
 	private ContentService contentService;
+	private PostDetailTask detailTask;
 	private Post post;
 	private ImageView markImage;
 
@@ -65,7 +66,8 @@ public class PostDetailActivity extends Activity {
 		text.setText(post.getSource());
 		// text = (TextView) findViewById(R.id.post_mark);
 		// text.setText(String.valueOf(post.getMark()));
-		new PostDetailTask().execute(post);
+		detailTask = new PostDetailTask();
+		detailTask.execute(post);
 		markImage = (ImageView) this.findViewById(R.id.action_mark);
 	}
 
@@ -75,6 +77,17 @@ public class PostDetailActivity extends Activity {
 
 	public void onMark(View view) {
 		new MarkPostTask().execute(post);
+	}
+
+	public void onRefresh(View view) {
+		if (detailTask == null || detailTask.getStatus() == AsyncTask.Status.FINISHED) {
+			detailTask = new PostDetailTask();
+		}
+		if (detailTask.getStatus() == AsyncTask.Status.PENDING) {
+			detailTask.execute(post);
+		} else {
+			ToastService.toast(this, "正在刷新", Toast.LENGTH_SHORT);
+		}
 	}
 
 	public void onSource(View view) {
@@ -131,10 +144,6 @@ public class PostDetailActivity extends Activity {
 			}
 		}
 
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			super.onProgressUpdate(values);
-		}
 	}
 
 	class MarkPostTask extends AsyncTask<Post, Integer, Boolean> {
