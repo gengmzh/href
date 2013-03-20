@@ -13,10 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import cn.seddat.href.crawler.service.MongoService;
-import cn.seddat.href.crawler.service.StoringService;
 import cn.seddat.href.crawler.service.SpiderService;
+import cn.seddat.href.crawler.service.StoringService;
+import cn.seddat.href.crawler.spider.BaiduSpider;
 import cn.seddat.href.crawler.spider.ShuimuSpider;
-import cn.seddat.href.crawler.spider.Spider;
 
 /**
  * @author mzhgeng
@@ -42,9 +42,10 @@ public class CrawlerScheduler {
 		scheduledExecutor.submit(new StoringService(queue, mongoService.getPostCollection(), mongoService
 				.getUserCollection()));
 		// crawler
-		long delay = Config.getInstance().getPoliteTime();
-		Spider crawler = new ShuimuSpider();
-		scheduledExecutor.scheduleWithFixedDelay(new SpiderService(queue, crawler), 0, delay, TimeUnit.SECONDS);
+		scheduledExecutor.scheduleWithFixedDelay(new SpiderService(queue, new ShuimuSpider()), 0, Config.getInstance()
+				.getShuimuPeriod(), TimeUnit.SECONDS);
+		scheduledExecutor.scheduleWithFixedDelay(new SpiderService(queue, new BaiduSpider()), 0, Config.getInstance()
+				.getBaiduPeriod(), TimeUnit.SECONDS);
 		log.info("crawler starts...");
 	}
 

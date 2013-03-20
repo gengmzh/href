@@ -36,12 +36,28 @@ public class Config {
 	}
 
 	// crawler
+	public long getPoliteTime() {
+		return config.getLong("crawler_polite", 600) * 1000;
+	}
+
 	public String[] getShuimuRss() {
 		return config.getStringArray("crawler_shuimu_rss");
 	}
 
-	public long getPoliteTime() {
-		return config.getLong("crawler_polite", 600);
+	public long getShuimuPeriod() {
+		return config.getLong("crawler_shuimu_period", 60);
+	}
+
+	public String getBaiduUrl() {
+		return config.getString("crawler_baidu_url");
+	}
+
+	public String getBaiduCookie() {
+		return config.getString("crawler_baidu_cookie");
+	}
+
+	public long getBaiduPeriod() {
+		return config.getLong("crawler_baidu_period", 3600);
 	}
 
 	// service

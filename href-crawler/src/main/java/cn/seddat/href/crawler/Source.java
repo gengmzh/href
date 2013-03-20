@@ -9,7 +9,7 @@ package cn.seddat.href.crawler;
  */
 public enum Source {
 
-	SHUIMU("newsmth.net");
+	SHUIMU("newsmth.net"), BAIDU("hr.baidu.com");
 
 	private String name;
 

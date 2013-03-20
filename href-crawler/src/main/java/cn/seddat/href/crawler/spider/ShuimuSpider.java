@@ -61,6 +61,7 @@ public class ShuimuSpider implements Spider {
 			saxParser.parse(inputSource, handler);
 			conn.disconnect();
 			posts.addAll(handler.getPosts());
+			Thread.sleep(Config.getInstance().getPoliteTime());
 		}
 		log.info("crawl " + Source.SHUIMU + " done");
 		return posts;

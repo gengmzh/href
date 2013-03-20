@@ -120,6 +120,12 @@ public class StoringService implements Runnable {
 		if (post.getCompany() != null && !post.getCompany().isEmpty()) {
 			doc.put("com", post.getCompany());
 		}
+		if (post.getDepartment() != null && !post.getDepartment().isEmpty()) {
+			doc.put("dpt", post.getDepartment());
+		}
+		if (post.getAddress() != null && !post.getAddress().isEmpty()) {
+			doc.put("addr", post.getAddress());
+		}
 		if (post.getAuthor() != null && !post.getAuthor().isEmpty()) {
 			doc.put("au", post.getAuthor());
 		}
