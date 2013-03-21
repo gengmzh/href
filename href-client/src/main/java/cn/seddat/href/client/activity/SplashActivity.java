@@ -13,11 +13,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 import cn.seddat.href.client.R;
 import cn.seddat.href.client.service.CacheService;
 import cn.seddat.href.client.service.Config;
-import cn.seddat.href.client.service.ToastService;
 
 /**
  * @author mzhgeng
@@ -70,7 +68,6 @@ public class SplashActivity extends Activity {
 		@Override
 		protected void onPostExecute(String file) {
 			if (file == null) {
-				ToastService.toast(SplashActivity.this, "网络不给力啊", Toast.LENGTH_SHORT);
 				return;
 			}
 			try {
