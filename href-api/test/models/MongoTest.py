@@ -9,7 +9,7 @@ import unittest
 class PostServiceTest(unittest.TestCase):
 
     def setUp(self):
-        from web.api.mongo import getMongo
+        from models.mongo import getMongo
         self.mongo = getMongo()
         self.db = self.mongo['href']
     
