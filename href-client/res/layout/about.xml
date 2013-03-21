@@ -4,35 +4,37 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="6dip" >
+    android:padding="10dip" >
 
-    <!--
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.80"
-            android:src="@drawable/about" />
-    -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/icon" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:text="知遇 1.0"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="知遇 "
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/brown" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:text="open for you"
+        android:text="1.0.0"
         android:textAppearance="?android:attr/textAppearanceSmallInverse" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:text="跨栏很难找工作不难"
+        android:text="Copyright © 2013 Seddat. All rights reserved."
         android:textAppearance="?android:attr/textAppearanceSmallInverse" />
 
 </LinearLayout>
