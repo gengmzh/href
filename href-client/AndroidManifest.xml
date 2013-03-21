@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
 
-    <application android:icon="@drawable/icon_href" android:label="@string/app_name" android:theme="@style/href_tile" >
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/href_tile" >
 
         <activity android:name=".activity.SplashActivity" android:noHistory="true" 
             android:theme="@android:style/Theme.Light.NoTitleBar" >
