@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dip" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/splash_content"
+        android:layout_alignParentTop="true" >
+
+        <ImageView
+            android:id="@+id/splash_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/splash_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/splash_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="知遇 "
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/brown" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/splash_title"
+            android:layout_toRightOf="@+id/splash_title"
+            android:text="open for you"
+            android:textAppearance="?android:attr/textAppearanceMediumInverse"
+            android:textColor="@color/orange" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/splash_title"
+            android:text="Copyright © 2013 Seddat. All rights reserved."
+            android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+    </RelativeLayout>
+
+</RelativeLayout>

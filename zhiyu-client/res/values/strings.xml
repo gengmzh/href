@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">知遇</string>
+    <string name="page_label_about">关于知遇</string>
+    <string name="page_label_feedback">意见反馈</string>
+    <string name="page_label_post_detail">明细信息</string>
+    <string name="page_label_recommend">精选推荐</string>
+    <string name="page_label_mark">我的收藏</string>
+    <string name="feedback_advice_hint">请留下您的宝贵意见</string>
+    <string name="feedback_advice_error_message">反馈意见不可为空</string>
+
+    <color name="orange">#FFA500</color> <!-- 橙色 -->
+    <color name="gray_light">#D3D3D3</color>
+    <color name="gray_dark">#A9A9A9</color>
+    <color name="white_smoke">#F5F5F5</color>
+    <color name="white_ghost">#F8F8FF</color>
+    <color name="brown">#A52A2A</color>
+
+    <style name="zhiyu_tile" parent="android:Theme.Light">
+        <item name="android:windowTitleSize">40dip</item>
+        <item name="android:windowTitleBackgroundStyle">@style/zhiyu_title_backgroud</item>
+    </style>
+
+    <style name="zhiyu_title_backgroud">
+        <item name="android:background">#A52A2A</item>
+    </style>
+
+</resources>

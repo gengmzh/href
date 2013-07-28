@@ -1,0 +1,143 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <cn.seddat.zhiyu.client.view.SideslippingView
+        android:id="@+id/sideslipping_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TableLayout
+            android:id="@+id/menu_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="7dip"
+            android:background="@color/gray_light"
+            android:minWidth="128dip" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="7dip"
+                android:background="@android:color/transparent" />
+
+            <TableRow
+                android:id="@+id/menu_default"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="onMenuClick"
+                android:padding="3dip" >
+
+                <ImageView
+                    android:layout_width="22dip"
+                    android:layout_height="22dip"
+                    android:src="@drawable/menu_default" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="默认全部"
+                    android:textAppearance="?android:attr/textAppearanceMedium" >
+                </TextView>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/menu_recommend"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="onMenuClick"
+                android:padding="3dip"
+                android:visibility="gone" >
+
+                <ImageView
+                    android:layout_width="22dip"
+                    android:layout_height="22dip"
+                    android:src="@drawable/menu_recommend" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="精选推荐"
+                    android:textAppearance="?android:attr/textAppearanceMedium" >
+                </TextView>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/menu_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="onMenuClick"
+                android:padding="3dip" >
+
+                <ImageView
+                    android:layout_width="22dip"
+                    android:layout_height="22dip"
+                    android:src="@drawable/menu_mark" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我的收藏"
+                    android:textAppearance="?android:attr/textAppearanceMedium" >
+                </TextView>
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dip"
+                android:background="@android:color/transparent" />
+
+            <TableRow
+                android:id="@+id/menu_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="onMenuClick"
+                android:padding="3dip" >
+
+                <ImageView
+                    android:layout_width="22dip"
+                    android:layout_height="22dip"
+                    android:src="@drawable/menu_help" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="反馈"
+                    android:textAppearance="?android:attr/textAppearanceMedium" >
+                </TextView>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/menu_about"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="onMenuClick"
+                android:padding="3dip" >
+
+                <ImageView
+                    android:layout_width="22dip"
+                    android:layout_height="22dip"
+                    android:src="@drawable/menu_details" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="关于"
+                    android:textAppearance="?android:attr/textAppearanceMedium" >
+                </TextView>
+            </TableRow>
+        </TableLayout>
+
+        <FrameLayout
+            android:id="@+id/content_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </FrameLayout>
+    </cn.seddat.zhiyu.client.view.SideslippingView>
+
+</RelativeLayout>
