@@ -23,7 +23,7 @@ public class ContentProvider extends android.content.ContentProvider {
 
 	private static final String tag = ContentProvider.class.getSimpleName();
 
-	public static final String AUTHORITY = "cn.seddat.href.client.provider";
+	public static final String AUTHORITY = "cn.seddat.zhiyu.client.provider";
 	public static final Uri CONTENT_USER = Uri.parse("content://" + AUTHORITY + "/user");
 	public static final Uri CONTENT_POST = Uri.parse("content://" + AUTHORITY + "/post");
 	public static final Uri CONTENT_TRACK = Uri.parse("content://" + AUTHORITY + "/track");

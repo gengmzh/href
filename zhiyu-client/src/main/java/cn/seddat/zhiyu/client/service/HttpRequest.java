@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class HttpRequest {
 
-	private String userAgent = "HrefClient/0.1.0 Android";
+	private String userAgent = "ZhiyuClient/0.1.0 Android";
 
 	public HttpRequest() {
 
