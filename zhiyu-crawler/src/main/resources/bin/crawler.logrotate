@@ -1,0 +1,10 @@
+/var/log/href/crawler/crawler.log {
+	daily
+	missingok
+	rotate 3650
+	compress
+	delaycompress
+	ifempty
+	copytruncate
+	dateext
+}
