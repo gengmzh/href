@@ -39,7 +39,7 @@ public class CrawlerService {
 
 	public void start() throws Exception {
 		// crawler
-		Map<String, Spider> spiders = new HashMap<>();
+		Map<String, Spider> spiders = new HashMap<String, Spider>();
 		ShuimuSpider shuimuSpider = new ShuimuSpider();
 		spiders.put(shuimuSpider.getSeed(), shuimuSpider);
 		BYRSpider byrSpider = new BYRSpider();

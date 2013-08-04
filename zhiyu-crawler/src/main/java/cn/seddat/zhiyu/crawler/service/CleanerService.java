@@ -49,7 +49,7 @@ public class CleanerService implements Runnable {
 		}
 		this.queue = queue;
 		// cleaner
-		this.cleaners = new HashMap<>();
+		this.cleaners = new HashMap<String, Cleaner>();
 		ShuimuCleaner shuimuCleaner = new ShuimuCleaner();
 		cleaners.put(shuimuCleaner.getSeed(), shuimuCleaner);
 		BYRCleaner byrCleaner = new BYRCleaner();
