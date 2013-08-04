@@ -1,7 +1,7 @@
 #!/bin/sh
 
 JAVA='java'
-JOB_JAR=/var/app/href/crawler/href-crawler-0.1.0-jar-with-dependencies.jar
+JOB_JAR=/var/app/href/crawler/zhiyu-crawler-0.2.0-jar-with-dependencies.jar
 MAIN_CLASS=cn.seddat.zhiyu.crawler.service.CrawlerService
 LOG_CONFIG=/var/app/href/crawler/logging.properties
 LOG_FILE=/var/log/href/crawler/crawler.log
