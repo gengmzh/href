@@ -21,7 +21,7 @@ public class ShuimuSpiderTest extends TestCase {
 		spider = new ShuimuSpider();
 	}
 
-	public void testCrawl() throws Exception {
+	public void test_crawl() throws Exception {
 		List<Post> pl = spider.crawl();
 		Assert.assertFalse(pl.isEmpty());
 		System.out.println("total: " + pl.size());
