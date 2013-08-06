@@ -43,7 +43,7 @@ public class Config {
 	 * @return
 	 */
 	public long getSpiderPolite() {
-		return config.getLong("crawler_polite", 600) * 1000;
+		return config.getLong("spider_polite", 600) * 1000;
 	}
 
 	public String getSpiderUserAgent() {

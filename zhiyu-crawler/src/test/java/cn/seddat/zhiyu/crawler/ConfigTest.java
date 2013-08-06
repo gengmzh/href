@@ -22,7 +22,7 @@ public class ConfigTest extends TestCase {
 		long time = config.getSpiderPolite();
 		Assert.assertTrue(time > 0);
 		System.out.println(time);
-		Thread.sleep(time);
+		// Thread.sleep(time);
 	}
 
 	public void test_seed() throws Exception {
