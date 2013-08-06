@@ -53,7 +53,7 @@ public class MongoServiceTest extends TestCase {
 		file.setFilename("Michael_QRCode.png");
 		file.setMetaData(new BasicDBObject("sn", "test"));
 		file.save();
-
+		// find
 		List<GridFSDBFile> files = gridfs.find("Michael_QRCode.png");
 		for (GridFSDBFile f : files) {
 			System.out.println(f);
