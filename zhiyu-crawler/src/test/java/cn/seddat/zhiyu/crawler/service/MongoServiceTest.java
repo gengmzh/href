@@ -29,7 +29,7 @@ public class MongoServiceTest extends TestCase {
 		mongoService = MongoService.getInstance();
 	}
 
-	public void testMongo() {
+	public void testMongo() throws Exception {
 		DBCollection coll = mongoService.getDatabase().getCollection("test");
 		// save
 		DBObject doc = new BasicDBObject();
@@ -66,7 +66,7 @@ public class MongoServiceTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		mongoService.close();
+		// mongoService.close();
 	}
 
 }
