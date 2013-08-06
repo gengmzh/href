@@ -110,8 +110,10 @@ public class CleanerService implements Runnable {
 		DBObject q = new BasicDBObject("_id", id);
 		DBObject u = BasicDBObjectBuilder.start("uid", post.getAuthor()).add("sn", post.getHost()).get();
 		BufferedImage img = qrcoder.encode(JSON.serialize(u));
+		File iconPath = new File(Config.getInstance().getUserIconPath());
+		iconPath.mkdirs();
 		String icon = id + ".png";
-		ImageIO.write(img, "png", new File(Config.getInstance().getUserIconPath(), icon));
+		ImageIO.write(img, "png", new File(iconPath, icon));
 		u.put("icon", icon);
 		userColl.update(q, new BasicDBObject("$set", u), true, false);
 		log.info("update user " + id + " " + post.getAuthor() + " " + icon);

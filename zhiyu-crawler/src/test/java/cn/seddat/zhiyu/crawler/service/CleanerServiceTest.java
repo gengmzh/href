@@ -26,7 +26,6 @@ import com.mongodb.DBObject;
 public class CleanerServiceTest extends TestCase {
 
 	private BlockingQueue<Post> queue;
-	private DBCollection dbColl;
 	private CleanerService postService;
 
 	@Override
@@ -37,7 +36,6 @@ public class CleanerServiceTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		dbColl.getDB().getMongo().close();
 	}
 
 	public void test_savePost() throws Exception {
@@ -48,11 +46,12 @@ public class CleanerServiceTest extends TestCase {
 		post.setLink("http://www.newsmth.net/nForum/article/Career_Upgrade/167768");
 		postService.savePost(post);
 		// find
-		DBObject obj = MongoService.getInstance().getPostCollection().findOne(new BasicDBObject("sl", post.getLink()));
+		DBCollection postColl = MongoService.getInstance().getPostCollection();
+		DBObject obj = postColl.findOne(new BasicDBObject("sl", post.getLink()));
 		Assert.assertNotNull(obj);
 		System.out.println(obj);
 		// remove
-		dbColl.remove(obj);
+		postColl.remove(obj);
 	}
 
 	public void test_saveUser() throws Exception {
@@ -81,11 +80,12 @@ public class CleanerServiceTest extends TestCase {
 		executor.submit(postService);
 		Thread.sleep(5000);
 		// find
-		DBObject obj = dbColl.findOne(new BasicDBObject("sl", post.getLink()));
+		DBCollection postColl = MongoService.getInstance().getPostCollection();
+		DBObject obj = postColl.findOne(new BasicDBObject("sl", post.getLink()));
 		Assert.assertNotNull(obj);
 		System.out.println(obj);
 		// remove
-		dbColl.remove(obj);
+		postColl.remove(obj);
 		executor.shutdown();
 	}
 

@@ -47,7 +47,7 @@ public class MongoServiceTest extends TestCase {
 
 	public void test_image() throws Exception {
 		InputStream img = MongoServiceTest.class.getClassLoader().getResourceAsStream(
-				"cn/seddat/href/crawler/Michael_QRCode.png");
+				"cn/seddat/zhiyu/crawler/Michael_QRCode.png");
 		GridFS gridfs = new GridFS(mongoService.getDatabase(), "test");
 		GridFSInputFile file = gridfs.createFile(img);
 		file.setFilename("Michael_QRCode.png");
