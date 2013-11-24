@@ -16,6 +16,6 @@
   <modules>
     <module>zhiyu-crawler</module>
     <module>href-api</module>
-    <module>href-client</module>
+    <module>zhiyu-client</module>
   </modules>
 </project>
