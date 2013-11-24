@@ -14,8 +14,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <modules>
-    <module>href-client</module>
-    <module>href-crawler</module>
+    <module>zhiyu-crawler</module>
     <module>href-api</module>
+    <module>href-client</module>
   </modules>
 </project>

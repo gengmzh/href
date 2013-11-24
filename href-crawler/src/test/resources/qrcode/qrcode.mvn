@@ -1,2 +1,0 @@
-mvn install:install-file -DgroupId=com.swetake -DartifactId=qrcode-encoder -Dversion=1.0 -Dpackaging=jar -Dfile=Qrcode_swetake.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=jp.sourceforge -DartifactId=qrcode-decoder -Dversion=1.0 -Dpackaging=jar -Dfile=qrcode.jar -DgeneratePom=true
