@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import cn.seddat.zhiyu.crawler.Config;
 import cn.seddat.zhiyu.crawler.Post;
+import cn.seddat.zhiyu.crawler.spider.BDWMSpider;
 import cn.seddat.zhiyu.crawler.spider.BYRSpider;
 import cn.seddat.zhiyu.crawler.spider.BaiduSpider;
 import cn.seddat.zhiyu.crawler.spider.ShuimuSpider;
@@ -40,12 +41,18 @@ public class CrawlerService {
 	public void start() throws Exception {
 		// crawler
 		Map<String, Spider> spiders = new HashMap<String, Spider>();
+		// shuimu spider
 		ShuimuSpider shuimuSpider = new ShuimuSpider();
 		spiders.put(shuimuSpider.getSeed(), shuimuSpider);
+		// byr spider
 		BYRSpider byrSpider = new BYRSpider();
 		spiders.put(byrSpider.getSeed(), byrSpider);
+		// baidu spider
 		BaiduSpider baiduSpider = new BaiduSpider();
 		spiders.put(baiduSpider.getSeed(), baiduSpider);
+		// bdwm spider
+		BDWMSpider bdwmSpider = new BDWMSpider();
+		spiders.put(bdwmSpider.getSeed(), bdwmSpider);
 		String[] seeds = Config.getInstance().getSpiderSeed();
 		for (String seed : seeds) {
 			Spider spider = spiders.get(seed);
