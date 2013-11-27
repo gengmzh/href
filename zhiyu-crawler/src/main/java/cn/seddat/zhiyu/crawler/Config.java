@@ -74,6 +74,10 @@ public class Config {
 		return config.getLong("spider_period." + seed, 3600) * 1000;
 	}
 
+	public long getSipderInitialDelay(String seed) {
+		return config.getLong("spider_initial_delay." + seed, 60) * 1000;
+	}
+
 	// service propeties
 
 	public String getMongoUri() {

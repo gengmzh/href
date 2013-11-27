@@ -20,6 +20,7 @@ import cn.seddat.zhiyu.crawler.Config;
 import cn.seddat.zhiyu.crawler.Post;
 import cn.seddat.zhiyu.crawler.cleaner.BYRCleaner;
 import cn.seddat.zhiyu.crawler.cleaner.Cleaner;
+import cn.seddat.zhiyu.crawler.cleaner.SJTUCleaner;
 import cn.seddat.zhiyu.crawler.cleaner.ShuimuCleaner;
 import cn.seddat.zhiyu.crawler.utils.DateHelper;
 import cn.seddat.zhiyu.crawler.utils.MurmurHash;
@@ -54,6 +55,8 @@ public class CleanerService implements Runnable {
 		cleaners.put(shuimuCleaner.getSeed(), shuimuCleaner);
 		BYRCleaner byrCleaner = new BYRCleaner();
 		cleaners.put(byrCleaner.getSeed(), byrCleaner);
+		SJTUCleaner sjtuCleaner = new SJTUCleaner();
+		cleaners.put(sjtuCleaner.getSeed(), sjtuCleaner);
 		// mongo
 		this.postColl = MongoService.getInstance().getPostCollection();
 		this.userColl = MongoService.getInstance().getUserCollection();

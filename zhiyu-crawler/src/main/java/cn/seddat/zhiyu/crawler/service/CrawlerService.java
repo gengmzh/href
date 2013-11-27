@@ -19,6 +19,7 @@ import cn.seddat.zhiyu.crawler.Post;
 import cn.seddat.zhiyu.crawler.spider.BDWMSpider;
 import cn.seddat.zhiyu.crawler.spider.BYRSpider;
 import cn.seddat.zhiyu.crawler.spider.BaiduSpider;
+import cn.seddat.zhiyu.crawler.spider.SJTUSpider;
 import cn.seddat.zhiyu.crawler.spider.ShuimuSpider;
 import cn.seddat.zhiyu.crawler.spider.Spider;
 
@@ -40,6 +41,7 @@ public class CrawlerService {
 
 	public void start() throws Exception {
 		// crawler
+		log.info("spider starts...");
 		Map<String, Spider> spiders = new HashMap<String, Spider>();
 		// shuimu spider
 		ShuimuSpider shuimuSpider = new ShuimuSpider();
@@ -53,14 +55,19 @@ public class CrawlerService {
 		// bdwm spider
 		BDWMSpider bdwmSpider = new BDWMSpider();
 		spiders.put(bdwmSpider.getSeed(), bdwmSpider);
+		// sjtu spider
+		SJTUSpider sjtuSpider = new SJTUSpider();
+		spiders.put(sjtuSpider.getSeed(), sjtuSpider);
+		// schedule
 		String[] seeds = Config.getInstance().getSpiderSeed();
 		for (String seed : seeds) {
 			Spider spider = spiders.get(seed);
 			if (spider != null) {
 				log.info(seed + " spider starts...");
 				SpiderService spiderService = new SpiderService(spider, queue);
+				long delay = Config.getInstance().getSipderInitialDelay(seed);
 				long period = Config.getInstance().getSpiderPeriod(seed);
-				scheduledExecutor.scheduleWithFixedDelay(spiderService, 0, period, TimeUnit.MILLISECONDS);
+				scheduledExecutor.scheduleWithFixedDelay(spiderService, delay, period, TimeUnit.MILLISECONDS);
 			}
 		}
 		spiders.clear();
