@@ -39,8 +39,6 @@ public class Config {
 	// spider properties
 	/**
 	 * 获取爬虫礼貌间隔时间，单位毫秒
-	 * 
-	 * @return
 	 */
 	public long getSpiderPolite() {
 		return config.getLong("spider_polite", 600) * 1000;
