@@ -11,7 +11,8 @@ import cn.seddat.zhiyu.crawler.Config;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
-import com.mongodb.MongoURI;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 /**
  * @author mzhgeng
@@ -39,8 +40,8 @@ public class MongoService {
 	private MongoService() throws Exception {
 		String addr = Config.getInstance().getMongoUri();
 		log.info("mongo address " + addr);
-		MongoURI uri = new MongoURI(addr);
-		mongo = new Mongo(uri);
+		MongoClientURI uri = new MongoClientURI(addr);
+		mongo = new MongoClient(uri);
 		log.info("open mongo connection");
 		db = mongo.getDB(uri.getDatabase() != null ? uri.getDatabase() : "href");
 		log.info("init database " + db.getName());
