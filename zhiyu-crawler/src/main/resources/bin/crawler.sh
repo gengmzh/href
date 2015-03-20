@@ -1,10 +1,11 @@
 #!/bin/sh
 
 JAVA='java'
-JOB_JAR=/var/app/href/crawler/zhiyu-crawler-0.2.0-jar-with-dependencies.jar
+CRAWLER_HOME=/home/mp3/gengmzh/openfy/crawler
+CRAWLER_JAR=$CRAWLER_HOME/zhiyu-crawler-0.2.0-jar-with-dependencies.jar
 MAIN_CLASS=cn.seddat.zhiyu.crawler.service.CrawlerService
-LOG_CONFIG=/var/app/href/crawler/logging.properties
-LOG_FILE=/var/log/href/crawler/crawler.log
+LOG_CONFIG=$CRAWLER_HOME/logging.properties
+LOG_FILE=$CRAWLER_HOME/logs/crawler.log
 echo 'jar '$JOB_JAR
 echo 'main class '$MAIN_CLASS
 echo 'log config '$LOG_CONFIG
@@ -24,7 +25,7 @@ fi
 
 # starting new crawler
 echo 'starting crawler...'
-nohup $JAVA -cp $JOB_JAR -Djava.util.logging.config.file=$LOG_CONFIG $MAIN_CLASS >>$LOG_FILE 2>&1 &
+nohup $JAVA -cp $CRAWLER_JAR -Djava.util.logging.config.file=$LOG_CONFIG $MAIN_CLASS >>$LOG_FILE 2>&1 &
 echo 'crawler started'
 
 exit 0
